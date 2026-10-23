@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers (static assets). The site is fully static: `npm run build` writes ./dist and
+  // Workers serves it, applying dist/_redirects and dist/_headers (copied from public/).
+  // Build command: npm run build    Deploy command: npx wrangler deploy
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yawmycare-landing",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}

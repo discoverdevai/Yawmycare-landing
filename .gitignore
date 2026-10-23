@@ -10,3 +10,7 @@ docs/sections/*/shots/
 # local verification captures
 docs/refactor-ref/
 docs/**/shots/
+
+# cloudflare
+.wrangler/
+.dev.vars
