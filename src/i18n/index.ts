@@ -4,6 +4,8 @@ import headerEn from "./sections/header.en.json";
 import headerAr from "./sections/header.ar.json";
 import heroEn from "./sections/hero.en.json";
 import heroAr from "./sections/hero.ar.json";
+import rolesEn from "./sections/roles.en.json";
+import rolesAr from "./sections/roles.ar.json";
 import testimonialsEn from "./sections/testimonials.en.json";
 import testimonialsAr from "./sections/testimonials.ar.json";
 import dayEn from "./sections/day.en.json";
@@ -18,8 +20,6 @@ import setupEn from "./sections/setup.en.json";
 import setupAr from "./sections/setup.ar.json";
 import securityEn from "./sections/security.en.json";
 import securityAr from "./sections/security.ar.json";
-import commitmentsEn from "./sections/commitments.en.json";
-import commitmentsAr from "./sections/commitments.ar.json";
 import pricingEn from "./sections/pricing.en.json";
 import pricingAr from "./sections/pricing.ar.json";
 import foundersEn from "./sections/founders.en.json";
@@ -45,6 +45,7 @@ const en = {
   sections: {
     header: headerEn,
     hero: heroEn,
+    roles: rolesEn,
     testimonials: testimonialsEn,
     day: dayEn,
     features: featuresEn,
@@ -52,7 +53,6 @@ const en = {
     compare: compareEn,
     setup: setupEn,
     security: securityEn,
-    commitments: commitmentsEn,
     pricing: pricingEn,
     founders: foundersEn,
     faq: faqEn,
@@ -69,6 +69,7 @@ const ar: Dictionary = {
   sections: {
     header: headerAr,
     hero: heroAr,
+    roles: rolesAr,
     testimonials: testimonialsAr,
     day: dayAr,
     features: featuresAr,
@@ -76,7 +77,6 @@ const ar: Dictionary = {
     compare: compareAr,
     setup: setupAr,
     security: securityAr,
-    commitments: commitmentsAr,
     pricing: pricingAr,
     founders: foundersAr,
     faq: faqAr,

@@ -3,7 +3,7 @@ import AnimatedImage from "@/components/ui/AnimatedImage.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
 
 /**
- * One column of security cards (a real list, one card per item). From 1024 the cards share the column height
+ * One column of security cards (a real list, one card per item). Below 1180 the list is display:contents (cards join the 2 x 2 grid); from 1180 the cards share the column height
  * (flex-1), so both columns end up with equal cards and aligned top and bottom edges.
  */
 interface Item {
@@ -20,13 +20,13 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul class="flex flex-col gap-6 lg:gap-12">
+<ul role="list" class="flex flex-col gap-6 max-wide:contents wide:gap-8">
   {items.map((item) => (
-    <BlobCard as="li" shape="security" stretch="lg" class="lg:flex-1" contentClass="flex flex-col gap-4 p-6 xl:p-8">
+    <BlobCard as="li" shape="security" stretch class="wide:flex-1" contentClass="flex flex-col gap-4 p-6">
       <AnimatedImage src={item.icon} still={item.still} width={85} height={85} class="size-[85px]" />
       <div class="flex flex-col gap-3">
-        <h3 class="text-h3 text-accent-text font-bold">{item.title}</h3>
-        <p class="text-lead text-ink">{item.body}</p>
+        <h3 class="text-title text-accent-text font-bold">{item.title}</h3>
+        <p class="text-body-sm text-ink wide:text-body">{item.body}</p>
       </div>
     </BlobCard>
   ))}

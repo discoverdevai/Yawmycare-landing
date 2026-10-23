@@ -13,7 +13,7 @@
       },
       {
         "id": "why",
-        "label": "Why Yawmy"
+        "label": "Why Yawmy Care"
       },
       {
         "id": "setup",
@@ -24,16 +24,8 @@
         "label": "Security"
       },
       {
-        "id": "commitments",
-        "label": "Our commitments"
-      },
-      {
         "id": "pricing",
         "label": "Pricing"
-      },
-      {
-        "id": "founders",
-        "label": "Founders"
       },
       {
         "id": "faq",

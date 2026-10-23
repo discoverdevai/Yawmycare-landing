@@ -45,11 +45,13 @@ const {
 const dict = getDictionary(locale);
 const watch = resolveLink(demoVideoUrl);
 const final = size === "final";
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const parts = title.split(" · ").map((p) => p.trim());
 
 // Literal class strings (Tailwind scans source). Container-query breakpoints belong to the card's own width.
 const content = final
   ? "px-6 pt-12 pb-[calc(var(--wave-h)+2rem)] @min-[560px]:px-10 @min-[900px]:px-[58px] @min-[900px]:pt-[88px]"
-  : "px-6 py-10 @min-[900px]:px-[58px] @min-[900px]:pt-12 @min-[900px]:pb-10";
+  : "px-6 py-10 @min-[660px]:px-10 @min-[660px]:py-12 @min-[900px]:px-[58px]";
 const row = final ? "@min-[560px]:flex-row" : "@min-[640px]:flex-row";
 const bookClass = !final
   ? "@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0"
@@ -79,15 +81,17 @@ const watchClass = final ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900
       />
     ) : (
       <div class="flex w-full min-w-0 flex-col items-center gap-(--lead-gap)">
-        <SectionHeader
-          id={id}
-          align="center"
-          tone="on-green"
-          size="band"
-          headingLevel={headingLevel}
-          title={title}
-          class="w-full min-w-0 [&_h3]:max-w-full [&_h3]:text-balance"
-        />
+        {/* The title may hold two phrases joined by " · ": stacked as two lines below 1000px (no separator at a line start), one line with the dot above. */}
+        <Heading id={id} class="text-band text-ink-inverse w-full min-w-0 font-bold">
+          {parts.length > 1
+            ? parts.map((part, i) => (
+                <>
+                  {i > 0 && <span class="sr-only @min-[1000px]:not-sr-only">{" · "}</span>}
+                  <span class="block @min-[1000px]:inline @min-[1000px]:whitespace-nowrap">{part}</span>
+                </>
+              ))
+            : title}
+        </Heading>
         <p class="text-lead text-ink-inverse max-w-full">{lead}</p>
       </div>
     )}

@@ -3,18 +3,23 @@ import { getDictionary, type Locale } from "@/i18n";
 
 /**
  * Page-level "pause animations" control (WCAG 2.2.2). One toggle for every <AnimatedImage>: while pressed, each
- * animation is swapped for its still frame. Fixed to the inline-start bottom corner so it never sits in the content
- * flow. Below 640px it is a compact 36px button (above WCAG 2.5.8's 24px minimum) tucked into the corner and
- * slightly translucent until hovered or focused, so it covers less of the full-width FAQ rows and buttons it floats
- * over; `scroll-padding-bottom` keeps a keyboard-focused element out from under it. Hidden without JS (it could do
+ * animation is swapped for its still frame. Fixed, never in the content flow. Below 1280px (where content runs
+ * under the viewport corners) it is a 36px button (a 44px hit area through the ::before) stacked in the inline-end
+ * column ABOVE the WhatsApp FAB, so the two share one 48px strip instead of covering text at both ends; the FAB
+ * script sets `html[data-fab]` while it exists and `[data-fab-away]` while it is hidden (hero CTA in view), and the
+ * toggle moves up or down accordingly. From 1280 it sits in the inline-start margin as a 44px button.
+ * `scroll-padding-bottom` keeps a keyboard-focused element out from under it. Hidden without JS (it could do
  * nothing) and when the visitor already prefers reduced motion (every animation is a still then). State lives only
  * in the page: nothing is stored.
  */
 interface Props {
   locale: Locale;
+  /** The in-flow copy used inside the footer on phones (below 640px): a fixed button there would cover text. */
+  inline?: boolean;
 }
 
-const label = getDictionary(Astro.props.locale).a11y.pauseAnimations;
+const { locale, inline = false } = Astro.props;
+const label = getDictionary(locale).a11y.pauseAnimations;
 ---
 
 <button
@@ -23,7 +28,12 @@ const label = getDictionary(Astro.props.locale).a11y.pauseAnimations;
   data-motion-toggle
   aria-pressed="false"
   title={label}
-  class="group bg-surface text-primary-text border-primary-cta-strong focus-visible:outline-focus hover:bg-primary-bg fixed start-4 bottom-4 z-40 flex size-11 items-center justify-center rounded-full border-2 shadow-md max-sm:start-2 max-sm:bottom-2 max-sm:size-9 max-sm:opacity-80 max-sm:hover:opacity-100 max-sm:focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+  class:list={[
+    "group bg-surface text-primary-text border-primary-cta-strong focus-visible:outline-focus hover:bg-primary-bg flex items-center justify-center rounded-full border-2 shadow-md focus-visible:outline-2 focus-visible:outline-offset-2",
+    inline
+      ? "size-11 sm:hidden"
+      : "motion-toggle fixed end-3 bottom-3 z-40 size-9 opacity-85 before:absolute before:-inset-1 before:content-[''] hover:opacity-100 focus-visible:opacity-100 max-sm:hidden xl:start-4 xl:end-auto xl:bottom-4 xl:size-11 xl:opacity-100",
+  ]}
 >
   <span class="sr-only">{label}</span>
   <svg viewBox="0 0 24 24" class="size-5 group-aria-pressed:hidden" fill="currentColor" aria-hidden="true">
@@ -41,25 +51,31 @@ const label = getDictionary(Astro.props.locale).a11y.pauseAnimations;
 </button>
 
 <script>
-  const button = document.querySelector<HTMLButtonElement>("[data-motion-toggle]");
+  // Two copies can exist (fixed one from 640px up, in-flow one in the footer below 640px); they stay in step.
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-motion-toggle]");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (button) {
-    const sync = () => {
-      button.hidden = reduce.matches;
-    };
+  if (buttons.length) {
+    const sync = () => buttons.forEach((b) => (b.hidden = reduce.matches));
     sync();
     reduce.addEventListener("change", sync);
-    button.addEventListener("click", () => {
-      const paused = button.getAttribute("aria-pressed") !== "true";
-      button.setAttribute("aria-pressed", String(paused));
-      document.querySelectorAll<HTMLImageElement>("img[data-anim]").forEach((img) => {
-        img.src = (paused ? img.dataset.still : img.dataset.anim) ?? img.src;
-      });
-    });
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        const paused = button.getAttribute("aria-pressed") !== "true";
+        buttons.forEach((b) => b.setAttribute("aria-pressed", String(paused)));
+        document.querySelectorAll<HTMLImageElement>("img[data-anim]").forEach((img) => {
+          img.src = (paused ? img.dataset.still : img.dataset.anim) ?? img.src;
+        });
+      }),
+    );
   }
 </script>
 
 <style is:global>
+  @media (max-width: 79.99rem) {
+    html[data-fab]:not([data-fab-away]) .motion-toggle {
+      bottom: 4.5rem; /* 12px gap + 48px FAB + 12px */
+    }
+  }
   html {
     scroll-padding-bottom: 4.5rem;
   }

@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import SecurityColumn from "./security/SecurityColumn.astro";
+import PromiseCard from "./security/PromiseCard.astro";
 import { getDictionary, type Locale } from "@/i18n";
 import secureIcon from "@/assets/security/secure.webp";
 import secureStill from "@/assets/security/secure-still.webp";
@@ -13,14 +14,23 @@ import serverStill from "@/assets/security/server-still.webp";
 import copywritingIcon from "@/assets/security/copywriting.webp";
 import copywritingStill from "@/assets/security/copywriting-still.webp";
 import centerImage from "@/assets/security/center.png";
+import walletIcon from "@/assets/commitments/parents.webp";
+import walletStill from "@/assets/commitments/parents-still.webp";
+import peopleIcon from "@/assets/commitments/human.webp";
+import peopleStill from "@/assets/commitments/human-still.webp";
+import keyIcon from "@/assets/commitments/data-stays.webp";
+import keyStill from "@/assets/commitments/data-stays-still.webp";
 
 /**
- * Section 07: four security promises on BlobCard shape="security" around a centre image whose
+ * Section 07 (merged with the old Commitments, docs/DECISIONS.md 29): four security cards on BlobCard shape="security" around a centre image whose
  * organic mask is baked into the exported PNG (alpha). Layout is logical: the grid is
  * [first column | image | second column], so in RTL the first column lands on the right, like the AR
- * Figma frame, without duplicating markup. Below 1024 the image goes on top and the two columns sit
- * side by side (768) or stack (375). At >= 1024 both columns stretch to the same height (cards spread top to
- * bottom, as in Figma) so their edges align even when the wider stand-in font wraps one column more.
+ * Figma frame, without duplicating markup. Below 1180 the image goes on top and the four cards form a 2 x 2 grid
+ * (640+; the columns dissolve with display:contents so each row shares one height) or stack (below 640). From 1180 the
+ * three columns are 1 : 0.8 : 1 (a narrower photo than Figma, so side cards keep 28+ characters per line at body size)
+ * and the two card columns stretch to the same height. Below the cards: exactly three promises (parents never pay,
+ * your data stays yours, one flat fee) as a 3-up row from 1024, one column below. One h2 for the whole section; the
+ * promises group is an h3 and the cards are h3 inside a list.
  */
 interface Props {
   locale: Locale;
@@ -38,13 +48,21 @@ const icons = [
   { icon: copywritingIcon, still: copywritingStill },
 ];
 const items = t.items.map((item, i) => ({ ...item, ...icons[i]! }));
+
+// Promise order = order of `promises.items` in the i18n files: parents never pay, data stays yours, one flat fee.
+const promiseArt = [
+  { shape: "commitment-green", titleClass: "text-primary-text", icon: peopleIcon, iconStill: peopleStill },
+  { shape: "commitment-peach", titleClass: "text-accent-text", icon: keyIcon, iconStill: keyStill },
+  { shape: "commitment-green", titleClass: "text-primary-text", icon: walletIcon, iconStill: walletStill },
+] as const;
+const promises = t.promises.items.map((p, i) => ({ ...p, ...promiseArt[i]! }));
 ---
 
-<Section id="security" headingId="security-title" tint="light">
+<Section id="security" headingId="security-title" tint="light" class="pb-[calc(var(--band-py)+var(--wave-h))]">
   <SectionHeader slot="header" id="security-title" title={t.title} lead={t.lead} />
-  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,282px)_minmax(0,1fr)_minmax(0,282px)]">
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 wide:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1fr)]">
     <SecurityColumn items={items.slice(0, 2)} />
-    <div class="order-first sm:col-span-2 lg:order-none lg:col-span-1 lg:self-center">
+    <div class="order-first sm:col-span-2 wide:order-none wide:col-span-1 wide:self-center">
       <Image
         src={centerImage}
         alt={t.imageAlt}
@@ -54,9 +72,25 @@ const items = t.items.map((item, i) => ({ ...item, ...icons[i]! }));
         format="webp"
         quality={85}
         loading="lazy"
-        class="mx-auto h-auto w-full max-w-[440px] lg:max-w-[588px]"
+        class="mx-auto h-auto w-full max-w-[400px] wide:max-w-[480px]"
       />
     </div>
     <SecurityColumn items={items.slice(2)} />
+  </div>
+
+  <div class="mt-12 lg:mt-16">
+    <h3 class="text-h3 text-primary-text mb-6 text-center font-bold">{t.promises.title}</h3>
+    <ul role="list" class="mx-auto grid max-w-xl grid-cols-1 gap-6 md:max-w-none md:grid-cols-3">
+      {promises.map((p) => (
+        <PromiseCard
+          shape={p.shape}
+          title={p.title}
+          body={p.body}
+          icon={p.icon}
+          iconStill={p.iconStill}
+          titleClass={p.titleClass}
+        />
+      ))}
+    </ul>
   </div>
 </Section>

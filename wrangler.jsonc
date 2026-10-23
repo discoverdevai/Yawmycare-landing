@@ -6,6 +6,8 @@
   "name": "yawmycare-landing",
   "compatibility_date": "2026-10-01",
   "assets": {
-    "directory": "./dist"
-  }
+    "directory": "./dist",
+    // Unknown URLs answer with dist/404.html (HTTP 404) instead of an empty response.
+    "not_found_handling": "404-page",
+  },
 }

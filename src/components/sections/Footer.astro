@@ -6,7 +6,9 @@ import Button from "@/components/ui/Button.astro";
 import type { IconName } from "@/components/ui/Icon.astro";
 import { getDictionary, type Locale } from "@/i18n";
 import { navLinks } from "@/config/nav";
+import { pageLinks } from "@/config/pages";
 import RegionSwitch from "@/components/ui/RegionSwitch.astro";
+import MotionToggle from "@/components/ui/MotionToggle.astro";
 import {
   resolveLink,
   isExternal,
@@ -30,14 +32,23 @@ import {
  */
 interface Props {
   locale: Locale;
+  /** Sub-pages: prefix for the in-page anchors (e.g. `/en/`) so they link back to the landing page. */
+  anchorBase?: string;
 }
 
-const { locale } = Astro.props;
+const { locale, anchorBase = "" } = Astro.props;
 const t = getDictionary(locale);
 const s = t.sections.footer;
 
 // One nav source (src/config/nav.ts) and the header's labels: same anchors, same words (WCAG 3.2.4).
-const links = navLinks(getDictionary(locale).sections.header.nav.items);
+const links = navLinks(getDictionary(locale).sections.header.nav.items).map((l) => ({
+  ...l,
+  href: `${anchorBase}${l.href}`,
+}));
+
+// Privacy / Terms / Contact: only the pages that are generated (src/config/pages.ts).
+const legalLinks = pageLinks(locale).map((p) => ({ ...p, label: t.legal[p.slug] }));
+const here = Astro.url.pathname;
 
 // Social URLs come from env (docs/ENV.md); unset ones are not rendered in production.
 const social = socialOrder
@@ -59,7 +70,7 @@ const startPhone = regions[defaultRegionForLocale(locale)].phone;
         <Logo
           size="footer"
           locale={locale}
-          href="#home"
+          href={`${anchorBase}#home`}
           class="focus-visible:outline-focus block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
         />
         <p class="text-body-sm text-ink font-medium">{t.brand.tagline}</p>
@@ -78,6 +89,23 @@ const startPhone = regions[defaultRegionForLocale(locale)].phone;
           ))}
         </ul>
       </nav>
+      {legalLinks.length > 0 && (
+        <nav aria-label={t.legal.navLabel}>
+          <ul class="flex flex-wrap justify-center gap-x-4 gap-y-1 xl:gap-x-6">
+            {legalLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  aria-current={here === href ? "page" : undefined}
+                  class="text-body-sm text-ink focus-visible:outline-focus inline-flex min-h-11 min-w-11 items-center justify-center rounded underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 aria-[current=page]:underline"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
       {showRegionUi && (
         <div class="flex flex-col items-center gap-2">
           <RegionSwitch locale={locale} name="region-footer" legend />
@@ -113,6 +141,8 @@ const startPhone = regions[defaultRegionForLocale(locale)].phone;
           ))}
         </ul>
       )}
+      {/* Phones only: the pause control lives here instead of floating over the text (docs/FIX-LOG-final-structure.md). */}
+      <MotionToggle locale={locale} inline />
     </Container>
     <p
       aria-hidden="true"

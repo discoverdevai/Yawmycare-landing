@@ -1,0 +1,43 @@
+{
+  "title": "One app. Three roles. Everyone in the picture.",
+  "lead": "Each role gets its own screens, built around its day: the owner dashboard, the teacher app and the parent app.",
+  "tablistLabel": "Choose a role",
+  "roles": [
+    {
+      "id": "owner",
+      "tab": "Owner",
+      "heading": "See the whole nursery at a glance",
+      "imageAlt": "The owner dashboard: a daily attendance chart and recent activity feed.",
+      "items": [
+        "See today's children, teachers and incidents on one dashboard.",
+        "Manage rooms, capacity, schedules and which teacher is where.",
+        "Send announcements and events to a room or the whole nursery.",
+        "Review attendance and incident logs, export your records, and set opening hours and how close parents must be to check in."
+      ]
+    },
+    {
+      "id": "teacher",
+      "tab": "Teacher",
+      "heading": "Your room, in your hand",
+      "imageAlt": "The teacher app: a child's daily log with mood, meals, nap, nappy and activity, and Save Draft and Publish buttons.",
+      "items": [
+        "Open your room and see who is in, not arrived or absent. Mark a child in by hand.",
+        "Log mood, meals, nap, nappies, activities and medication. Save drafts and publish.",
+        "Share photos with one child or the whole room.",
+        "Write an incident report in a minute, message parents and post announcements."
+      ]
+    },
+    {
+      "id": "parent",
+      "tab": "Parent",
+      "heading": "Their day, in your pocket",
+      "imageAlt": "The parent app home: the week strip, check-in status and today's schedule.",
+      "items": [
+        "Check in and out from the gate, and see attendance history.",
+        "See the day: mood, meals, nap, schedule and photos.",
+        "Message the nursery, read announcements and save events.",
+        "Keep your child's profile up to date: allergies, immunisations, who may collect them, and your quiet hours."
+      ]
+    }
+  ]
+}

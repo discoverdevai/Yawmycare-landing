@@ -2,13 +2,12 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
-import CtaBand from "@/components/ui/CtaBand.astro";
 import ConnectorLines from "./setup/ConnectorLines.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
 /**
- * Section 06: four numbered steps on BlobCard shape="step" joined by dashed connector lines, then the
- * green CTA band (ui/CtaBand).
+ * Section 06 "How it works": four numbered steps on BlobCard shape="step" joined by dashed connector lines. No CTA band
+ * here (the Final CTA is the only band on the page, docs/DECISIONS.md 29).
  *
  *  >= 1024  four columns; numbered circle above each card, one horizontal dashed rail with a drop per
  *           column (ConnectorLines). Circles are centred on the cards, as in Figma.
@@ -75,7 +74,5 @@ const railDot =
         ))}
       </ol>
     </div>
-
-    <CtaBand locale={locale} title={t.band.title} lead={t.band.lead} />
   </div>
 </Section>

@@ -15,6 +15,7 @@
  * The one allowed raw hex outside this file is <meta name="theme-color"> in BaseLayout.
  */
 @theme static {
+  --breakpoint-wide: 73.75rem; /* 1180: Security goes 3-column (responsive pass 2) */
   /* Primary (green) */
   --color-primary-bg: #dfebd1; /* primary/bgColor */
   --color-primary-bg-light: #f8faee; /* primary/bglightColor */
@@ -189,6 +190,16 @@
   }
   html:lang(ar) {
     font-family: var(--font-arabic);
+  }
+  /* Widows and orphans (responsive pass 2, R6): headings break into even lines, running text avoids a one-word last line. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
   }
   /* Latin spans inside an Arabic page keep the Latin stack. */
   :lang(en):not(html) {

@@ -2,6 +2,7 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import DayCard from "./day/DayCard.astro";
+import ShowMore from "@/components/ui/ShowMore.astro";
 import { slots, summaryCard } from "./day/cards";
 import { getDictionary, type Locale } from "@/i18n";
 
@@ -22,7 +23,7 @@ const t = getDictionary(locale).sections.day;
 <Section id="day" headingId="day-heading" tint="light">
   <SectionHeader slot="header" id="day-heading" title={t.title} lead={t.lead} />
 
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-12">
+  <div id="day-cards" data-collapsible class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-12">
     {/* display: contents keeps the list in the accessibility tree while its items join the grid. */}
     <ol role="list" aria-label={t.timelineLabel} class="contents">
       {slots.map((slot, i) => {
@@ -35,10 +36,12 @@ const t = getDictionary(locale).sections.day;
             title={item.title}
             body={item.body}
             alt={item.alt}
+            more={i >= 4}
           />
         );
       })}
     </ol>
-    <DayCard as="div" def={summaryCard} title={t.summary.title} body={t.summary.body} alt={t.summary.alt} />
+    <DayCard as="div" more def={summaryCard} title={t.summary.title} body={t.summary.body} alt={t.summary.alt} />
   </div>
+  <ShowMore target="day-cards" more={t.showMore} less={t.showLess} class="mt-6" />
 </Section>

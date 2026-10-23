@@ -1,26 +1,36 @@
 {
-  "title": "Built for how nurseries really work",
+  "title": "Built around how nurseries really work",
   "arabicBadge": "Arabic",
   "items": [
     {
       "id": "one-tap-checkin",
       "title": "One-tap check-in",
-      "body": "Parents check in within 100 metres. No PIN, QR code, or tablet at the door."
+      "body": "Parents check in and out from the gate, within a distance you set. Teachers can mark a child in by hand."
+    },
+    {
+      "id": "announcements",
+      "title": "Announcements and events",
+      "body": "Tell the whole nursery or just one room. Announcements and events land on parents' phones. No WhatsApp group needed."
+    },
+    {
+      "id": "safety",
+      "title": "Safety and health records",
+      "body": "Teachers log an incident in a minute. Every child's allergies, medical notes and authorised pickups are one tap away."
     },
     {
       "id": "know-who-read",
-      "title": "Know who read it",
-      "body": "See which parents opened a closure notice or illness alert. Know who has seen it."
+      "title": "Know parents saw it",
+      "body": "Parents confirm they have read incident reports, so you are never left guessing."
     },
     {
       "id": "evenings",
-      "title": "Respects your hours",
-      "body": "Parents see when they are messaging outside nursery hours, before they hit send."
+      "title": "Respects quiet hours",
+      "body": "Parents can set quiet hours, and you set your opening days and hours."
     },
     {
       "id": "arabic",
-      "title": "Arabic from day one",
-      "body": "Staff and parents each pick their own language, Arabic or English, and see the whole app in it."
+      "title": "Everyone picks their language",
+      "body": "Staff and parents each choose Arabic or English and see the whole app in it."
     }
   ]
 }

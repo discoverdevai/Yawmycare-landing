@@ -1,0 +1,40 @@
+---
+import type { ImageMetadata } from "astro";
+import BlobCard from "@/components/ui/BlobCard.astro";
+import AnimatedImage from "@/components/ui/AnimatedImage.astro";
+
+/**
+ * One promise of the merged "Security and our promises" section (docs/DECISIONS.md 29): blob card + corner
+ * illustration + title + body. Everything scales with the card's own width (container query units), so the Figma
+ * proportions hold at any width. Below 324px the card is a plain rounded card and the illustration moves into the
+ * flow above the title. The illustration sits at the inline end via logical offsets (mirrors in RTL).
+ */
+interface Props {
+  shape: "commitment-peach" | "commitment-green";
+  title: string;
+  body: string;
+  icon: ImageMetadata;
+  /** First frame of the illustration, shown instead of the animation when the visitor prefers reduced motion. */
+  iconStill: ImageMetadata;
+  /** Title colour utility (accent-text on peach, primary-text on green). */
+  titleClass: string;
+  class?: string;
+}
+
+const { shape, title, body, icon, iconStill, titleClass, class: className = "" } = Astro.props;
+---
+
+<BlobCard shape={shape} as="li" contentClass="p-6 @min-[324px]:p-[9.86%]" stretch class={className}>
+  <AnimatedImage
+    src={icon}
+    still={iconStill}
+    width={110}
+    height={110}
+    class="size-full object-cover"
+    pictureClass="pointer-events-none mb-4 block size-[72px] shrink-0 overflow-hidden @min-[324px]:absolute @min-[324px]:top-3 @min-[324px]:end-[4.08cqw] @min-[324px]:size-[18.7cqw]"
+  />
+  <div class="flex flex-col gap-4 @min-[324px]:gap-6">
+    <h3 class:list={["text-h3 font-bold @min-[324px]:pe-[12.9cqw]", titleClass]}>{title}</h3>
+    <p class="text-lead">{body}</p>
+  </div>
+</BlobCard>

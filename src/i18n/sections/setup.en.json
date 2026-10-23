@@ -1,26 +1,22 @@
 {
-  "title": "Set up your nursery in under 20 minutes",
-  "lead": "We do it with you on a call. Adding children and inviting your team happens the same day.",
+  "title": "Set up with us, within 48 hours",
+  "lead": "We do the setup with you, so you are never figuring it out alone.",
   "steps": [
     {
-      "title": "See Yawmy Care in Action",
-      "body": "Book a free demo and explore how Yawmy Care can fit your nursery's daily operations."
+      "title": "Book a demo",
+      "body": "A 30-minute call at a time that suits you. We show you how Yawmy Care fits your nursery's day."
     },
     {
-      "title": "Get Your Daily Care Ready",
-      "body": "We'll help you set up your nursery and configure the platform around your daily workflow."
+      "title": "We set it up with you",
+      "body": "Within 48 hours, we set up your nursery around the way you already work."
     },
     {
-      "title": "Bring Everyone Together",
-      "body": "Invite your teachers and staff, and get everyone connected through one platform."
+      "title": "Invite your team and parents",
+      "body": "Invite your teachers and staff, then parents. Everyone is connected in one app."
     },
     {
-      "title": "Everything in One Place",
-      "body": "Manage attendance, communication, and daily operations in one place."
+      "title": "Start your first day",
+      "body": "Attendance, messages and daily reports, together from day one."
     }
-  ],
-  "band": {
-    "title": "No card, no commitment · In Arabic or English",
-    "lead": "Book a demo and we set it up with you on a call."
-  }
+  ]
 }

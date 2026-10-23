@@ -1,4 +1,5 @@
 ---
+// unpublished until real/consented (docs/DECISIONS.md 27-28)
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
@@ -21,15 +22,15 @@ const t = getDictionary(locale).sections.testimonials;
 <Section id="testimonials" headingId="testimonials-title" class="pt-(--wave-gap)">
   <SectionHeader slot="header" id="testimonials-title" title={t.title} lead={t.lead} />
 
-  <div class="grid grid-cols-1 items-center gap-x-6 gap-y-8 xl:grid-cols-4">
+  <div class="grid grid-cols-1 items-center gap-x-6 gap-y-5 md:gap-y-8 xl:grid-cols-4">
     <div class="flex flex-col gap-4 max-xl:flex-row max-xl:items-center max-xl:gap-6">
       <Icon name="quote" size={67} class="text-ink shrink-0" />
       <h3 class="text-h3 text-ink min-w-0 font-bold">{t.label}</h3>
     </div>
 
-    <ul role="list" class="grid grid-cols-1 gap-6 md:grid-cols-3 xl:col-span-3">
+    <ul role="list" class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 xl:col-span-3">
       {t.items.map((item) => (
-        <BlobCard as="li" shape="testimonial" stretch contentClass="flex min-h-full flex-col justify-center p-6">
+        <BlobCard as="li" shape="testimonial" stretch contentClass="flex min-h-full flex-col justify-start p-5 md:p-6">
           <blockquote class="flex flex-col gap-4">
             <p class="text-title md:text-body lg:text-title font-medium">{item.quote}</p>
             <footer class="flex items-center gap-2">

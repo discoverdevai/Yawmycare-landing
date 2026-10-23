@@ -28,8 +28,8 @@ const t = getDictionary(locale).sections.compare;
     <caption class="sr-only">{t.caption}</caption>
     <thead>
       <tr>
-        <th scope="col" class="text-caption text-ink-muted w-[20%] p-4 text-start font-bold">
-          {t.jobLabel}
+        <th scope="col" class="w-[20%] p-4 text-start">
+          <span class="sr-only">{t.jobLabel}</span>
         </th>
         <th
           scope="col"
@@ -75,18 +75,18 @@ const t = getDictionary(locale).sections.compare;
     </tbody>
   </table>
 
-  <ul role="list" aria-label={t.caption} class="flex flex-col gap-4 md:hidden">
+  <ul role="list" aria-label={t.caption} class="flex flex-col gap-3 md:hidden">
     {t.rows.map((row) => (
-      <li class="bg-surface-sec border-stroke-green rounded-card flex flex-col gap-4 border-2 p-5">
+      <li class="bg-surface-sec border-stroke-green rounded-card flex flex-col gap-2 border-2 p-4">
         <h3 class="text-title text-primary-text font-bold">{row.job}</h3>
-        <dl class="flex flex-col gap-3">
-          <div class="bg-surface-tabs rounded-input flex flex-col gap-1 p-4">
+        <dl class="flex flex-col gap-2">
+          <div class="bg-surface-tabs rounded-input flex flex-col gap-0.5 px-3 py-2">
             <dt class="text-caption text-ink-muted font-bold">{t.oldLabel}</dt>
-            <dd class="text-body text-ink">{row.old}</dd>
+            <dd class="text-body-sm text-ink">{row.old}</dd>
           </div>
-          <div class="bg-primary-bg rounded-input border-primary-cta flex flex-col gap-1 border-2 p-4">
+          <div class="bg-primary-bg rounded-input border-primary-cta flex flex-col gap-0.5 border-2 px-3 py-2">
             <dt class="text-caption text-primary-text font-bold">{t.newLabel}</dt>
-            <dd class="text-body text-ink font-medium">{row.new}</dd>
+            <dd class="text-body-sm text-ink font-medium">{row.new}</dd>
           </div>
         </dl>
       </li>

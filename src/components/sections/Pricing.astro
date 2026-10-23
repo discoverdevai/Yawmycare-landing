@@ -46,7 +46,7 @@ const askText = t.price.ask.replace("{region}", dict.regions.names[startId]);
 const startNote = start.price ? (locale === "ar" ? start.price.noteAr || start.price.note : start.price.note) : "";
 ---
 
-<Section id="pricing" headingId="pricing-title" wave="up" shadow>
+<Section id="pricing" headingId="pricing-title" wave="up" shadow class="relative -mt-(--wave-h)">
   <div slot="header" class="flex flex-col gap-6">
     <SectionHeader id="pricing-title" title={t.title} />
     <RegionSwitch locale={locale} name="region-pricing" legend align="start" />
@@ -129,7 +129,7 @@ const startNote = start.price ? (locale === "ar" ? start.price.noteAr || start.p
         </div>
       </BlobCard>
 
-      <BlobCard shape="first10" stretch contentClass="relative px-6 py-8 @min-[594px]:px-[7.3%] lg:py-[12.7%]">
+      <BlobCard shape="first10" stretch contentClass="relative px-6 py-8 @min-[436px]:px-[7.3%] lg:py-16">
         <AnimatedImage
           src={diplomacy}
           width={170}

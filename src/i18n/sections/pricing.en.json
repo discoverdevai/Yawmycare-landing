@@ -30,7 +30,7 @@
         "em": true
       }
     ],
-    "body": "Talk to us. We price around your rooms.",
+    "body": "Talk to us. We will price it around your rooms.",
     "cta": "Talk to us"
   },
   "partner": {
@@ -52,8 +52,8 @@
         "em": true
       }
     ],
-    "body": "The first 10 nurseries keep whatever launch price we set, permanently, and decide what we build next. We are new. That is exactly why this is worth it.",
-    "cta": "Be The First Partner"
+    "body": "The first 10 nurseries keep their launch price for good and help shape what we build next. We are new, and that is exactly why your voice counts here.",
+    "cta": "Join the first 10"
   },
   "price": {
     "from": "From {amount}",

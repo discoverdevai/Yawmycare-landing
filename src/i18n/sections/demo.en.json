@@ -1,61 +1,61 @@
 {
-  "title": "See Yawmy Care in Action",
-  "lead": "Discover how Yawmy Care can simplify your nursery’s daily operations and keep your team and parents connected.",
+  "title": "Book your free demo",
+  "lead": "Tell us a little about you and when suits you. It's a 30-minute demo: we'll show you Yawmy Care and answer your questions.",
   "closeLabel": "Close",
   "honeypotLabel": "Leave this field empty",
   "fields": {
     "name": {
       "label": "Name",
-      "placeholder": "Enter your Name",
-      "required": "Please enter your name."
+      "placeholder": "e.g. Sara Ahmed",
+      "required": "Add your name so we know who to ask for."
     },
     "phone": {
       "label": "Mobile / WhatsApp number",
       "placeholder": "+20 100 000 0000",
-      "required": "Please enter your mobile or WhatsApp number.",
-      "invalid": "Please enter a valid number with 8 to 15 digits. Include the country code if you can."
+      "required": "Add a mobile or WhatsApp number so we can reach you.",
+      "invalid": "That number does not look right. Use 8 to 15 digits, and add the country code if you can."
     },
     "nursery": {
-      "label": "Nursery Name",
-      "placeholder": "Enter your Nursery Name",
-      "required": "Please enter your nursery’s name."
+      "label": "Nursery or school name",
+      "placeholder": "",
+      "required": "Add the name of your nursery or school."
     },
     "email": {
-      "label": "Work Email",
-      "placeholder": "Enter your Work Email",
-      "required": "Please enter your work email.",
-      "invalid": "Please enter a valid email address, like name@example.com."
+      "label": "Email address",
+      "placeholder": "name@example.com",
+      "required": "Add your email address.",
+      "invalid": "That email does not look right. It should look like name@example.com."
     },
     "date": {
-      "label": "Preferred Date",
-      "required": "Please choose a preferred date.",
-      "invalid": "Please enter a valid date.",
-      "min": "Please choose today or a later date."
+      "label": "Preferred date",
+      "required": "Pick a day that suits you.",
+      "invalid": "That date does not look right.",
+      "min": "Pick today or a later day."
     },
     "time": {
-      "label": "Preferred Time",
-      "required": "Please choose a preferred time.",
-      "invalid": "Please enter a valid time.",
-      "past": "That time has already passed today. Please choose a later time."
+      "label": "Preferred time",
+      "required": "Pick a time that suits you.",
+      "invalid": "That time does not look right.",
+      "past": "That time has passed for today. Pick a later one."
     },
     "region": {
       "label": "Country",
-      "required": "Please choose your country."
+      "required": "Choose your country."
     },
     "children": {
-      "legend": "Number of children"
+      "legend": "How many children?"
     },
     "tool": {
       "legend": "What do you use today?"
     }
   },
-  "submit": "Book My Free Demo",
+  "submit": "Book my free demo",
   "submitting": "Sending…",
-  "summary": "Please fix the highlighted fields and try again.",
+  "summary": "A few fields need a quick fix. We have marked them below.",
   "step2": {
     "received": "Request received",
     "title": "Help us prepare your demo",
-    "lead": "We will contact you to confirm your demo. Add a few details so we can prepare.",
+    "lead": "We will contact you to confirm your demo. A few details help us prepare.",
     "optionalNote": "Every field on this step is optional.",
     "submit": "Send details",
     "skip": "Skip for now",
@@ -68,20 +68,20 @@
     }
   },
   "done": {
-    "title": "Thank you. You are all set",
-    "body": "We will contact you to confirm your demo.",
+    "title": "Thank you. We will be in touch.",
+    "body": "We have your details and will contact you to confirm your demo.",
     "nextTitle": "What happens next",
     "next": [
       "We will contact you on the number you gave us to confirm a day and time.",
-      "We will walk you through Yawmy Care and answer your questions."
+      "Then we will walk you through Yawmy Care and answer your questions."
     ],
     "close": "Close"
   },
   "error": {
-    "title": "Something went wrong",
-    "body": "We couldn’t send your request. Please check your connection and try again.",
-    "notConnected": "This form is not connected yet. Please contact us on WhatsApp or by email.",
-    "tooFast": "That was very quick. Please check your details and try again.",
+    "title": "Your request has not gone through",
+    "body": "We could not send your request. Check your connection and try again.",
+    "notConnected": "This form is not working yet. Please reach us on WhatsApp or by email instead.",
+    "tooFast": "That went through very fast, so we paused it. Check your details and try once more.",
     "retry": "Try again"
   }
 }

@@ -2,16 +2,14 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Header from "@/components/sections/Header.astro";
 import Hero from "@/components/sections/Hero.astro";
-import Testimonials from "@/components/sections/Testimonials.astro";
 import DayTimeline from "@/components/sections/DayTimeline.astro";
 import Features from "@/components/sections/Features.astro";
 import Compare from "@/components/sections/Compare.astro";
 import Proof from "@/components/sections/Proof.astro";
+import Roles from "@/components/sections/Roles.astro";
 import Setup from "@/components/sections/Setup.astro";
 import Security from "@/components/sections/Security.astro";
-import Commitments from "@/components/sections/Commitments.astro";
 import Pricing from "@/components/sections/Pricing.astro";
-import Founders from "@/components/sections/Founders.astro";
 import Faq from "@/components/sections/Faq.astro";
 import FinalCta from "@/components/sections/FinalCta.astro";
 import Footer from "@/components/sections/Footer.astro";
@@ -25,9 +23,10 @@ export function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 
-//  Page order and joins (design pass B1): hero (scalloped bottom) → testimonials → [proof: renders only when config/proof.ts has entries]
-//  → day (tint light) → features → compare (sec) → setup → security (light) → commitments → pricing (scalloped top) → founders (light)
-//  → FAQ (sec) → final CTA + footer (scalloped top). Everything else is a flat join (alternating surface tints, no wave).
+//  Page order and joins (docs/FIX-LOG-final-structure.md): hero (scalloped bottom) -> [proof: renders nothing while config/proof.ts is empty]
+//  -> roles (plain, so the hero scallop meets cream) -> day (light) -> features -> compare (sec) -> how it works (setup) -> security + promises (light, runs under
+//  pricing's scalloped top) -> pricing -> FAQ (sec) -> final CTA + footer (scalloped top). Everything else is a flat join.
+//  Testimonials and Founders are unpublished (docs/DECISIONS.md 27-28); Commitments is merged into Security (29).
 //  FinalCta must be the last section in <main> with Footer straight after it (the footer overlaps the band).
 ---
 
@@ -35,16 +34,14 @@ const locale = Astro.params.lang as Locale;
   <JsonLd slot="head" locale={locale} />
   <Header slot="header" locale={locale} />
   <Hero locale={locale} />
-  <Testimonials locale={locale} />
   <Proof locale={locale} />
+  <Roles locale={locale} />
   <DayTimeline locale={locale} />
   <Features locale={locale} />
   <Compare locale={locale} />
   <Setup locale={locale} />
   <Security locale={locale} />
-  <Commitments locale={locale} />
   <Pricing locale={locale} />
-  <Founders locale={locale} />
   <Faq locale={locale} />
   <FinalCta locale={locale} />
   <Footer slot="footer" locale={locale} />

@@ -4,13 +4,20 @@ import type { HTMLAttributes } from "astro/types";
 /**
  * Card with one of the hand-drawn organic outlines from Figma.
  *
- * The shape is chosen by the card's OWN width (container query), not the viewport:
- *  - at >= 75% of the shape's native width the SVG is shown (stretched a little at most);
- *  - below that it falls back to a simplified rounded card with the same fill and stroke
- *    (docs spec §8.4 option A). Scaling a 1200px blob down to 343px would turn the scallops and the
- *    3px stroke to mush.
- * The frame keeps the native aspect ratio but grows with its content, so longer Arabic copy never
- * overflows. Shapes are not mirrored in RTL (the AR Figma frame uses them unmirrored).
+ * SHAPE RULE (one shape language, responsive pass 2):
+ *  1. A card is ALWAYS the scalloped SVG or ALWAYS the plain fallback for a given width of its own box, decided by a
+ *     container query at 55% of the shape's native width (literal thresholds in the lookup below). Cards of one family
+ *     share a column width, so they can never mix on one screen; compact families (feature, step, security,
+ *     testimonial, commitments, intl-school) stay scalloped from 390 up, and only the one-per-section banners
+ *     (cta-band, final-cta, pricing, founder-text, first10, commitment-wide) fall back to plain on a phone.
+ *  2. The fallback is the same card minus the scallops: same fill, same stroke colour and width (a real border), and
+ *     the shared `rounded-card` radius (--radius-card, 32px). Never a different colour or a thinner line.
+ *  3. Fill-only shapes that sit on the page background get an `outline` (CSS stroke on the SVG path, border on the
+ *     fallback) so their edge reads at >= 1.3:1.
+ *  4. There is NO aspect lock and no min-height: the frame is as tall as its content (or, in equal-height rows, as tall
+ *     as `stretch` makes it). The SVG uses preserveAspectRatio="none" so it follows the box. Empty space is a content
+ *     problem, never a shape problem. (`bleed` is the one exception: the final CTA SVG keeps its native height.)
+ * Shapes are not mirrored in RTL (the AR Figma frame uses them unmirrored).
  *
  * Tailwind needs literal class strings, so the per-shape thresholds live in the lookup below.
  */
@@ -22,27 +29,15 @@ interface ShapeConfig {
   w: number;
   h: number;
   fill: string;
+  /** Stroke colour. Shapes whose SVG already contains the outline draw it themselves; `outline` shapes get it from CSS. */
   stroke?: string;
-  /** Visible stroke width in px (outer 3px for outside-stroke shapes, centred 2-3px otherwise). */
+  /** Visible stroke width in px; the fallback border uses exactly this. */
   strokeW?: number;
-  /** Literal classes: show the SVG from 75% of native width, hide the fallback from there. */
+  /** The SVG has no stroke of its own: draw `stroke` on its path with CSS (non-scaling), as the fallback border does. */
+  outline?: boolean;
+  /** Literal classes: show the SVG from 55% of native width, hide the fallback from there. */
   show: string;
   hide: string;
-  /**
-   * Optional literal class that loosens the native aspect ratio once the card is WIDER than the shape's native
-   * width (e.g. a 282x416 card at 343px would be 506px tall). The shape then stretches horizontally and is
-   * only ~25% shorter than proportional, so cards are not taller than their content needs. Never applies at or
-   * below native width, so the Figma size at 1440 is unchanged.
-   */
-  relax?: string;
-  /**
-   * Whenever the card is wider than the shape's native width (a single column at 480-767px, a 343px card for a 282px
-   * shape, tablet two-up grids of 340px cards) the native aspect ratio would make it taller than any content needs
-   * (a 735px-wide feature card was 598px tall; a 340px step card was 108px too tall at 768). There the aspect lock is
-   * dropped and the card is as tall as its content, with a floor of roughly 70% of the native height (design pass C2). At or below the
-   * native width (the 1440 Figma size) nothing changes. Literal classes, so Tailwind can see them.
-   */
-  grow?: string;
 }
 
 const C = (name: string) => `var(--color-${name})`;
@@ -54,9 +49,8 @@ const shapes = {
     fill: C("surface-tabs"),
     stroke: C("stroke-green"),
     strokeW: 3,
-    show: "@min-[288px]:block",
-    hide: "@min-[288px]:hidden",
-    grow: "@min-[385px]:flex @min-[385px]:flex-col @min-[385px]:aspect-auto @min-[385px]:min-h-[220px]",
+    show: "@min-[211px]:block",
+    hide: "@min-[211px]:hidden",
   },
   step: {
     w: 282,
@@ -64,9 +58,8 @@ const shapes = {
     fill: C("surface-tabs"),
     stroke: C("stroke-green"),
     strokeW: 3,
-    show: "@min-[212px]:block",
-    hide: "@min-[212px]:hidden",
-    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[150px]",
+    show: "@min-[155px]:block",
+    hide: "@min-[155px]:hidden",
   },
   "step-number": {
     w: 48,
@@ -77,15 +70,14 @@ const shapes = {
     show: "@min-[36px]:block",
     hide: "@min-[36px]:hidden",
   },
-  "cta-band": { w: 1200, h: 348, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
-  "final-cta": { w: 1200, h: 910, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  "cta-band": { w: 1200, h: 348, fill: C("primary-cta"), show: "@min-[660px]:block", hide: "@min-[660px]:hidden" },
+  "final-cta": { w: 1200, h: 910, fill: C("primary-cta"), show: "@min-[660px]:block", hide: "@min-[660px]:hidden" },
   testimonial: {
     w: 282,
     h: 236,
     fill: C("accent-bg-soft"),
-    show: "@min-[212px]:block",
-    hide: "@min-[212px]:hidden",
-    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[170px]",
+    show: "@min-[155px]:block",
+    hide: "@min-[155px]:hidden",
   },
   security: {
     w: 282,
@@ -93,41 +85,46 @@ const shapes = {
     fill: C("accent-bg-light"),
     stroke: C("stroke-accent-strong"),
     strokeW: 3,
-    show: "@min-[212px]:block",
-    hide: "@min-[212px]:hidden",
-    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[220px]",
+    show: "@min-[155px]:block",
+    hide: "@min-[155px]:hidden",
   },
   "commitment-peach": {
     w: 588,
     h: 247,
     fill: C("accent-bg-light"),
-    show: "@min-[441px]:block",
-    hide: "@min-[441px]:hidden",
-    grow: "@min-[589px]:flex @min-[589px]:flex-col @min-[589px]:aspect-auto @min-[589px]:min-h-[170px]",
+    stroke: C("stroke-accent-strong"),
+    strokeW: 2,
+    outline: true,
+    show: "@min-[324px]:block",
+    hide: "@min-[324px]:hidden",
   },
   "commitment-green": {
     w: 588,
     h: 247,
     fill: C("surface-tabs"),
-    show: "@min-[441px]:block",
-    hide: "@min-[441px]:hidden",
-    grow: "@min-[589px]:flex @min-[589px]:flex-col @min-[589px]:aspect-auto @min-[589px]:min-h-[170px]",
+    stroke: C("stroke-green"),
+    strokeW: 2,
+    outline: true,
+    show: "@min-[324px]:block",
+    hide: "@min-[324px]:hidden",
   },
   "commitment-wide": {
     w: 1200,
     h: 183,
     fill: C("stroke-sec"),
-    show: "@min-[900px]:block",
-    hide: "@min-[900px]:hidden",
+    stroke: C("stroke-green"),
+    strokeW: 2,
+    outline: true,
+    show: "@min-[660px]:block",
+    hide: "@min-[660px]:hidden",
   },
-  pricing: { w: 1200, h: 424, fill: C("primary-bg"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  pricing: { w: 1200, h: 424, fill: C("primary-bg"), show: "@min-[660px]:block", hide: "@min-[660px]:hidden" },
   "intl-school": {
     w: 384,
     h: 503,
     fill: C("stroke-sec"),
-    show: "@min-[288px]:block",
-    hide: "@min-[288px]:hidden",
-    grow: "@min-[385px]:flex @min-[385px]:flex-col @min-[385px]:aspect-auto @min-[385px]:min-h-[260px]",
+    show: "@min-[211px]:block",
+    hide: "@min-[211px]:hidden",
   },
   first10: {
     w: 792,
@@ -135,10 +132,10 @@ const shapes = {
     fill: C("accent-bg-light"),
     stroke: C("accent-text"),
     strokeW: 2,
-    show: "@min-[594px]:block",
-    hide: "@min-[594px]:hidden",
+    show: "@min-[436px]:block",
+    hide: "@min-[436px]:hidden",
   },
-  "founder-text": { w: 1181, h: 423, fill: C("primary-bg"), show: "@min-[886px]:block", hide: "@min-[886px]:hidden" },
+  "founder-text": { w: 1181, h: 423, fill: C("primary-bg"), show: "@min-[650px]:block", hide: "@min-[650px]:hidden" },
 } satisfies Record<string, ShapeConfig>;
 
 export type BlobShape = keyof typeof shapes;
@@ -197,24 +194,17 @@ const vars =
   `--blob-fill:${fill ? C(fill) : cfg.fill};` +
   `--blob-stroke:${cfg.stroke ?? "transparent"};` +
   `--blob-stroke-w:${cfg.strokeW ?? 0}px;` +
-  `--blob-ar:${cfg.w}/${cfg.h};` +
   `--blob-h:${cfg.h}px`;
 ---
 
 <Tag class:list={["@container", stretchCard, className]} style={vars}>
-  <div
-    class:list={[
-      "relative",
-      !bleed && ["aspect-(--blob-ar)", cfg.relax, cfg.grow],
-      stretchFrame,
-      fillContent && fillFrame,
-    ]}
-  >
+  <div class:list={["relative", stretchFrame, fillContent && fillFrame]}>
     <Svg
       class:list={[
         "pointer-events-none absolute hidden",
         bleed ? "inset-x-0 top-0 h-(--blob-h) w-full" : "inset-0 size-full",
         flip && "-scale-x-100",
+        cfg.outline && "blob-outline",
         cfg.show,
       ]}
       aria-hidden="true"
@@ -232,3 +222,13 @@ const vars =
     </div>
   </div>
 </Tag>
+
+<style is:global>
+  /* Fill-only shapes: the outline is a CSS stroke on the path, constant width at any scale, same as the fallback border. */
+  .blob-outline path {
+    stroke: var(--blob-stroke);
+    stroke-width: var(--blob-stroke-w);
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+</style>

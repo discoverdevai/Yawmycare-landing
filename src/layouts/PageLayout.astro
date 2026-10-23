@@ -1,0 +1,123 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Container from "@/components/ui/Container.astro";
+import PageJsonLd from "@/components/seo/PageJsonLd.astro";
+import { getDictionary, locales, otherLocale, type Locale } from "@/i18n";
+import { pageLocales, pagePath, type PageSlug } from "@/config/pages";
+
+/**
+ * Shell for the utility pages (privacy, terms, contact): the same header and footer as the landing page, a breadcrumb,
+ * an h1 and a readable column. `hreflang`/canonical cover only the locales in which this page was generated, and the
+ * language switch goes to the same page in the other locale when it exists, otherwise to that locale's landing page.
+ * Header and footer anchors point back to `/<lang>/#section`.
+ */
+interface Props {
+  locale: Locale;
+  slug: PageSlug;
+  title: string;
+  description: string;
+  heading?: string;
+  jsonLdType?: "WebPage" | "ContactPage";
+  dateModified?: string;
+}
+
+const { locale, slug, title, description, heading = title, jsonLdType, dateModified } = Astro.props;
+const t = getDictionary(locale);
+const other = otherLocale(locale);
+const existing = pageLocales(slug);
+const switchTo = existing.includes(other) ? pagePath(slug, other) : pagePath("", other);
+const base = `/${locale}/`;
+const metaTitle = `${title} | ${t.brand.name}`;
+---
+
+<BaseLayout
+  locale={locale}
+  title={metaTitle}
+  description={description}
+  alternateLocales={existing.filter((l) => locales.includes(l))}
+>
+  <PageJsonLd
+    slot="head"
+    locale={locale}
+    name={title}
+    description={description}
+    type={jsonLdType}
+    dateModified={dateModified}
+  />
+  <Header slot="header" locale={locale} anchorBase={base} switchTo={switchTo} />
+  <Container class="page-shell">
+    <nav aria-label={t.legal.breadcrumbLabel} class="text-caption text-ink-muted pt-8 pb-4">
+      <ol class="flex flex-wrap items-center gap-x-2">
+        <li>
+          <a
+            href={base}
+            class="text-primary-text focus-visible:outline-focus rounded underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            {t.legal.home}
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+    <h1 class="text-h2 text-primary-text font-bold">{heading}</h1>
+    <div class="page-body mt-6 max-w-[48rem]">
+      <slot />
+    </div>
+  </Container>
+  <Footer slot="footer" locale={locale} anchorBase={base} />
+</BaseLayout>
+
+<style>
+  /* The footer's scalloped edge overlaps the bottom of the previous block by --wave-h; leave that room. */
+  .page-shell {
+    padding-block-end: calc(var(--wave-h) + 4rem);
+    min-height: 60vh;
+  }
+  /* Prose for markdown output (set:html content is not scoped, hence :global). */
+  .page-body :global(h2) {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    color: var(--color-primary-text);
+    margin-block: 2rem 0.75rem;
+  }
+  .page-body :global(h3),
+  .page-body :global(h4) {
+    font-size: var(--text-title);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-block: 1.5rem 0.5rem;
+  }
+  .page-body :global(p),
+  .page-body :global(li) {
+    font-size: var(--text-body);
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+  .page-body :global(p) {
+    margin-block: 0 1rem;
+  }
+  .page-body :global(ul),
+  .page-body :global(ol) {
+    margin-block: 0 1rem;
+    padding-inline-start: 1.5rem;
+  }
+  .page-body :global(ul) {
+    list-style: disc;
+  }
+  .page-body :global(ol) {
+    list-style: decimal;
+  }
+  .page-body :global(a) {
+    color: var(--color-primary-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .page-body :global(code) {
+    background: var(--color-surface-tabs);
+    border-radius: 0.25rem;
+    padding-inline: 0.25rem;
+  }
+</style>

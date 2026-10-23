@@ -1,0 +1,55 @@
+---
+// /404.html (Workers assets `not_found_handling: "404-page"`). Bilingual, noindex. The browser cannot know the language of a
+// missing URL, so both blocks are always in the HTML (works without JS: English first); a tiny script puts the Arabic block
+// first when the path starts with /ar/.
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Container from "@/components/ui/Container.astro";
+import Logo from "@/components/ui/Logo.astro";
+import Button from "@/components/ui/Button.astro";
+import { getDictionary, localeMeta, locales } from "@/i18n";
+
+const blocks = locales.map((l) => ({
+  locale: l,
+  meta: localeMeta[l],
+  t: getDictionary(l),
+}));
+const en = getDictionary("en");
+---
+
+<BaseLayout locale="en" title={`${en.notFound.metaTitle} | ${en.brand.name}`} description={en.notFound.lead} noindex>
+  <Container class="not-found">
+    <div class="nf-blocks mx-auto flex max-w-[40rem] flex-col gap-10 py-16 text-center" data-nf>
+      {blocks.map(({ locale, meta, t }) => (
+        <section
+          lang={meta.htmlLang}
+          dir={meta.dir}
+          class={`nf-${locale} flex flex-col items-center gap-4`}
+          aria-labelledby={`nf-title-${locale}`}
+        >
+          <Logo size="nav" locale={locale} />
+          <h1 id={`nf-title-${locale}`} class="text-h2 text-primary-text font-bold">
+            {t.notFound.title}
+          </h1>
+          <p class="text-lead text-ink">{t.notFound.lead}</p>
+          <Button variant="primary" icon={null} href={`/${locale}/`}>
+            {t.notFound.goHome}
+          </Button>
+        </section>
+      ))}
+    </div>
+  </Container>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 70vh;
+  }
+  .nf-blocks[data-first="ar"] .nf-ar {
+    order: -1;
+  }
+</style>
+
+<script>
+  // Arabic first for /ar/... URLs, English otherwise. Both blocks stay visible.
+  if (/^\/ar(\/|$)/.test(location.pathname)) document.querySelector("[data-nf]")?.setAttribute("data-first", "ar");
+</script>

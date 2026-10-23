@@ -4,6 +4,7 @@ import DemoField from "./demo/DemoField.astro";
 import Button from "@/components/ui/Button.astro";
 import { getDictionary, type Locale } from "@/i18n";
 import { contact, resolveLink, regionIds, whatsappStart } from "@/config/site";
+import { hasPage, pagePath } from "@/config/pages";
 
 /**
  * Section 13: the "Book a Demo" dialog, v2 (docs/FORM-SPEC.md, docs/FIX-LOG-form.md). A native dialog#demo that the whole
@@ -40,6 +41,10 @@ const contactLinks = [
 // Done panel: the same region-aware WhatsApp link as the floating button (its script keeps `[data-wa-link]` in step with the
 // region and hides it while the current region has no number). Not rendered at all in production when no region has a number.
 const wa = whatsappStart(locale, dict.regions.whatsappMessage);
+
+// Consent line under the first-step submit: shown only when the privacy page exists in this locale (src/config/pages.ts).
+const privacyHref = hasPage("privacy", locale) ? pagePath("privacy", locale) : null;
+const [consentBefore = "", consentAfter = ""] = dict.legal.consent.split("{link}");
 
 const step1Fields = [
   { name: "name", icon: "profile", type: "text", autocomplete: "name", maxlength: 100 },
@@ -134,6 +139,20 @@ const chipClass =
         <Button type="submit" variant="primary" icon={null} block data-demo-submit>
           {t.submit}
         </Button>
+        {privacyHref && (
+          <p class="text-caption text-ink-muted -mt-2 text-center" data-demo-consent>
+            {consentBefore}
+            <a
+              href={privacyHref}
+              target="_blank"
+              rel="noopener"
+              class="text-primary-text focus-visible:outline-focus rounded underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              {dict.legal.consentLink}
+            </a>
+            {consentAfter}
+          </p>
+        )}
       </form>
     </div>
 

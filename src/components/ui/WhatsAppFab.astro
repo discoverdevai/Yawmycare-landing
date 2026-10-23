@@ -4,7 +4,10 @@ import { getDictionary, type Locale } from "@/i18n";
 import { whatsappStart } from "@/config/site";
 
 /**
- * Floating click-to-chat button, bottom inline-end (the MotionToggle is bottom inline-start). Opens
+ * Floating click-to-chat button, bottom inline-end (the MotionToggle stacks above it below 1280, bottom inline-start
+ * from 1280). 48px below 1280, 56px above. While another WhatsApp link of the page (the hero's secondary CTA) is in
+ * view the button is hidden (`html[data-fab-away]`, invisible so it also leaves the tab order), so two identical
+ * buttons are never on screen together. Opens
  * https://wa.me/<digits>?text=<localized message> in a new tab with the CURRENT region's number (docs/DECISIONS.md #16).
  * Not rendered in production when no region has a number. The script below also keeps every other
  * `[data-wa-link]` on the page (e.g. the hero's secondary CTA) in step with the region: href updates, and the link is
@@ -28,18 +31,39 @@ const start = whatsappStart(locale, text);
     hidden={start.hidden}
     aria-label={t.social.whatsapp}
     data-wa-link
+    data-wa-fab
     data-wa-text={text}
     data-unconfigured={start.unconfigured ? "" : undefined}
     class:list={[
-      "bg-primary-cta-strong text-on-cta hover:bg-primary-cta-hover focus-visible:outline-focus fixed end-4 bottom-4 z-40 flex size-14 items-center justify-center rounded-full shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors",
+      "bg-primary-cta-strong text-on-cta hover:bg-primary-cta-hover focus-visible:outline-focus fixed end-3 bottom-3 z-40 flex size-12 items-center justify-center rounded-full shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-[color,background-color,opacity,visibility] xl:end-4 xl:bottom-4 xl:size-14 [[data-fab-away]_&]:invisible [[data-fab-away]_&]:opacity-0",
       start.unconfigured &&
         "not-focus-visible:outline-accent-text not-focus-visible:outline-2 not-focus-visible:outline-offset-2 not-focus-visible:outline-dashed",
     ]}
   >
-    <Icon name="whatsapp" size={28} />
+    <Icon name="whatsapp" size={26} />
     <span class="sr-only">{t.a11y.opensInNewTab}</span>
   </a>
 )}
+
+<script>
+  // Hide the FAB while the hero's own WhatsApp CTA is visible; `data-fab` lets the pause toggle stack above the FAB.
+  const root = document.documentElement;
+  if (document.querySelector("[data-wa-fab]")) {
+    root.setAttribute("data-fab", "");
+    const own = document.querySelectorAll<HTMLElement>("[data-wa-link]:not([data-wa-fab])");
+    if (own.length && "IntersectionObserver" in window) {
+      const inView = new Set<Element>();
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) inView.add(e.target);
+          else inView.delete(e.target);
+        }
+        root.toggleAttribute("data-fab-away", inView.size > 0);
+      });
+      own.forEach((el) => io.observe(el));
+    }
+  }
+</script>
 
 <script>
   import { onRegion, regionData } from "@/config/region-client";

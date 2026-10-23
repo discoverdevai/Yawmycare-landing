@@ -14,8 +14,11 @@ export default defineConfig({
     sitemap({
       // Emits xhtml:link hreflang alternates for /en/ and /ar/.
       i18n: { defaultLocale: "en", locales: { en: "en", ar: "ar" } },
-      // The bare `/` is only a redirect to /en/.
-      filter: (page) => new URL(page).pathname !== "/",
+      // Not indexable: the bare `/` (redirect to /en/) and the 404 page. Privacy / terms / contact appear here
+      // automatically when their routes are generated (src/config/pages.ts); alternates only for the locales that exist.
+      filter: (page) => !["/", "/404/", "/404"].includes(new URL(page).pathname),
+      // Build date: the site is rebuilt on every content change.
+      lastmod: new Date(),
     }),
   ],
   i18n: {

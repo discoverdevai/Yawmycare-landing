@@ -1,0 +1,65 @@
+---
+import Button from "@/components/ui/Button.astro";
+
+/**
+ * "Show full day" / "Show all questions" disclosure for long lists on phones (responsive pass 2, R11).
+ *
+ * The list container carries `data-collapsible` and an id; every item that may be folded away carries `data-more`.
+ * Below 768px AND with JS (`html.js`, set by the header), items with `data-more` are display:none until this button
+ * sets `data-expanded` on the container. Without JS, or from 768px up, nothing is hidden and the button is not shown,
+ * so no claim ever disappears from the page. The button is a real <button aria-expanded aria-controls> naming the
+ * container; collapsing again scrolls the list's top back into view so the reader is not stranded.
+ */
+interface Props {
+  /** id of the `[data-collapsible]` container. */
+  target: string;
+  more: string;
+  less: string;
+  class?: string;
+}
+
+const { target, more, less, class: className = "" } = Astro.props;
+---
+
+<div class:list={["show-more justify-center", className]}>
+  <Button
+    variant="outline-deep"
+    icon={null}
+    aria-expanded="false"
+    aria-controls={target}
+    data-show-more={target}
+    data-more-label={more}
+    data-less-label={less}
+  >
+    {more}
+  </Button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-show-more]").forEach((btn) => {
+    const list = document.getElementById(btn.dataset.showMore!);
+    if (!list) return;
+    btn.addEventListener("click", () => {
+      const open = !list.hasAttribute("data-expanded");
+      list.toggleAttribute("data-expanded", open);
+      btn.setAttribute("aria-expanded", String(open));
+      const label = btn.querySelector("span") ?? btn;
+      label.textContent = (open ? btn.dataset.lessLabel : btn.dataset.moreLabel) ?? "";
+      if (!open && list.getBoundingClientRect().top < 0) list.scrollIntoView({ block: "start" });
+    });
+  });
+</script>
+
+<style is:global>
+  .show-more {
+    display: none;
+  }
+  @media (max-width: 47.99rem) {
+    .js .show-more {
+      display: flex;
+    }
+    .js [data-collapsible]:not([data-expanded]) [data-more] {
+      display: none;
+    }
+  }
+</style>

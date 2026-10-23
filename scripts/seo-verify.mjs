@@ -15,8 +15,8 @@ for (const l of ["en", "ar"]) {
   const title = get(/<title>([^<]*)<\/title>/),
     desc = get(/<meta name="description" content="([^"]*)"/);
   console.log(`\n== ${l}`);
-  ok(title && title.length <= 60, `title ${title?.length} chars: ${title}`);
-  ok(desc && desc.length >= 70 && desc.length <= 160, `description ${desc?.length} chars`);
+  ok(title && title.length <= (l === "ar" ? 55 : 60), `title ${title?.length} chars: ${title}`);
+  ok(desc && desc.length >= 70 && desc.length <= 155, `description ${desc?.length} chars`);
   ok(new RegExp(`<html lang="${l}" dir="${l === "ar" ? "rtl" : "ltr"}"`).test(h), "html lang/dir");
   ok(get(/rel="canonical" href="([^"]*)"/) === `https://yawmycare.com/${l}/`, "canonical");
   const alts = [...h.matchAll(/rel="alternate" hreflang="([^"]*)" href="([^"]*)"/g)].map((m) => m[1] + "=" + m[2]);
@@ -43,6 +43,26 @@ for (const l of ["en", "ar"]) {
   console.log("   types:", types.join(", "));
   ok(types.filter((t) => t === "FAQPage").length === 1, "exactly one FAQPage");
   ok(!/\bTODO\b/.test(h), "no TODO in output");
+  // Owner decisions 30, 31, 34, 35: no fixed check-in radius, no 15/20-minute claims, retired tagline, no Arabic-first pitch.
+  const text = h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, " ");
+  ok(
+    !/100\s*(metres|meters|متر)|\b(15|20)[\s-]*(min|دقيقة)|Manage Smarter|أدر بذكاء|Arabic from day one|بالعربية منذ اليوم الأول/i.test(
+      text,
+    ),
+    "no retired claims (100 m, 15/20 min, old tagline, Arabic-first)",
+  );
+}
+// Fonts: every @font-face in the built CSS must declare font-display (no invisible text while a font loads).
+{
+  const { readdirSync } = await import("node:fs");
+  const dir = "dist/_astro";
+  const faces = readdirSync(dir)
+    .filter((f) => f.endsWith(".css"))
+    .flatMap((f) => readFileSync(`${dir}/${f}`, "utf8").match(/@font-faces*{[^}]*}/g) || []);
+  ok(
+    faces.length > 0 && faces.every((f) => /font-display:s*(swap|optional|fallback)/.test(f)),
+    `font-display set on ${faces.length} @font-face rules`,
+  );
 }
 for (const f of [
   "favicon.ico",

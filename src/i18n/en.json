@@ -1,17 +1,17 @@
 {
   "meta": {
     "title": "Nursery Management Software & Parent App | Yawmy Care",
-    "description": "Nursery management software with Arabic and English apps: attendance, daily reports and parent chat in one place. Book a free demo of Yawmy Care."
+    "description": "Nursery management software and parent app: attendance, daily reports, photos and parent chat in one place. Set up within 48 hours. Book a free demo."
   },
   "brand": {
     "name": "Yawmy Care",
-    "tagline": "Manage Smarter with Yawmy Care.",
+    "tagline": "Every child's day, in one place.",
     "logoAlt": "Yawmy Care home"
   },
   "cta": {
     "bookDemo": "Book a Demo",
-    "watchDemo": "Watch Demo",
-    "contactWhatsApp": "Message us on WhatsApp",
+    "watchDemo": "Watch the 2-minute tour",
+    "contactWhatsApp": "Chat with us on WhatsApp",
     "contactEmail": "Email us"
   },
   "a11y": {
@@ -35,8 +35,45 @@
       "sa": "Saudi Arabia",
       "us": "United States"
     },
-    "chatOnWhatsApp": "Chat on WhatsApp",
-    "whatsappMessage": "Hello Yawmy Care, I would like to learn more about your nursery app.",
+    "chatOnWhatsApp": "Chat with us on WhatsApp",
+    "whatsappMessage": "Hi Yawmy Care, I'd like to know more about your nursery app.",
     "call": "Call us"
+  },
+  "legal": {
+    "navLabel": "Legal and contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "home": "Home",
+    "breadcrumbLabel": "Breadcrumb",
+    "updated": "Last updated",
+    "consent": "By sending this form, you agree to our {link}.",
+    "consentLink": "privacy notice",
+    "pages": {
+      "privacy": {
+        "title": "Privacy notice",
+        "description": "How Yawmy Care looks after the information you share with us."
+      },
+      "terms": {
+        "title": "Terms of use",
+        "description": "The terms that apply when you use the Yawmy Care website and service."
+      }
+    }
+  },
+  "contactPage": {
+    "title": "Contact us",
+    "description": "Talk to the Yawmy Care team on WhatsApp, by phone or by email.",
+    "lead": "Pick whatever is easiest for you. We reply in Arabic or English.",
+    "general": "General",
+    "whatsapp": "Chat with us on WhatsApp",
+    "call": "Call",
+    "email": "Email us",
+    "bookDemo": "Prefer to see it first? Book a demo"
+  },
+  "notFound": {
+    "metaTitle": "Page not found",
+    "title": "We can't find that page",
+    "lead": "The link may be old or mistyped. Let's take you back to the start.",
+    "goHome": "Back to the home page"
   }
 }

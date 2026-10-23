@@ -8,7 +8,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'sha256-9Uz2vQb0s28uWrIfdjW8iQNZbQ3yL96Nmqx49q3T9rE=' 'sha256-7GzpEj+jQGI5DatjUI9yppag5QzTGmPEoTYU9D6v+Bs=' 'sha256-1kb0cKY/FlKEPigcALg5ARmRglVCWeRaqrcxHcSaAu4=' 'sha256-Pru/jjnrcijDjWrrfSRE0Yxmvxc/tDIvaeVu/dTSIpc=' 'sha256-nutsd50D4q3WhwTqmSmeMcF84HAhwRfFIHoXKs0kJ/0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'sha256-FJxhWs7KHo4JQyg1aTW8HPIf9TFaOr4YC6F6l01TlBM=' 'sha256-x4/vRMQFI60SsTx7JpOo4XlSUC7Lw9ydCIVe30RIU7s=' 'sha256-nutsd50D4q3WhwTqmSmeMcF84HAhwRfFIHoXKs0kJ/0=' 'sha256-hsQfWKFIc9YrITDYhXy20JIzxJHNRhvfaeY2KJvH5ww=' 'sha256-9Uz2vQb0s28uWrIfdjW8iQNZbQ3yL96Nmqx49q3T9rE=' 'sha256-7GzpEj+jQGI5DatjUI9yppag5QzTGmPEoTYU9D6v+Bs=' 'sha256-6xZ8pDeD120auKgCZL7bM8R0NWy8vwH0uBXuFIOmM+M=' 'sha256-6Z179l87doRTsY5Dv+3w1JquctewsPpXyFczhjPuKKI=' 'sha256-jkHQxEjsirHHPm1Eso9XYswcPJWjITXb3N4rvRk7a2Y='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
 # HTML: always revalidate so a deploy is visible at once (Workers assets answer 304 from the ETag).
 /en/

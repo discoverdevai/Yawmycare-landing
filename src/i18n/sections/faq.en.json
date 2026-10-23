@@ -1,44 +1,46 @@
 {
+  "showMore": "Show all questions",
+  "showLess": "Show fewer questions",
   "title": "You might be wondering",
   "items": [
     {
       "question": "How much does it cost?",
-      "answer": "Yawmy Care costs one flat monthly fee, paid by the nursery. Book a demo and we will go through the details with you."
+      "answer": "One flat monthly fee, paid by the nursery. Book a demo and we will go through the details with you."
     },
     {
       "question": "Do parents pay anything?",
-      "answer": "No. Parents use the app for free. The nursery pays."
+      "answer": "No, never. Parents use the app for free. The nursery pays."
     },
     {
       "question": "How long does setup take?",
-      "answer": "Most nurseries are set up in under 20 minutes. You add your classes, children and teachers, invite parents, and you can start using it the same day."
+      "answer": "Within 48 hours. Book a 30-minute demo, then we set up your nursery with you: classes, children and teachers. You invite parents and start your first day."
     },
     {
       "question": "Do my teachers need training?",
-      "answer": "No formal training is needed. The screens are simple and fully in Arabic, and we walk your team through the basics when you set up."
+      "answer": "No formal training. The screens are simple, and we walk your team through the basics during setup."
     },
     {
-      "question": "Is the app fully in Arabic?",
-      "answer": "Yes. Yawmy Care was built in Arabic from day one, not translated afterwards. Staff and parents can use it in Arabic or English, with full right-to-left support."
+      "question": "Is the app available in Arabic?",
+      "answer": "Yes, in Arabic and English. Switch language anytime."
     },
     {
       "question": "Who can see our data?",
-      "answer": "Only people with the right role can see it. A teacher sees only her own rooms, and an admin cannot read private teacher and parent conversations. Your data is encrypted in transit and at rest, and backed up daily."
+      "answer": "Only people with the right role. A teacher sees only their own rooms, and an admin cannot read private teacher and parent conversations. Your data is encrypted in transit and at rest, and backed up daily."
     },
     {
-      "question": "What if we cancel?",
+      "question": "What happens if we cancel?",
       "answer": "Your data belongs to your nursery. If you decide to stop, we will help you take your records with you. We share the cancellation terms with you up front, before you commit to anything."
     },
     {
-      "question": "Can we move off WhatsApp and Excel?",
-      "answer": "Yes, and that is where most nurseries start. Attendance, daily updates and parent messages all live in one place, and we help you bring your existing lists across during setup."
+      "question": "Can we stop using WhatsApp and Excel?",
+      "answer": "Yes. Most nurseries start there, so we help you bring your existing lists across during setup. Attendance, daily updates and parent messages then live in one place."
     },
     {
       "question": "Does it work on older Android?",
       "answer": "Yes. Yawmy Care is built to run on everyday phones, including older Android models. If you are unsure about a specific device, tell us in the demo and we will check it with you."
     },
     {
-      "question": "We are a school nursery section. Does this fit?",
+      "question": "We run a nursery inside a school. Is Yawmy Care a fit?",
       "answer": "Yes. Yawmy Care is built for private nurseries and international schools, including a nursery or early-years section inside a school. Talk to us and we will show you how it fits your setup."
     }
   ]

@@ -1,7 +1,7 @@
 {
   "cta": {
-    "title": "Start managing smarter with Yawmy Care",
-    "lead": "20 minutes on a call, in Arabic or English. We will show you your own nursery in the product."
+    "title": "See your own nursery in Yawmy Care",
+    "lead": "A 30-minute call. We will show you your own nursery in the product."
   },
   "navLabel": "Footer",
   "socialLabel": "Social media",
@@ -9,12 +9,10 @@
   "links": {
     "home": "Home",
     "day": "A day at your nursery",
-    "why": "Why Yawmy",
-    "setup": "Set up in 20 minutes",
+    "why": "Why Yawmy Care",
+    "setup": "How it works",
     "security": "Security",
-    "commitments": "Our commitments",
     "pricing": "Pricing",
-    "founders": "Founders",
     "faq": "FAQ"
   }
 }

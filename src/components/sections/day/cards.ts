@@ -151,7 +151,7 @@ export const summaryCard: CardDef = {
       shadow: true,
       primary: true,
     },
-    { src: allinoneBanner, x: 294, y: 170, w: 374, shadow: true },
-    { src: allinoneStats, x: 294, y: 300, w: 343, shadow: true },
+    { src: allinoneBanner, x: 276, y: 178, w: 280, shadow: true },
+    { src: allinoneStats, x: 276, y: 292, w: 280, shadow: true },
   ],
 };

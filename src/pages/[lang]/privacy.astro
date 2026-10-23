@@ -1,0 +1,25 @@
+---
+// /<lang>/privacy/: generated only for locales that have a non-empty src/content/legal/privacy.<lang>.md (src/config/pages.ts).
+import PageLayout from "@/layouts/PageLayout.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { legalDoc, pagePaths } from "@/config/pages";
+
+export function getStaticPaths() {
+  return pagePaths("privacy");
+}
+
+const locale = Astro.params.lang as Locale;
+const t = getDictionary(locale);
+const fallback = t.legal.pages.privacy;
+const doc = legalDoc("privacy", locale)!;
+const title = doc.title || fallback.title;
+---
+
+<PageLayout locale={locale} slug="privacy" title={title} description={fallback.description} dateModified={doc.updated}>
+  {doc.updated && (
+    <p class="text-caption text-ink-muted mb-6">
+      {t.legal.updated}: <time datetime={doc.updated}>{doc.updated}</time>
+    </p>
+  )}
+  <div set:html={doc.html} />
+</PageLayout>

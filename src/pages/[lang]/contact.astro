@@ -1,0 +1,89 @@
+---
+// /<lang>/contact/: generated only when at least one WhatsApp / phone / email is configured (src/config/pages.ts).
+import PageLayout from "@/layouts/PageLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { pagePaths } from "@/config/pages";
+import { contact, regionIds, regions } from "@/config/site";
+import { whatsappLink } from "@/config/region";
+
+export function getStaticPaths() {
+  return pagePaths("contact");
+}
+
+const locale = Astro.params.lang as Locale;
+const t = getDictionary(locale);
+const c = t.contactPage;
+
+const linkClass =
+  "text-primary-text focus-visible:outline-focus inline-flex min-h-11 items-center rounded font-medium underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2";
+
+// One card per region that has a number (never a guessed value), then the general WhatsApp / email.
+const cards = regionIds
+  .map((id) => ({ id, name: t.regions.names[id], whatsapp: regions[id].whatsapp, phone: regions[id].phone }))
+  .filter((r) => r.whatsapp || r.phone);
+const generalWhatsapp = contact.whatsapp;
+const generalEmail = contact.email;
+---
+
+<PageLayout locale={locale} slug="contact" title={c.title} description={c.description} jsonLdType="ContactPage">
+  <p class="text-lead text-ink mb-8">{c.lead}</p>
+  <div class="grid gap-6 sm:grid-cols-2">
+    {cards.map((r) => (
+      <section class="bg-surface-tabs rounded-2xl p-6" aria-labelledby={`region-${r.id}`}>
+        <h2 id={`region-${r.id}`} class="text-title text-primary-text mb-3 font-bold">
+          {r.name}
+        </h2>
+        <ul class="flex flex-col gap-1">
+          {r.whatsapp && (
+            <li>
+              <a
+                class={linkClass}
+                href={whatsappLink(r.whatsapp, t.regions.whatsappMessage)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {c.whatsapp}
+              </a>
+            </li>
+          )}
+          {r.phone && (
+            <li>
+              <a class={linkClass} href={`tel:${r.phone.replace(/[^0-9+]/g, "")}`}>
+                {c.call} <bdi dir="ltr">{r.phone}</bdi>
+              </a>
+            </li>
+          )}
+        </ul>
+      </section>
+    ))}
+    {(generalWhatsapp || generalEmail) && (
+      <section class="bg-surface-tabs rounded-2xl p-6" aria-labelledby="region-general">
+        <h2 id="region-general" class="text-title text-primary-text mb-3 font-bold">
+          {c.general}
+        </h2>
+        <ul class="flex flex-col gap-1">
+          {generalWhatsapp && (
+            <li>
+              <a class={linkClass} href={generalWhatsapp} target="_blank" rel="noopener noreferrer">
+                {c.whatsapp}
+              </a>
+            </li>
+          )}
+          {generalEmail && (
+            <li>
+              <a class={linkClass} href={generalEmail}>
+                {c.email}
+              </a>
+            </li>
+          )}
+        </ul>
+      </section>
+    )}
+  </div>
+  <div class="mt-10">
+    <Button variant="primary" href={`/${locale}/#demo`}>
+      {c.bookDemo}
+    </Button>
+  </div>
+</PageLayout>

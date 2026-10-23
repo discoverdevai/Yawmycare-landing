@@ -2,6 +2,7 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import Icon from "@/components/ui/Icon.astro";
+import ShowMore from "@/components/ui/ShowMore.astro";
 import { getDictionary, localeMeta, type Locale } from "@/i18n";
 
 /**
@@ -42,7 +43,7 @@ const jsonLdHtml = JSON.stringify(jsonLd)
 <Section id="faq" headingId="faq-title" tint="sec" gap="tight">
   <SectionHeader slot="header" id="faq-title" title={t.title} />
 
-  <div data-faq class="flex flex-col gap-6">
+  <div data-faq id="faq-list" data-collapsible class="flex flex-col gap-3 md:gap-6 xl:mx-auto xl:max-w-4xl">
     {t.items.map((item, i) => {
       const n = i + 1;
       const open = initialOpen.includes(n);
@@ -50,6 +51,7 @@ const jsonLdHtml = JSON.stringify(jsonLd)
         <div
           data-faq-item
           data-open={open ? "true" : "false"}
+          data-more={i >= 6 ? "" : undefined}
           class="group bg-stroke-sec rounded-faq has-[button:focus-visible]:outline-focus border-2 border-transparent has-[button:focus-visible]:outline-3 has-[button:focus-visible]:outline-offset-2 data-[open=true]:border-primary-cta"
         >
           <h3>
@@ -82,6 +84,7 @@ const jsonLdHtml = JSON.stringify(jsonLd)
       );
     })}
   </div>
+  <ShowMore target="faq-list" more={t.showMore} less={t.showLess} class="mt-6" />
   <script type="application/ld+json" set:html={jsonLdHtml} />
 </Section>
 
@@ -91,7 +94,13 @@ const jsonLdHtml = JSON.stringify(jsonLd)
     if (!root) return;
     root.setAttribute("data-js", "");
     var buttons = Array.prototype.slice.call(root.querySelectorAll("[data-faq-item] > h3 > button"));
-    buttons.forEach(function (btn, i) {
+    // Rows folded away on phones (display:none) cannot take focus: arrow keys skip them.
+    var visible = function () {
+      return buttons.filter(function (b) {
+        return b.offsetParent !== null;
+      });
+    };
+    buttons.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var item = btn.closest("[data-faq-item]");
         var open = btn.getAttribute("aria-expanded") !== "true";
@@ -101,10 +110,12 @@ const jsonLdHtml = JSON.stringify(jsonLd)
       // Arrow / Home / End move between question buttons (WAI-ARIA accordion pattern).
       btn.addEventListener("keydown", function (e) {
         var next = null;
-        if (e.key === "ArrowDown") next = buttons[(i + 1) % buttons.length];
-        else if (e.key === "ArrowUp") next = buttons[(i - 1 + buttons.length) % buttons.length];
-        else if (e.key === "Home") next = buttons[0];
-        else if (e.key === "End") next = buttons[buttons.length - 1];
+        var list = visible();
+        var at = list.indexOf(btn);
+        if (e.key === "ArrowDown") next = list[(at + 1) % list.length];
+        else if (e.key === "ArrowUp") next = list[(at - 1 + list.length) % list.length];
+        else if (e.key === "Home") next = list[0];
+        else if (e.key === "End") next = list[list.length - 1];
         if (next) {
           e.preventDefault();
           next.focus();

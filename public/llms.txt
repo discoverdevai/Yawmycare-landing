@@ -1,31 +1,32 @@
 # Yawmy Care
 
-> Yawmy Care is nursery management software with parent and teacher apps, built in Arabic first (with English) for private nurseries and international schools in the MENA region. Attendance, daily reports, photos and parent chat live in one place.
+> Yawmy Care is nursery management software with a parent app and a teacher app, for private nurseries and international schools in Egypt, the Gulf and the United States. Attendance, daily reports, photos, announcements and parent chat live in one app, so a nursery can stop running on WhatsApp groups, Excel sheets and paper. Tagline: "Every child's day, in one place."
 
-Yawmy Care replaces the mix of WhatsApp groups, Excel sheets and paper that most nurseries start with. The nursery pays one flat monthly fee; parents never pay. The site is a single landing page in two languages.
+Yawmy Care replaces the mix of WhatsApp groups, Excel sheets and paper that most nurseries start with. The nursery pays one flat monthly fee; parents never pay. The site is one landing page, available in English and Arabic.
 
 ## Pages
 
-- [English landing page](https://yawmycare.com/en/): product overview, features, pricing model, FAQ, demo booking
+- [English landing page](https://yawmycare.com/en/): product overview, features, how it works, security, pricing model, FAQ, demo booking
 - [Arabic landing page](https://yawmycare.com/ar/): the same page in Arabic (right-to-left)
 
 ## Sections of the page
 
-- [Features](https://yawmycare.com/en/#why): one-tap parent check-in within 100 metres, read receipts on closure and illness notices, a warning when parents message outside nursery hours, Arabic or English per user
-- [Compared with WhatsApp, Excel and paper](https://yawmycare.com/en/#compare): daily report, parent updates, attendance, photos, job by job
-- [Setup](https://yawmycare.com/en/#setup): most nurseries are set up in under 20 minutes, with the team on a call
+- [Features](https://yawmycare.com/en/#why): one-tap parent check-in within a distance the nursery sets, announcements and events, safety and health records, parents confirm they have read incident reports, quiet hours, each user picks Arabic or English
+- [How it works](https://yawmycare.com/en/#setup): book a demo, the team sets the nursery up with you on a call, invite teachers and parents; a nursery can be set up within 48 hours
 - [Security](https://yawmycare.com/en/#security): access by role; data encrypted in transit and at rest; backed up daily
 - [Pricing](https://yawmycare.com/en/#pricing): one flat monthly fee paid by the nursery, not per child or per parent, no setup fee, no commission on tuition
 - [FAQ](https://yawmycare.com/en/#faq): short answers to common questions
-- [Book a free demo](https://yawmycare.com/en/#demo): the main call to action
+- Book a free demo: a 30-minute demo, booked from any "Book a Demo" button on the page
 
 ## Frequently asked, short answers
 
+- What is Yawmy Care? Nursery management software with parent and teacher apps: attendance, daily reports, photos and parent chat in one place.
 - How much does it cost? One flat monthly fee, paid by the nursery. Details are shared in a demo.
 - Do parents pay anything? No. Parents use the app for free.
-- How long does setup take? Most nurseries are set up in under 20 minutes.
+- How long does setup take? A nursery can be set up within 48 hours, with the team on a call.
+- How long is the demo? 30 minutes, free.
 - Do teachers need training? No formal training is needed.
-- Is the app fully in Arabic? Yes. It was built in Arabic from day one; staff and parents can use Arabic or English.
+- Which languages are supported? English and Arabic. Staff and parents each choose their own.
 - Who can see our data? Access is by role. Data is encrypted in transit and at rest, and backed up daily.
 - Does it fit a nursery section inside a school? Yes. It is built for private nurseries and international schools.
 

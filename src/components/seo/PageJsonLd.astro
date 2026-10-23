@@ -1,0 +1,53 @@
+---
+import { getDictionary, localeMeta, type Locale } from "@/i18n";
+
+/**
+ * JSON-LD for sub-pages (privacy, terms, contact): one WebPage (or ContactPage) plus a BreadcrumbList Home > page.
+ * The WebSite / Organization nodes are defined on the landing page (`#website`, `#organization`); this graph only
+ * references them by @id, so nothing is duplicated and nothing is invented.
+ */
+interface Props {
+  locale: Locale;
+  name: string;
+  description: string;
+  type?: "WebPage" | "ContactPage";
+  /** ISO date (YYYY-MM-DD) when the owner supplied one (front matter `updated`). */
+  dateModified?: string;
+}
+
+const { locale, name, description, type = "WebPage", dateModified } = Astro.props;
+const t = getDictionary(locale);
+const origin = new URL(Astro.site!).origin;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const homeUrl = new URL(`/${locale}/`, Astro.site).href;
+
+const graph = [
+  {
+    "@type": type,
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name,
+    description,
+    inLanguage: localeMeta[locale].htmlLang,
+    isPartOf: { "@id": `${origin}/#website` },
+    publisher: { "@id": `${origin}/#organization` },
+    breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+    ...(dateModified && /^\d{4}-\d{2}-\d{2}$/.test(dateModified) ? { dateModified } : {}),
+  },
+  {
+    "@type": "BreadcrumbList",
+    "@id": `${pageUrl}#breadcrumb`,
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t.legal.home, item: homeUrl },
+      { "@type": "ListItem", position: 2, name, item: pageUrl },
+    ],
+  },
+];
+
+const html = JSON.stringify({ "@context": "https://schema.org", "@graph": graph })
+  .replace(/</g, "\\u003c")
+  .replace(/\u2028/g, "\\u2028")
+  .replace(/\u2029/g, "\\u2029");
+---
+
+<script type="application/ld+json" set:html={html} />

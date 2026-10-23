@@ -25,9 +25,12 @@ interface Props {
   /** Time slots only: display string and machine-readable value for <time>. */
   time?: string;
   datetime?: string;
+  /** Folded away below 768px until "Show the full day" is pressed (ui/ShowMore). */
+  more?: boolean;
+  class?: string;
 }
 
-const { def, as: Tag = "li", title, body, alt, time, datetime } = Astro.props;
+const { def, as: Tag = "li", title, body, alt, time, datetime, more = false, class: className = "" } = Astro.props;
 
 const green = def.tone === "green";
 const textTop = def.text === "top";
@@ -61,7 +64,10 @@ const layers = def.layers.map((l) => {
 });
 ---
 
-<Tag class="day-card mx-auto flex w-full max-w-[36.75rem] md:max-w-none">
+<Tag
+  data-more={more ? "" : undefined}
+  class:list={["day-card mx-auto flex w-full max-w-[36.75rem] md:max-w-none", className]}
+>
   <div
     class:list={[
       "relative isolate flex flex-1 flex-col overflow-hidden rounded-card [--k:1] md:rounded-modal xl:[--k:0.7]",

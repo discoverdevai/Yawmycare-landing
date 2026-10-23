@@ -7,8 +7,10 @@ import { getDictionary, type Locale } from "@/i18n";
 
 /**
  * 05 · "Built for how nurseries really work" (nav: Why Yawmy, #why).
- * Four feature cards (2 x 2 from 640, one row of four from 1280; cut from six: photos live in the day timeline, "nursery pays" in pricing and commitments) on the `feature` blob. The illustrations are pre-optimised animated WebP
- * (docs/sections/05-features/optimise-illustrations.mjs), rendered by ui/AnimatedImage (reduced-motion still + page pause).
+ * Six feature cards (1 column, 2 from 640, 3 from 1024, so 3 x 2 at desktop) on the `feature` blob. Icon beside the title at every width and
+ * no min-height, so a card is as tall as its text. Four cards use the pre-optimised animated WebP illustrations
+ * (docs/sections/05-features/optimise-illustrations.mjs, ui/AnimatedImage); announcements and safety use an inline line icon on a
+ * round tint because no illustration exists for them. Only capabilities that exist in the Figma app designs (docs/research/app-coverage.md).
  */
 interface Props {
   locale: Locale;
@@ -26,33 +28,61 @@ const img = (name: string) => {
 };
 
 // The Arabic card gets a small "عربي" pill in the Arabic locale only.
+// The Arabic card gets a small "عربي" pill in the Arabic locale only.
 const showBadge = (id: string) => locale === "ar" && id === "arabic";
+
+// Line icons (24 box, stroke only) for the cards without an animated illustration.
+const lineIcons: Record<string, string> = {
+  announcements: "M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Zm13.5-2.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12",
+  safety: "M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 5v5m0 3h.01",
+};
 ---
 
 <Section id="why" headingId="features-title">
   <SectionHeader slot="header" id="features-title" title={t.title} />
-  <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 xl:grid-cols-4 lg:gap-y-8">
+  <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
     {t.items.map((item) => {
-      const anim = img(item.id);
-      const still = img(`${item.id}-still`);
+      const icon = lineIcons[item.id];
       return (
-        <BlobCard as="li" shape="feature" stretch fillContent contentClass="flex flex-1 flex-col gap-6 p-6 xl:p-8">
-          <div class="flex flex-col gap-3">
-            <h3 class="text-title text-primary-text font-black">{item.title}</h3>
-            <p class="text-body text-ink">{item.body}</p>
-          </div>
-          <div class="mt-auto flex flex-wrap items-end justify-between gap-4">
-            <AnimatedImage src={anim} still={still} width={110} height={110} class="size-[110px] shrink-0" />
-            {showBadge(item.id) && (
-              <span
-                lang="ar"
-                dir="rtl"
-                class="bg-primary-bg text-primary-text text-caption rounded-pill px-4 py-1 font-bold"
-              >
-                {t.arabicBadge}
+        <BlobCard as="li" shape="feature" stretch fillContent contentClass="flex flex-1 flex-col gap-4 p-6 xl:p-8">
+          <div class="flex items-center gap-4">
+            {icon ? (
+              <span class="bg-primary-bg text-primary-text flex size-20 shrink-0 items-center justify-center rounded-full">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="40"
+                  height="40"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={icon} />
+                </svg>
               </span>
+            ) : (
+              <AnimatedImage
+                src={img(item.id)}
+                still={img(`${item.id}-still`)}
+                width={80}
+                height={80}
+                class="size-20 shrink-0"
+              />
             )}
+            <h3 class="text-title text-primary-text min-w-0 font-black">{item.title}</h3>
           </div>
+          <p class="text-body text-ink">{item.body}</p>
+          {showBadge(item.id) && (
+            <span
+              lang="ar"
+              dir="rtl"
+              class="bg-primary-bg text-primary-text text-caption rounded-pill self-start px-4 py-1 font-bold"
+            >
+              {t.arabicBadge}
+            </span>
+          )}
         </BlobCard>
       );
     })}

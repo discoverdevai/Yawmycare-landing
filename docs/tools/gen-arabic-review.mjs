@@ -11,7 +11,7 @@ const root = path.resolve(docs, "../src/i18n");
 
 // file label -> keys (flat dotted/indexed paths) that are the owner's own Arabic.
 const VERBATIM = {
-  common: ["brand.tagline", "cta.bookDemo", "cta.watchDemo"],
+  common: ["cta.bookDemo"],
   header: ["nav.items[0].label", "nav.items[2].label"],
   footer: ["cta.title", "links.home", "links.why"],
   setup: [

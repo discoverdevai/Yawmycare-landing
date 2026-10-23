@@ -26,18 +26,22 @@ import { navLinks } from "@/config/nav";
  */
 interface Props {
   locale: Locale;
+  /** Sub-pages (privacy, contact...): prefix for the in-page anchors, e.g. `/en/`, so they link back to the landing page. */
+  anchorBase?: string;
+  /** Sub-pages: where the language switch goes (the same page in the other locale, or its landing page when that page does not exist). */
+  switchTo?: string;
 }
 
-const { locale } = Astro.props;
+const { locale, anchorBase = "", switchTo } = Astro.props;
 const t = getDictionary(locale);
 const h = t.sections.header;
 
 const other = otherLocale(locale);
 // Same page in the other locale: swap the leading /en or /ar path segment.
-const switchHref = Astro.url.pathname.replace(new RegExp(`^/${locale}(?=/|$)`), `/${other}`);
+const switchHref = switchTo ?? Astro.url.pathname.replace(new RegExp(`^/${locale}(?=/|$)`), `/${other}`);
 
 // Single nav source (src/config/nav.ts): ids + header labels, shared with the footer.
-const navItems = navLinks(h.nav.items);
+const navItems = navLinks(h.nav.items).map((item) => ({ ...item, href: `${anchorBase}${item.href}` }));
 
 // The active link is underlined with text-decoration (not a border) so the same class works for the
 // 25px desktop links and the 44px menu-panel links.
@@ -60,7 +64,7 @@ const linkClass =
         <Logo
           size="nav"
           locale={locale}
-          href="#home"
+          href={`${anchorBase}#home`}
           class="logo-link focus-visible:outline-focus block shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
         />
         <nav class="hidden lg:block" aria-label={h.nav.label}>
@@ -95,7 +99,7 @@ const linkClass =
         </div>
         <Button
           variant="primary"
-          href="#demo"
+          href={`${anchorBase}#demo`}
           data-demo-open
           class="min-h-11! max-w-full px-5! text-base! max-md:px-3! max-md:[&>svg]:hidden"
         >
@@ -186,6 +190,22 @@ const linkClass =
   }
   :root:lang(ar) {
     --nav-h-full: 90px; /* 74px logo */
+  }
+  /* Landscape phones (R10): a 80px bar is a fifth of a 390px-tall viewport. Short viewports get a 52px row at all times. */
+  @media (max-height: 500px) {
+    :root,
+    :root:lang(ar) {
+      --nav-h-full: 52px;
+      --nav-h-compact: 52px;
+      --logo-h-compact: 40px;
+    }
+    .site-header .logo-link img {
+      width: auto;
+      height: var(--logo-h-compact);
+    }
+    .site-header .nav-row {
+      padding-block: 0;
+    }
   }
   html {
     scroll-padding-top: calc(var(--nav-h-compact) + 12px);
