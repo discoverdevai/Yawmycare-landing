@@ -36,10 +36,11 @@ interface ShapeConfig {
    */
   relax?: string;
   /**
-   * Phones and small tablets (below md): once the card is wider than the shape's native width (a single column
-   * at 480-767px, a 343px card for a 282px shape) the native aspect ratio would make it taller than any content
-   * needs (a 735px-wide feature card was 598px tall). There the aspect lock is dropped and the card is as tall as
-   * its content, with the native height as a floor. Literal classes, so Tailwind can see them.
+   * Whenever the card is wider than the shape's native width (a single column at 480-767px, a 343px card for a 282px
+   * shape, tablet two-up grids of 340px cards) the native aspect ratio would make it taller than any content needs
+   * (a 735px-wide feature card was 598px tall; a 340px step card was 108px too tall at 768). There the aspect lock is
+   * dropped and the card is as tall as its content, with a floor of roughly 70% of the native height (design pass C2). At or below the
+   * native width (the 1440 Figma size) nothing changes. Literal classes, so Tailwind can see them.
    */
   grow?: string;
 }
@@ -55,7 +56,7 @@ const shapes = {
     strokeW: 3,
     show: "@min-[288px]:block",
     hide: "@min-[288px]:hidden",
-    grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[312px]",
+    grow: "@min-[385px]:flex @min-[385px]:flex-col @min-[385px]:aspect-auto @min-[385px]:min-h-[220px]",
   },
   step: {
     w: 282,
@@ -65,7 +66,7 @@ const shapes = {
     strokeW: 3,
     show: "@min-[212px]:block",
     hide: "@min-[212px]:hidden",
-    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[201px]",
+    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[150px]",
   },
   "step-number": {
     w: 48,
@@ -84,7 +85,7 @@ const shapes = {
     fill: C("accent-bg-soft"),
     show: "@min-[212px]:block",
     hide: "@min-[212px]:hidden",
-    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[236px]",
+    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[170px]",
   },
   security: {
     w: 282,
@@ -94,8 +95,7 @@ const shapes = {
     strokeW: 3,
     show: "@min-[212px]:block",
     hide: "@min-[212px]:hidden",
-    relax: "md:@min-[283px]:aspect-[282/312]",
-    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[312px]",
+    grow: "@min-[283px]:flex @min-[283px]:flex-col @min-[283px]:aspect-auto @min-[283px]:min-h-[220px]",
   },
   "commitment-peach": {
     w: 588,
@@ -103,7 +103,7 @@ const shapes = {
     fill: C("accent-bg-light"),
     show: "@min-[441px]:block",
     hide: "@min-[441px]:hidden",
-    grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]",
+    grow: "@min-[589px]:flex @min-[589px]:flex-col @min-[589px]:aspect-auto @min-[589px]:min-h-[170px]",
   },
   "commitment-green": {
     w: 588,
@@ -111,7 +111,7 @@ const shapes = {
     fill: C("surface-tabs"),
     show: "@min-[441px]:block",
     hide: "@min-[441px]:hidden",
-    grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]",
+    grow: "@min-[589px]:flex @min-[589px]:flex-col @min-[589px]:aspect-auto @min-[589px]:min-h-[170px]",
   },
   "commitment-wide": {
     w: 1200,
@@ -127,7 +127,7 @@ const shapes = {
     fill: C("stroke-sec"),
     show: "@min-[288px]:block",
     hide: "@min-[288px]:hidden",
-    grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[360px]",
+    grow: "@min-[385px]:flex @min-[385px]:flex-col @min-[385px]:aspect-auto @min-[385px]:min-h-[260px]",
   },
   first10: {
     w: 792,

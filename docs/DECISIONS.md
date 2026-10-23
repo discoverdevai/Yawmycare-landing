@@ -32,3 +32,14 @@ Decisions taken on the owner's behalf on 2026-10-23 ("answer them by yourself").
 - Provide the logo as SVG.
 - Native Arabic review of drafted copy.
 - Demo-form destination and demo video URL.
+
+## Design pass (2026-10-23): `docs/FIX-LOG-design.md`
+
+| # | Question | Decision | Why | Undo |
+|---|---|---|---|---|
+| 21 | Tagline strip above the header (supersedes the "top bar keeps only the tagline" part of #19) | **Removed.** The header is one row (logo = Home, 5 links, language switch, Book a Demo), sticky and compact on scroll (`top: 0`, 16px sentinel, bottom margin keeps the in-flow height). The tagline stays in the footer only | Frees ~100px at 1440 / 83px at 375 above the fold; the strip carried no action | `Header.astro` |
+| 22 | Header nav length and breakpoint | `nav.ts` items carry `header: boolean`: Why Yawmy, How it works, Security, Pricing, FAQ show in the header row; Day, Commitments, Founders (and Home) are in the menu panel (all 9) and the footer. Scroll-spy tracks all 9 (targets sorted in document order). Menu breakpoint 1360 -> 1024 (`lg`); verified no overflow EN + AR at 1023/1024/1100/1280/1440. The shared label for `#setup` is now "How it works" (EN) / "كيف يعمل" (AR, **new short Arabic label, needs native review**); it replaces "Set up in 20 minutes" in header, menu and footer so all three agree | Fits 5 short links; the old label repeated the "20 minutes" claim under review (D1) | `nav.ts`, `header.*.json` |
+| 23 | Scalloped edges | Only at the hero bottom, the pricing top and the footer top. All other joins are flat: alternating full-bleed tints from tokens (`Section tint="light" | "sec" | "tabs"`): day light, compare sec, security light, founders light, FAQ sec; features, setup, commitments stay on `surface` | Restraint: the scallop is a signature, not wallpaper | `Section.astro`, sections |
+| 24 | Vertical rhythm | Tokens reduced ~25%: `--band-py` (new) 32 -> 68px, so 136px between the content of two flat sections at 1440 (was 182); `--wave-h` 76 -> 64, `--wave-gap` 58 -> 42, `--section-gap` 48 -> 36, header gaps 40/48/58 -> 32/40/44, `--lead-gap` 24 -> 20; mobile 32/24/20; clamp scaling between 768 and 1280 kept | Fewer scrolls, same structure | `global.css` |
+| 25 | BlobCard height | Below-native-width rule applies to all widths wider than the shape's native width (was `max-md` only): the card drops the aspect lock and hugs its content, floor about 70% of the native height. Equal-height rows (`stretch`) are kept by design | No empty areas on tablet and phones | `BlobCard.astro` |
+| 26 | Card/button scale | Small cards `p-6 xl:p-8` (features, security, school, testimonial `p-6`); buttons: hero/CTA 56px, header 44px (Book a Demo, language, menu), header and footer text links 44px tall | Consistency and tap targets | sections |

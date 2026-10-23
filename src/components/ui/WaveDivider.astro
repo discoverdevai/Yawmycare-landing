@@ -55,9 +55,11 @@ const mask = `url("data:image/svg+xml,${encodeURIComponent(tile)}")`;
   }
   /* Hero bottom edge: 0 0 12px in primary/CTAprimarycolor at 48%. */
   .wave-shadow--glow {
+    clip-path: inset(-12px 0 0 0); /* the glow lights the scallops only, never a seam below the flat edge */
     filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-primary-cta) 48%, transparent));
   }
   .wave-shadow--up {
+    clip-path: inset(-12px 0 0 0); /* no shadow haze below the flat edge */
     filter: drop-shadow(0 -5px 6px color-mix(in srgb, var(--color-primary-cta) 20%, transparent));
   }
 </style>

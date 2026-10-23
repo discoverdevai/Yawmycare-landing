@@ -3,8 +3,10 @@ import Container from "./Container.astro";
 import WaveDivider from "./WaveDivider.astro";
 
 /**
- * One page section: optional wave edge -> --wave-gap -> header slot -> --header-gap-* -> content.
- * Last content to the next section's heading is 48 + 76 + 58 = 182px at 1440 (matches Figma).
+ * One page section. Two kinds (design pass B1/C1):
+ *  - wave section (hero, pricing, footer only): scalloped edge -> --wave-gap -> header -> content, then --section-gap.
+ *  - flat band (every other section): no wave; `tint` paints a full-bleed background from the surface tokens and the
+ *    band pads --band-py above and below (136px between the content of two bands at 1440, was 182).
  * Wave direction is explicit per section (see spec §8.1), never auto-alternated.
  */
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
   shadow?: boolean;
   /** Background utility for the wave fill; defaults to the cream page colour. */
   waveClass?: string;
+  /** Full-bleed band background from the surface tokens; omit for the plain page colour. */
+  tint?: "sec" | "light" | "tabs";
   gap?: "tight" | "default" | "loose";
   class?: string;
 }
@@ -25,6 +29,7 @@ const {
   wave = "none",
   shadow = false,
   waveClass = "bg-surface",
+  tint,
   gap = "default",
   class: className = "",
 } = Astro.props;
@@ -34,10 +39,15 @@ const headerGap = {
   default: "mb-(--header-gap-default)",
   loose: "mb-(--header-gap-loose)",
 }[gap];
+const tintClass = tint && { sec: "bg-surface-sec", light: "bg-primary-bg-light", tabs: "bg-surface-tabs" }[tint];
 const hasHeader = Astro.slots.has("header");
 ---
 
-<section id={id} aria-labelledby={headingId} class:list={["mb-(--section-gap)", className]}>
+<section
+  id={id}
+  aria-labelledby={headingId}
+  class:list={[wave === "none" ? "py-(--band-py)" : "mb-(--section-gap)", tintClass, className]}
+>
   {wave !== "none" && <WaveDivider direction={wave} shadow={shadow} class={waveClass} />}
   <Container class={wave !== "none" ? "mt-(--wave-gap)" : undefined}>
     {hasHeader && (

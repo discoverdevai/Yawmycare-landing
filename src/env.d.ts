@@ -33,6 +33,10 @@ interface ImportMetaEnv {
   readonly PUBLIC_REGION_US_PRICE_AMOUNT?: string;
   readonly PUBLIC_REGION_US_PRICE_NOTE?: string;
   readonly PUBLIC_REGION_US_PRICE_NOTE_AR?: string;
+  /** Opt-in analytics (src/scripts/analytics.ts, docs/CRO.md). All unset = no tracker, no script. */
+  readonly PUBLIC_ANALYTICS_CF_TOKEN?: string;
+  readonly PUBLIC_ANALYTICS_PLAUSIBLE_DOMAIN?: string;
+  readonly PUBLIC_ANALYTICS_PLAUSIBLE_SRC?: string;
 }
 
 interface ImportMeta {

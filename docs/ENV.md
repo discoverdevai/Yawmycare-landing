@@ -14,6 +14,9 @@ Every variable defaults to empty. **Rule: a link or button whose URL is empty is
 | `PUBLIC_CONTACT_WHATSAPP` | `https://` URL or phone number, as above | the demo dialog's "not connected yet" message (Message us on WhatsApp button) | the button is omitted; the message is plain text |
 | `PUBLIC_CONTACT_EMAIL` | `name@example.com` or a `mailto:` URL | same (Email us button) | the button is omitted |
 | `PUBLIC_DEMO_VIDEO_URL` | Full `https://` URL of the demo / tour video, opened in a new tab | the three "Watch" buttons: Hero, Setup band, Final CTA | the three buttons are not rendered in production; the remaining "Book a demo" button stays centred in each row |
+| `PUBLIC_ANALYTICS_CF_TOKEN` | Cloudflare Web Analytics beacon token | `src/scripts/analytics.ts` (loaded by `BaseLayout.astro`) | no beacon is added |
+| `PUBLIC_ANALYTICS_PLAUSIBLE_DOMAIN` | Site domain registered in Plausible (`yawmycare.com`) | same; also enables custom events (docs/CRO.md) | no Plausible script |
+| `PUBLIC_ANALYTICS_PLAUSIBLE_SRC` | Optional `https://` script URL (self-hosted / proxied) | same | defaults to `https://plausible.io/js/script.js` when the domain is set |
 
 ## Checking a production build
 
@@ -58,3 +61,7 @@ The dialog (docs/FORM-SPEC.md) sends up to two JSON `POST`s per lead to the same
 ```
 
 No new environment variables. The done panel's WhatsApp link uses the existing `PUBLIC_REGION_<EG|SA|US>_WHATSAPP`.
+
+## Analytics (opt-in)
+
+Nothing is tracked by default. Setting `PUBLIC_ANALYTICS_CF_TOKEN` and/or `PUBLIC_ANALYTICS_PLAUSIBLE_DOMAIN` makes `src/scripts/analytics.ts` add that vendor's script (no cookies, no PII, skipped for Do Not Track / Global Privacy Control). Event map and CSP notes: `docs/CRO.md`. With all three empty the built page contains no analytics URL and `analytics.ts` returns immediately.

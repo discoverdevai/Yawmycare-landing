@@ -21,7 +21,7 @@ const { locale } = Astro.props;
 const t = getDictionary(locale).sections.compare;
 ---
 
-<Section id="compare" headingId="compare-title" wave="down" shadow>
+<Section id="compare" headingId="compare-title" tint="sec">
   <SectionHeader slot="header" id="compare-title" title={t.title} lead={t.lead} />
 
   <table class="text-body text-ink hidden w-full border-separate border-spacing-0 md:table">

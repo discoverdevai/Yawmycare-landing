@@ -25,8 +25,9 @@ export function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 
-//  Page order and wave joins (spec §8.1): hero → testimonials → [proof: renders only when config/proof.ts has entries] → day (down) → features (up) → compare (down) → setup (down)
-//  → security (up) → commitments (down) → pricing (up) → founders (down) → FAQ (up) → final CTA + footer.
+//  Page order and joins (design pass B1): hero (scalloped bottom) → testimonials → [proof: renders only when config/proof.ts has entries]
+//  → day (tint light) → features → compare (sec) → setup → security (light) → commitments → pricing (scalloped top) → founders (light)
+//  → FAQ (sec) → final CTA + footer (scalloped top). Everything else is a flat join (alternating surface tints, no wave).
 //  FinalCta must be the last section in <main> with Footer straight after it (the footer overlaps the band).
 ---
 

@@ -19,7 +19,7 @@ const { locale } = Astro.props;
 const t = getDictionary(locale).sections.day;
 ---
 
-<Section id="day" headingId="day-heading" wave="down" shadow>
+<Section id="day" headingId="day-heading" tint="light">
   <SectionHeader slot="header" id="day-heading" title={t.title} lead={t.lead} />
 
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-12">

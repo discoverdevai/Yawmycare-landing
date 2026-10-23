@@ -18,7 +18,7 @@ const { locale } = Astro.props;
 const t = getDictionary(locale).sections.testimonials;
 ---
 
-<Section id="testimonials" headingId="testimonials-title">
+<Section id="testimonials" headingId="testimonials-title" class="pt-(--wave-gap)">
   <SectionHeader slot="header" id="testimonials-title" title={t.title} lead={t.lead} />
 
   <div class="grid grid-cols-1 items-center gap-x-6 gap-y-8 xl:grid-cols-4">
@@ -29,7 +29,7 @@ const t = getDictionary(locale).sections.testimonials;
 
     <ul role="list" class="grid grid-cols-1 gap-6 md:grid-cols-3 xl:col-span-3">
       {t.items.map((item) => (
-        <BlobCard as="li" shape="testimonial" stretch contentClass="flex min-h-full flex-col justify-center px-6 py-5">
+        <BlobCard as="li" shape="testimonial" stretch contentClass="flex min-h-full flex-col justify-center p-6">
           <blockquote class="flex flex-col gap-4">
             <p class="text-title md:text-body lg:text-title font-medium">{item.quote}</p>
             <footer class="flex items-center gap-2">

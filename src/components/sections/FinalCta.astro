@@ -20,7 +20,7 @@ const { locale } = Astro.props;
 const s = getDictionary(locale).sections.footer;
 ---
 
-<section id="contact" aria-labelledby="final-cta-title" class="relative">
+<section id="contact" aria-labelledby="final-cta-title" class="relative pt-(--band-py)">
   <Container>
     <CtaBand locale={locale} size="final" id="final-cta-title" title={s.cta.title} lead={s.cta.lead} />
   </Container>

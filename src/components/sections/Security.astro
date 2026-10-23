@@ -40,7 +40,7 @@ const icons = [
 const items = t.items.map((item, i) => ({ ...item, ...icons[i]! }));
 ---
 
-<Section id="security" headingId="security-title" wave="up" shadow>
+<Section id="security" headingId="security-title" tint="light">
   <SectionHeader slot="header" id="security-title" title={t.title} lead={t.lead} />
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,282px)_minmax(0,1fr)_minmax(0,282px)]">
     <SecurityColumn items={items.slice(0, 2)} />

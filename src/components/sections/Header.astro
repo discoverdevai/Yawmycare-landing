@@ -1,33 +1,28 @@
 ---
 import Container from "@/components/ui/Container.astro";
-import WaveDivider from "@/components/ui/WaveDivider.astro";
 import Button from "@/components/ui/Button.astro";
 import Logo from "@/components/ui/Logo.astro";
 import { getDictionary, localeMeta, otherLocale, type Locale } from "@/i18n";
 import { navLinks } from "@/config/nav";
 
 /**
- * Section 01: top bar + header/nav (Figma 1457:3899 top bar, 1599:43647 nav; AR 1434:3719, 1434:3741).
- * Sticky and compact on scroll (roadmap 1.2; Figma shows a static header, this is a deliberate addition). The 1360 breakpoint (85rem, also in the script below) is
- * where the 9 links fit with the stand-in fonts (licensed Recoleta is narrower); AR links are 15px (gap 12) instead
- * of the 5-link frame's 20px. At 1280 the row overflows (EN by ~30px, AR links run together), so it stays a menu.
+ * Section 01: header/nav (Figma 1599:43647; AR 1434:3741). The tagline strip with the scalloped edge that used to sit
+ * above the nav was removed (design pass A1; the tagline lives in the footer). One row only.
+ * Sticky and compact on scroll (roadmap 1.2; Figma shows a static header, this is a deliberate addition).
  *
- *  top bar   primary-bg strip with the tagline only, scalloped bottom edge, no shadow. Social icons are NOT in the
- *            header (footer only, docs/DECISIONS.md #19)
- *  nav row   logo, 9 in-page anchors, language switch, Book a Demo (1280 wide container, the one exception)
- *  < 1360    the links collapse into a menu button (9 links never fit); Book a Demo stays in the row at every
+ *  nav row   logo (= Home), 5 in-page anchors (nav.ts `header: true`), language switch, Book a Demo (1280 wide container)
+ *  < 1024    the links collapse into a menu button holding all 9 anchors; Book a Demo stays in the row at every
  *            width (compact, no icon, 44px tall below 768); the language switch is in the row from 768 up and in
- *            the menu panel below 768.
- *  sticky    "position: sticky" with a negative "top" equal to top bar + nav margin, so the top bar scrolls away
- *            naturally and the nav row is what sticks (no layout jump). Once stuck (IntersectionObserver on a sentinel)
+ *            the menu panel below 768. 1024 (64rem, also in the script below) fits the 5 short links in EN and AR.
+ *  sticky    "position: sticky; top: 0". Once the page is scrolled (IntersectionObserver on a sentinel at the top)
  *            data-compact shrinks the logo and row and adds a soft shadow; the header's in-flow height is kept
  *            constant by a bottom margin equal to the shrink, so the content below never moves.
  *            scroll-padding-top on <html> keeps anchor targets clear of the stuck row.
  *
  * Progressive enhancement: without JS the menu panel is simply visible (stacked links), with JS it
  * toggles (aria-expanded / aria-controls), closes on Esc (focus returns to the button), on outside
- * click, on link click and when the viewport grows past the menu breakpoint. A small
- * IntersectionObserver marks the link of the section in view with aria-current="location".
+ * click, on link click and when the viewport grows past the menu breakpoint. A scroll-spy marks the link of the
+ * section in view with aria-current="location" (all nine sections, desktop and menu links alike).
  */
 interface Props {
   locale: Locale;
@@ -58,16 +53,6 @@ const linkClass =
 
 <div class="header-sentinel" aria-hidden="true" data-header-sentinel></div>
 <header class="site-header bg-surface-sec" data-site-header>
-  <!-- Top bar: tagline only, over the scalloped edge (the solid part of the wave is ~73% of its height) -->
-  <div class="topbar relative">
-    <WaveDivider direction="down" class="bg-primary-bg" />
-    <div class="absolute inset-x-0 top-0 flex h-[calc(var(--wave-h)*0.73)] items-center">
-      <Container class="flex justify-center">
-        <p class="text-body-sm text-ink text-center font-medium">{t.brand.tagline}</p>
-      </Container>
-    </div>
-  </div>
-
   <!-- Nav row -->
   <div class="nav-row-wrap">
     <Container size="wide" class="nav-row flex flex-wrap items-center justify-between gap-x-2 gap-y-1 md:gap-x-6">
@@ -78,39 +63,47 @@ const linkClass =
           href="#home"
           class="logo-link focus-visible:outline-focus block shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
         />
-        <nav class="hidden min-[85rem]:block" aria-label={h.nav.label}>
-          <ul class="flex items-center gap-2 rtl:gap-3">
-            {navItems.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class={`${linkClass} text-nav inline-block py-1 rtl:text-[0.9375rem]`}
-                  data-nav-link={item.id}
-                  aria-current={item.id === "home" ? "location" : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+        <nav class="hidden lg:block" aria-label={h.nav.label}>
+          <ul class="flex items-center gap-4 xl:gap-7 rtl:gap-5 rtl:xl:gap-7">
+            {navItems
+              .filter((item) => item.header)
+              .map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class={`${linkClass} text-nav inline-flex min-h-11 items-center rtl:text-[0.9375rem]`}
+                    data-nav-link={item.id}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
           </ul>
         </nav>
       </div>
 
       <div class="ms-auto flex min-w-0 flex-wrap items-center justify-end gap-2 md:gap-3">
         <div class="hidden md:block">
-          <Button variant="icon" href={switchHref} label={t.a11y.switchLanguage} hreflang={other} data-lang-switch />
+          <Button
+            variant="icon"
+            href={switchHref}
+            label={t.a11y.switchLanguage}
+            hreflang={other}
+            class="size-11!"
+            data-lang-switch
+          />
         </div>
         <Button
           variant="primary"
           href="#demo"
           data-demo-open
-          class="max-w-full max-md:min-h-11! max-md:px-3 max-md:text-base! max-md:[&>svg]:hidden"
+          class="min-h-11! max-w-full px-5! text-base! max-md:px-3! max-md:[&>svg]:hidden"
         >
           {t.cta.bookDemo}
         </Button>
         <button
           type="button"
-          class="menu-toggle bg-surface-tabs text-ink hover:bg-primary-bg focus-visible:outline-focus inline-flex size-11 shrink-0 items-center md:size-14 justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors min-[85rem]:hidden"
+          class="menu-toggle bg-surface-tabs text-ink hover:bg-primary-bg focus-visible:outline-focus inline-flex size-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors lg:hidden"
           aria-expanded="false"
           aria-controls="nav-panel"
           aria-label={h.nav.menu}
@@ -149,13 +142,8 @@ const linkClass =
     </Container>
   </div>
 
-  <!-- Menu panel (below 1360) -->
-  <div
-    id="nav-panel"
-    class="nav-panel border-stroke-green border-y min-[85rem]:hidden"
-    data-state="closed"
-    data-nav-panel
-  >
+  <!-- Menu panel (below 1024) -->
+  <div id="nav-panel" class="nav-panel border-stroke-green border-y lg:hidden" data-state="closed" data-nav-panel>
     <Container class="py-4">
       <nav aria-label={h.nav.label}>
         <ul class="flex flex-col md:grid md:grid-flow-col md:grid-cols-3 md:grid-rows-3 md:gap-x-8">
@@ -165,7 +153,6 @@ const linkClass =
                 href={item.href}
                 class={`${linkClass} text-lead inline-flex min-h-11 items-center`}
                 data-nav-link={item.id}
-                aria-current={item.id === "home" ? "location" : undefined}
               >
                 {item.label}
               </a>
@@ -193,20 +180,12 @@ const linkClass =
 <style is:global>
   /* Sticky header geometry (one place; the sentinel and scroll-padding use the same numbers). */
   :root {
-    --topbar-h: max(68px, 4rem); /* grows with the text size so the tagline stays inside the strip at 200% */
-    --nav-mt: 16px;
     --nav-h-full: 80px; /* 64px logo + 8px above and below */
     --nav-h-compact: 64px;
     --logo-h-compact: 44px;
   }
   :root:lang(ar) {
     --nav-h-full: 90px; /* 74px logo */
-  }
-  @media (min-width: 48rem) {
-    :root {
-      --topbar-h: max(76px, 4.5rem);
-      --nav-mt: 24px;
-    }
   }
   html {
     scroll-padding-top: calc(var(--nav-h-compact) + 12px);
@@ -216,20 +195,15 @@ const linkClass =
     position: absolute;
     inset-block-start: 0;
     inset-inline: 0;
-    height: calc(var(--topbar-h) + var(--nav-mt));
+    height: 16px; /* compact as soon as the page has scrolled a little */
     pointer-events: none;
     visibility: hidden;
   }
   .site-header {
     position: sticky;
     z-index: 30;
-    top: calc(-1 * (var(--topbar-h) + var(--nav-mt)));
-  }
-  .site-header .topbar {
-    --wave-h: var(--topbar-h);
-  }
-  .site-header .nav-row-wrap {
-    margin-block-start: var(--nav-mt);
+    top: 0;
+    border-block-end: 1px solid var(--color-stroke-sec);
   }
   /* min-height (not height): at 200% text or 320px the row may wrap instead of overflowing (WCAG 1.4.4 / 1.4.10). */
   .site-header .nav-row {
@@ -263,7 +237,7 @@ const linkClass =
   .menu-toggle[aria-expanded="false"] .icon-close {
     display: none;
   }
-  /* Without JS the panel stays open (the links would otherwise be unreachable below 1360). */
+  /* Without JS the panel stays open (the links would otherwise be unreachable below 1024). */
   :global(.js) .nav-panel[data-state="closed"] {
     display: none;
   }
@@ -274,7 +248,7 @@ const linkClass =
   if (header) {
     const toggle = header.querySelector<HTMLButtonElement>("[data-nav-toggle]")!;
     const panel = header.querySelector<HTMLElement>("[data-nav-panel]")!;
-    const desktop = window.matchMedia("(min-width: 85rem)");
+    const desktop = window.matchMedia("(min-width: 64rem)");
 
     const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
     const setOpen = (open: boolean) => {
@@ -300,7 +274,7 @@ const linkClass =
     });
     desktop.addEventListener("change", () => setOpen(false));
 
-    // Compact mode once the nav row is stuck: the sentinel (top bar + margin tall, at the top of the page) has left the viewport.
+    // Compact mode once the page has scrolled: the sentinel (16px tall, at the top of the page) has left the viewport.
     const sentinel = document.querySelector("[data-header-sentinel]");
     if (sentinel && "IntersectionObserver" in window) {
       new IntersectionObserver(([entry]) => {
@@ -319,10 +293,14 @@ const linkClass =
     // sticky) header, i.e. the section that occupies the top area of the viewport. Computed from positions on scroll,
     // resize and load rather than from IntersectionObserver crossings, so jumps (End key, anchors, back/forward) and
     // the end of the page are always right. Below the last nav section (final CTA band, footer) and above the first
-    // one, nothing is marked. Sections with an id but no nav link are ignored.
+    // one, nothing is marked. All nine anchors are tracked, whether or not they are in the header row.
     const links = [...header.querySelectorAll<HTMLAnchorElement>("[data-nav-link]")];
     const ids = [...new Set(links.map((a) => a.dataset.navLink!))];
-    const targets = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    // Document order, not link order: the desktop row only lists 5 of the 9 anchors, the menu panel lists all 9.
+    const targets = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el)
+      .sort((x, y) => (x.compareDocumentPosition(y) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
     if (targets.length) {
       let current: string | null | undefined;
       const update = () => {

@@ -1,8 +1,36 @@
+# Report-Only: never blocks, only logs violations in the browser console (docs/GEO.md "Cloudflare"). The inline-script
+# hashes belong to the current build: regenerate with `node scripts/csp-hashes.mjs` (after `astro build`) whenever an
+# inline <script> changes, then switch to Content-Security-Policy once the console is clean. style-src keeps
+# 'unsafe-inline' because a few style="" attributes cannot be hashed. connect-src allows https for the demo form
+# endpoint, which is chosen by the owner. When analytics is enabled add its host (docs/CRO.md).
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'sha256-9Uz2vQb0s28uWrIfdjW8iQNZbQ3yL96Nmqx49q3T9rE=' 'sha256-7GzpEj+jQGI5DatjUI9yppag5QzTGmPEoTYU9D6v+Bs=' 'sha256-1kb0cKY/FlKEPigcALg5ARmRglVCWeRaqrcxHcSaAu4=' 'sha256-Pru/jjnrcijDjWrrfSRE0Yxmvxc/tDIvaeVu/dTSIpc=' 'sha256-nutsd50D4q3WhwTqmSmeMcF84HAhwRfFIHoXKs0kJ/0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
+# HTML: always revalidate so a deploy is visible at once (Workers assets answer 304 from the ETag).
+/en/
+  Cache-Control: public, max-age=0, must-revalidate
+/ar/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Hashed build output never changes.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Unhashed static files: a day, so a replaced logo or OG image shows up quickly.
+/og/*
+  Cache-Control: public, max-age=86400
+/icon-*
+  Cache-Control: public, max-age=86400
+/favicon*
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/llms.txt
+  Cache-Control: public, max-age=3600
+  Content-Type: text/plain; charset=utf-8
+/robots.txt
+  Cache-Control: public, max-age=3600

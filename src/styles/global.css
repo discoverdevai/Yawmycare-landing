@@ -119,13 +119,14 @@
   --lh-ui: 1;
 
   /* Section rhythm */
-  --wave-h: 32px;
-  --wave-gap: 32px; /* wave -> content */
-  --section-gap: 24px; /* between section frames */
-  --header-gap-tight: 24px;
-  --header-gap-default: 32px;
-  --header-gap-loose: 40px;
-  --lead-gap: 16px; /* h2 -> lead */
+  --wave-h: 28px;
+  --wave-gap: 24px; /* wave -> content */
+  --section-gap: 20px; /* below a section that has a scalloped top edge (no tint band) */
+  --band-py: 32px; /* top and bottom padding of a flat (tinted or plain) section band */
+  --header-gap-tight: 20px;
+  --header-gap-default: 24px;
+  --header-gap-loose: 32px;
+  --lead-gap: 12px; /* h2 -> lead */
   --gutter: 16px;
 }
 
@@ -152,13 +153,14 @@
     --fs-lead: clamp(1.25rem, 0.875rem + 0.78125vw, 1.5rem); /* 20 -> 24 */
     --fs-body: clamp(1.125rem, 0.9375rem + 0.390625vw, 1.25rem); /* 18 -> 20 */
 
-    --wave-h: clamp(48px, 6px + 5.46875vw, 76px);
-    --wave-gap: clamp(40px, 13px + 3.515625vw, 58px);
-    --section-gap: clamp(32px, 8px + 3.125vw, 48px);
-    --header-gap-tight: clamp(32px, 20px + 1.5625vw, 40px);
-    --header-gap-default: clamp(40px, 28px + 1.5625vw, 48px);
-    --header-gap-loose: clamp(48px, 33px + 1.953125vw, 58px);
-    --lead-gap: clamp(16px, 4px + 1.5625vw, 24px);
+    --wave-h: clamp(40px, 8px + 4.375vw, 64px); /* 64 at 1280+, was 76 */
+    --wave-gap: clamp(28px, 8px + 2.6vw, 42px);
+    --section-gap: clamp(24px, 8px + 2.1vw, 36px);
+    --band-py: clamp(44px, 8px + 4.6875vw, 68px); /* 68 at 1280+: 136px between the content of two flat sections */
+    --header-gap-tight: clamp(24px, 14px + 1.3vw, 32px);
+    --header-gap-default: clamp(28px, 16px + 1.5625vw, 40px);
+    --header-gap-loose: clamp(36px, 24px + 1.5625vw, 44px);
+    --lead-gap: clamp(12px, 4px + 1vw, 20px);
     --gutter: 32px;
   }
   :root:lang(ar) {

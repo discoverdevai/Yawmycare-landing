@@ -1,11 +1,12 @@
 ---
 import { getDictionary, localeMeta, locales, type Locale } from "@/i18n";
+import { contact, isConfigured, regionIds, regions, socials } from "@/config/site";
 
 /**
  * Organization, WebSite, WebPage and SoftwareApplication as one @graph (the FAQPage block comes from Faq.astro).
  * All text is built from the existing dictionary (`brand`, `meta`); no new i18n keys.
- * No `offers`: the price is not public and must not be invented. `sameAs` comes from `src/config/site.ts`
- * when that file exists and exports social URLs; otherwise it is omitted.
+ * No `offers`: the price is not public and must not be invented. `sameAs`, `areaServed` and `contactPoint`
+ * come from `src/config/site.ts` and are omitted until the owner configures them.
  */
 interface Props {
   locale: Locale;
@@ -18,14 +19,24 @@ const origin = new URL(Astro.site!).origin;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 const logo = new URL("/icon-512.png", Astro.site).href;
 
-// Optional config: tolerate any of `site` / `siteConfig` / default export with a `socials` or `social` map of URLs.
-const configModules = import.meta.glob<Record<string, any>>("/src/config/site.ts", { eager: true });
-const config = Object.values(configModules)[0];
-const cfg = config?.site ?? config?.siteConfig ?? config?.default ?? config;
-const socials = cfg?.socials ?? cfg?.social ?? {};
-const sameAs: string[] = (Array.isArray(socials) ? socials : Object.values(socials))
-  .map((entry: any) => (typeof entry === "string" ? entry : entry?.url))
-  .filter((url: unknown): url is string => typeof url === "string" && /^https:\/\//.test(url));
+// sameAs: real profile pages only (WhatsApp is a chat link, not a profile). Empty until the owner sets PUBLIC_SOCIAL_*.
+const sameAs: string[] = [socials.linkedin, socials.instagram, socials.facebook].filter((url) => isConfigured(url));
+
+// areaServed: only regions the owner has actually configured (a contact or a price). Unset = omitted, never guessed.
+const countries: Record<string, { name: string; code: string }> = {
+  eg: { name: "Egypt", code: "EG" },
+  sa: { name: "Saudi Arabia", code: "SA" },
+  us: { name: "United States", code: "US" },
+};
+const areaServed = regionIds
+  .filter((id) => regions[id].whatsapp || regions[id].phone || regions[id].price)
+  .map((id) => ({ "@type": "Country", name: countries[id]!.name, identifier: countries[id]!.code }));
+
+// Only the email contact point, and only when configured (mailto: is stripped for the schema value).
+const email = contact.email.replace(/^mailto:/i, "");
+
+// featureList: the feature titles printed in the Features section, nothing else.
+const featureList = t.sections.features.items.map((item) => item.title);
 
 // Names in both languages so a search for either spelling resolves to the same entity.
 const otherName = getDictionary(locales.find((l) => l !== locale)!).brand.name;
@@ -43,6 +54,8 @@ const graph = [
     url: `${origin}/`,
     logo: { "@type": "ImageObject", url: logo, width: 512, height: 512 },
     ...(sameAs.length ? { sameAs } : {}),
+    ...(areaServed.length ? { areaServed } : {}),
+    ...(email ? { contactPoint: { "@type": "ContactPoint", contactType: "sales", email } } : {}),
   },
   {
     "@type": "WebSite",
@@ -74,6 +87,8 @@ const graph = [
     applicationCategory: "BusinessApplication",
     // The page presents web dashboard + parent and teacher mobile apps.
     operatingSystem: "Web, iOS, Android",
+    featureList,
+    ...(areaServed.length ? { areaServed } : {}),
     publisher: { "@id": orgId },
   },
 ];
