@@ -2,6 +2,7 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
 import ConnectorLines from "./setup/ConnectorLines.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
@@ -23,6 +24,8 @@ interface Props {
 const { locale } = Astro.props;
 const dict = getDictionary(locale);
 const t = dict.sections.setup;
+// Steps in order: book a demo, we set it up with you, invite team and parents, start the first day.
+const stepIcons: IconName[] = ["calendar", "school", "chat", "checks"];
 
 // Dashed vertical line on the start side below 640 (token colour, no raw hex); sm+ has no vertical line (2x2 grid, then the ConnectorLines rail at lg).
 const verticalLine =
@@ -62,10 +65,11 @@ const railDot =
             <BlobCard
               shape="step"
               stretch="sm"
-              class="w-full max-w-72 min-w-0 sm:max-w-none sm:flex-1"
+              class="lift w-full max-w-72 min-w-0 sm:max-w-none sm:flex-1"
               contentClass="px-4 pt-8 pb-5"
             >
               <div class="flex flex-col gap-3">
+                <Icon name={stepIcons[i] ?? "sparkle"} size={20} tile />
                 <h3 class="text-title text-primary-text font-bold lg:min-h-[2.6em]">{step.title}</h3>
                 <p class="text-body-sm text-ink">{step.body}</p>
               </div>

@@ -1,6 +1,7 @@
 ---
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
 /**
@@ -19,6 +20,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getDictionary(locale).sections.compare;
+// One tile per job, in the order of `rows` (daily report, parent updates, attendance, finding a photo).
+const jobIcons: IconName[] = ["health", "chat", "pin-check", "camera"];
 ---
 
 <Section id="compare" headingId="compare-title" tint="sec">
@@ -51,7 +54,10 @@ const t = getDictionary(locale).sections.compare;
         return (
           <tr>
             <th scope="row" class="text-primary-text text-title p-4 text-start align-top font-bold">
-              {row.job}
+              <span class="flex items-center gap-3">
+                <Icon name={jobIcons[i] ?? "sparkle"} size={18} tile />
+                <span class="min-w-0">{row.job}</span>
+              </span>
             </th>
             <td
               class:list={[
@@ -76,9 +82,12 @@ const t = getDictionary(locale).sections.compare;
   </table>
 
   <ul role="list" aria-label={t.caption} class="flex flex-col gap-3 md:hidden">
-    {t.rows.map((row) => (
-      <li class="bg-surface-sec border-stroke-green rounded-card flex flex-col gap-2 border-2 p-4">
-        <h3 class="text-title text-primary-text font-bold">{row.job}</h3>
+    {t.rows.map((row, i) => (
+      <li class="bg-surface-sec border-stroke-green rounded-card lift flex flex-col gap-2 border-2 p-4">
+        <h3 class="text-title text-primary-text flex items-center gap-3 font-bold">
+          <Icon name={jobIcons[i] ?? "sparkle"} size={18} tile />
+          <span class="min-w-0">{row.job}</span>
+        </h3>
         <dl class="flex flex-col gap-2">
           <div class="bg-surface-tabs rounded-input flex flex-col gap-0.5 px-3 py-2">
             <dt class="text-caption text-ink-muted font-bold">{t.oldLabel}</dt>

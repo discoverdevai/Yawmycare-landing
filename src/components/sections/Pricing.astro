@@ -4,13 +4,7 @@ import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
 import Button from "@/components/ui/Button.astro";
 import Check from "@/assets/pricing/check.svg";
-import AnimatedImage from "@/components/ui/AnimatedImage.astro";
-import recurring from "@/assets/pricing/recurring.webp";
-import recurringStill from "@/assets/pricing/recurring-still.webp";
-import daycare from "@/assets/pricing/daycare.webp";
-import daycareStill from "@/assets/pricing/daycare-still.webp";
-import diplomacy from "@/assets/pricing/diplomacy.webp";
-import diplomacyStill from "@/assets/pricing/diplomacy-still.webp";
+import Icon from "@/components/ui/Icon.astro";
 import RegionSwitch from "@/components/ui/RegionSwitch.astro";
 import { getDictionary, type Locale } from "@/i18n";
 import { regions, showRegionUi, defaultRegionForLocale } from "@/config/site";
@@ -18,9 +12,8 @@ import { formatPrice } from "@/config/region";
 
 /**
  * Section 09: flat-fee pricing card (no price on purpose), international-school card, "first 10" card.
- * The illustrations are animated WebP (converted from the Figma GIFs, originals in
- * docs/sections/09-pricing/assets-original) with a first-frame still for prefers-reduced-motion
- * (see ui/AnimatedImage.astro). Every demo CTA opens the booking dialog (`data-demo-open`, href="#demo").
+ * The three old animated illustrations were replaced by the static icon tile (ui/Icon `tile`, docs/FIX-LOG-art-direction.md).
+ * Every demo CTA opens the booking dialog (`data-demo-open`, href="#demo").
  * Layout is logical, so RTL mirrors itself; blobs and illustrations are not mirrored.
  *
  * Price block (roadmap 2.2, docs/DECISIONS.md #16-#18): shows the CURRENT region's price ("From EGP 1,500 / month" +
@@ -101,19 +94,13 @@ const startNote = start.price ? (locale === "ar" ? start.price.noteAr || start.p
             {dict.cta.bookDemo}
           </Button>
         </div>
-        <AnimatedImage
-          src={recurring}
-          still={recurringStill}
-          width={319}
-          height={319}
-          class="size-40 shrink-0 object-cover md:size-48 lg:size-[319px]"
-        />
+        <Icon name="calendar" size={48} tile class="[--tile:7.5rem] md:[--tile:9rem] lg:[--tile:13rem]" />
       </div>
     </BlobCard>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,384fr)_minmax(0,792fr)]">
       <BlobCard shape="intl-school" stretch contentClass="flex flex-col gap-1 p-6 xl:p-8">
-        <AnimatedImage src={daycare} still={daycareStill} width={125} height={125} class="size-[125px] object-cover" />
+        <Icon name="school" size={32} tile class="mb-2 [--tile:5rem]" />
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <h3 class="text-h3 text-primary-text font-bold">
@@ -130,12 +117,12 @@ const startNote = start.price ? (locale === "ar" ? start.price.noteAr || start.p
       </BlobCard>
 
       <BlobCard shape="first10" stretch contentClass="relative px-6 py-8 @min-[436px]:px-[7.3%] lg:py-16">
-        <AnimatedImage
-          src={diplomacy}
-          width={170}
-          height={170}
-          still={diplomacyStill}
-          class="mb-4 size-24 object-cover lg:absolute lg:end-[3%] lg:top-[8%] lg:mb-0 lg:size-auto lg:w-[21%]"
+        <Icon
+          name="sparkle"
+          size={32}
+          tile
+          dot
+          class="mb-4 [--tile:5rem] lg:absolute lg:end-[4%] lg:top-[10%] lg:mb-0 lg:[--tile:6.5rem]"
         />
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-6">

@@ -206,3 +206,85 @@
     font-family: var(--font-sans);
   }
 }
+
+/*
+ * Art direction (docs/FIX-LOG-art-direction.md; Figma 14:2 "Motion principles"). Calm and purposeful: 200 to 400 ms,
+ * ease-out, transform + opacity only, never on text. Everything below sits behind prefers-reduced-motion: no-preference
+ * and is switched off again while the visitor has pressed the page's pause control (ui/MotionToggle.astro).
+ */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: 0;
+  }
+  /* Western digits in Arabic copy (the source has none in Arabic-Indic form; this keeps lining figures even with a licensed face). */
+  :lang(ar) {
+    font-variant-numeric: lining-nums;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hover lift 2px on buttons and cards, pointer devices only (no JS). */
+  @media (hover: hover) {
+    .lift {
+      transition:
+        transform 200ms ease-out,
+        filter 200ms ease-out,
+        background-color 150ms ease-out,
+        color 150ms ease-out,
+        border-color 150ms ease-out;
+    }
+    .lift:hover {
+      transform: translateY(-2px);
+    }
+    .lift:is(li, div, article):hover {
+      filter: drop-shadow(0 0.5rem 0.75rem color-mix(in srgb, var(--color-primary-text) 14%, transparent));
+    }
+    .lift:active {
+      transform: none;
+    }
+  }
+  /* Devices rise once. "load": hero (above the fold, CSS only, staggered by --rise-delay). "view": armed by a tiny
+     script and released by an IntersectionObserver the first time it is on screen. */
+  [data-rise="load"] {
+    animation: rise-in 400ms ease-out var(--rise-delay, 0ms) both;
+  }
+  [data-rise="view"][data-rise-armed] {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  [data-rise="view"] {
+    transition:
+      opacity 400ms ease-out,
+      transform 400ms ease-out;
+  }
+  /* Paused by the visitor: no rise, no lift, no cross-fade. */
+  html:has([data-motion-toggle][aria-pressed="true"]) :is([data-rise], .lift) {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

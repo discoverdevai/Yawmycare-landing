@@ -3,6 +3,7 @@ import { Picture } from "astro:assets";
 import Container from "@/components/ui/Container.astro";
 import Button from "@/components/ui/Button.astro";
 import WaveDivider from "@/components/ui/WaveDivider.astro";
+import DeviceFrame from "@/components/ui/DeviceFrame.astro";
 import dashboard from "@/assets/product/owner-dashboard-1659-29977.webp";
 import parentHome from "@/assets/product/parent-home-606-38038.webp";
 import adminApp from "@/assets/product/admin-app-598-106917.webp";
@@ -93,7 +94,7 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
       </div>
 
       <div class="composite" role="img" aria-label={t.imageAlt}>
-        <div class="shot shot-dash">
+        <DeviceFrame kind="browser" rise="load" class="shot shot-dash" style="--rise-delay:0ms">
           <Picture
             src={screens.dashboard}
             alt=""
@@ -108,8 +109,8 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
             decoding="async"
             class="block h-auto w-full"
           />
-        </div>
-        <div class="shot shot-parent">
+        </DeviceFrame>
+        <DeviceFrame kind="phone" rise="load" class="shot shot-parent" style="--rise-delay:80ms">
           <Picture
             src={screens.parentHome}
             alt=""
@@ -124,8 +125,8 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
             decoding="async"
             class="block h-auto w-full"
           />
-        </div>
-        <div class="shot shot-admin">
+        </DeviceFrame>
+        <DeviceFrame kind="phone" rise="load" class="shot shot-admin" style="--rise-delay:160ms">
           <Picture
             src={screens.adminApp}
             alt=""
@@ -140,7 +141,7 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
             decoding="async"
             class="block h-auto w-full"
           />
-        </div>
+        </DeviceFrame>
       </div>
     </div>
   </Container>
@@ -161,35 +162,34 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
   .hero-title {
     /* ~64px at 1440 (Figma), fluid and rem-based so browser text zoom still scales it. */
     font-size: clamp(2.375rem, 0.5rem + 4.1vw, 3.75rem);
-    line-height: var(--lh-normal);
+    line-height: 1.15;
     text-wrap: balance;
   }
   :global(:root:lang(ar)) .hero-title {
     font-size: clamp(2.375rem, 0.5rem + 4.1vw, 3.75rem);
+    line-height: var(--lh-normal);
   }
 
-  /* Composite: shared look. */
+  /* Composite: the frames come from ui/DeviceFrame; here only the layout and the soft blob behind them
+     (one large-opposite-corner tint shape, offset down and to the end, as in the art direction). */
   .composite {
     position: relative;
+    isolation: isolate;
     width: 100%;
     max-width: 34rem;
     margin-inline: auto;
   }
-  .shot {
-    overflow: hidden;
-    background: var(--color-surface);
-    border: 1px solid var(--color-stroke-green);
-    box-shadow: 0 1.5rem 2.5rem -1.25rem color-mix(in srgb, var(--color-primary-text) 38%, transparent);
-  }
-  .shot-dash {
-    border-radius: 1.25rem;
-  }
-  .shot-parent,
-  .shot-admin {
-    border-radius: 1.5rem;
-    border-width: 3px;
-    border-color: var(--color-primary-text);
-    box-shadow: 0 1.75rem 2.5rem -1rem color-mix(in srgb, var(--color-primary-text) 45%, transparent);
+  .composite::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset-block: 6% -4%;
+    inset-inline: 4% -3%;
+    background: var(--color-primary-bg);
+    border-start-start-radius: 6rem;
+    border-end-end-radius: 6rem;
+    border-start-end-radius: 1.5rem;
+    border-end-start-radius: 1.5rem;
   }
 
   /* Mobile / tablet: phones stack under the dashboard, overlapping its lower edge a little. */
@@ -199,19 +199,19 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
     gap: 1rem;
     padding-inline: 0;
   }
-  .shot-dash {
+  .composite :global(.shot-dash) {
     grid-column: 1 / -1;
   }
-  .shot-parent,
-  .shot-admin {
+  .composite :global(.shot-parent),
+  .composite :global(.shot-admin) {
     width: min(100%, 11.5rem);
     margin-top: -2.5rem;
     position: relative;
   }
-  .shot-parent {
+  .composite :global(.shot-parent) {
     justify-self: end;
   }
-  .shot-admin {
+  .composite :global(.shot-admin) {
     justify-self: start;
     margin-top: -1rem;
   }
@@ -223,22 +223,22 @@ const wa = whatsappStart(locale, regionsT.whatsappMessage);
       /* height = phone height + breathing room; everything is a % of the box so it scales as one piece */
       aspect-ratio: 1 / 0.86;
     }
-    .shot {
+    .composite :global(.shot) {
       position: absolute;
     }
-    .shot-dash {
+    .composite :global(.shot-dash) {
       top: 0;
       inset-inline-end: 0;
       width: 92%;
     }
-    .shot-parent {
+    .composite :global(.shot-parent) {
       bottom: 0;
       inset-inline-start: 0;
       width: 35%;
       margin: 0;
       z-index: 2;
     }
-    .shot-admin {
+    .composite :global(.shot-admin) {
       bottom: 0;
       inset-inline-end: 0;
       width: 29%;

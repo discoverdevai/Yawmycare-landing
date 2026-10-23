@@ -2,15 +2,14 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
-import AnimatedImage from "@/components/ui/AnimatedImage.astro";
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
 /**
  * 05 · "Built for how nurseries really work" (nav: Why Yawmy, #why).
  * Six feature cards (1 column, 2 from 640, 3 from 1024, so 3 x 2 at desktop) on the `feature` blob. Icon beside the title at every width and
- * no min-height, so a card is as tall as its text. Four cards use the pre-optimised animated WebP illustrations
- * (docs/sections/05-features/optimise-illustrations.mjs, ui/AnimatedImage); announcements and safety use an inline line icon on a
- * round tint because no illustration exists for them. Only capabilities that exist in the Figma app designs (docs/research/app-coverage.md).
+ * no min-height, so a card is as tall as its text. Every card uses the same calm static icon tile (ui/Icon `tile`, docs/FIX-LOG-art-direction.md); the old animated
+ * illustrations clashed with the line language and were removed. Only capabilities that exist in the Figma app designs (docs/research/app-coverage.md).
  */
 interface Props {
   locale: Locale;
@@ -19,22 +18,18 @@ interface Props {
 const { locale } = Astro.props;
 const t = getDictionary(locale).sections.features;
 
-type Img = { default: ImageMetadata };
-const files = import.meta.glob<Img>("@/assets/features/*.webp", { eager: true });
-const img = (name: string) => {
-  const found = files[`/src/assets/features/${name}.webp`];
-  if (!found) throw new Error(`Feature illustration "${name}" not found in src/assets/features`);
-  return found.default;
-};
-
 // The Arabic card gets a small "عربي" pill in the Arabic locale only.
 // The Arabic card gets a small "عربي" pill in the Arabic locale only.
 const showBadge = (id: string) => locale === "ar" && id === "arabic";
 
-// Line icons (24 box, stroke only) for the cards without an animated illustration.
-const lineIcons: Record<string, string> = {
-  announcements: "M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Zm13.5-2.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12",
-  safety: "M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 5v5m0 3h.01",
+// One icon language (ui/Icon tile): 2px rounded line + a soft tint shape; the accent dot only where it means "new".
+const featureIcons: Record<string, { name: IconName; dot?: boolean }> = {
+  "one-tap-checkin": { name: "pin-check" },
+  announcements: { name: "bell", dot: true },
+  safety: { name: "health" },
+  "know-who-read": { name: "checks" },
+  evenings: { name: "moon" },
+  arabic: { name: "language" },
 };
 ---
 
@@ -42,35 +37,18 @@ const lineIcons: Record<string, string> = {
   <SectionHeader slot="header" id="features-title" title={t.title} />
   <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
     {t.items.map((item) => {
-      const icon = lineIcons[item.id];
+      const icon = featureIcons[item.id] ?? { name: "sparkle" as IconName };
       return (
-        <BlobCard as="li" shape="feature" stretch fillContent contentClass="flex flex-1 flex-col gap-4 p-6 xl:p-8">
+        <BlobCard
+          as="li"
+          shape="feature"
+          stretch
+          fillContent
+          class="lift"
+          contentClass="flex flex-1 flex-col gap-4 p-6 xl:p-8"
+        >
           <div class="flex items-center gap-4">
-            {icon ? (
-              <span class="bg-primary-bg text-primary-text flex size-20 shrink-0 items-center justify-center rounded-full">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="40"
-                  height="40"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d={icon} />
-                </svg>
-              </span>
-            ) : (
-              <AnimatedImage
-                src={img(item.id)}
-                still={img(`${item.id}-still`)}
-                width={80}
-                height={80}
-                class="size-20 shrink-0"
-              />
-            )}
+            <Icon name={icon.name} size={32} tile dot={icon.dot} />
             <h3 class="text-title text-primary-text min-w-0 font-black">{item.title}</h3>
           </div>
           <p class="text-body text-ink">{item.body}</p>

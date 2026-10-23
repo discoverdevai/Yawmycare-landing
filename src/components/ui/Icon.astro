@@ -6,18 +6,26 @@ const icons = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unkn
 });
 
 export type IconName =
+  | "bell"
   | "calendar"
+  | "camera"
+  | "chat"
+  | "checks"
   | "clock"
   | "facebook"
   | "instagram"
+  | "health"
   | "language"
   | "linkedin"
   | "minus"
+  | "moon"
+  | "pin-check"
   | "plus"
   | "profile"
   | "quote"
   | "school"
   | "sms"
+  | "sparkle"
   | "video-circle"
   | "whatsapp";
 
@@ -27,19 +35,89 @@ interface Props extends Omit<HTMLAttributes<"svg">, "name"> {
   size?: number;
   /** Provide only when the icon carries meaning by itself; otherwise it is hidden from assistive tech. */
   label?: string;
+  /**
+   * Art-direction tile (docs/FIX-LOG-art-direction.md): the 2px rounded line icon in `primary-cta-strong` over one soft
+   * `primary-bg` shape offset towards the end/bottom corner, on a quiet square. `size` is the glyph; the tile is twice
+   * that unless a parent sets `--tile` (e.g. `[--tile:7rem]`). Plain icons (buttons, form fields) stay un-tiled.
+   */
+  tile?: boolean;
+  /** Tile only: the single small accent dot (new / unread), top end. Use only where it adds meaning. */
+  dot?: boolean;
 }
 
-const { name, size = 24, label, ...attrs } = Astro.props;
+const { name, size = 24, label, tile = false, dot = false, class: className, ...attrs } = Astro.props;
 const Svg = icons[`/src/assets/icons/${name}.svg`]?.default;
 if (!Svg) throw new Error(`Icon "${name}" not found in src/assets/icons`);
 ---
 
-<Svg
-  width={size}
-  height={size}
-  aria-hidden={label ? undefined : "true"}
-  aria-label={label}
-  role={label ? "img" : undefined}
-  focusable="false"
-  {...attrs}
-/>
+{tile ? (
+  <span
+    class:list={["icon-tile", className]}
+    style={`--tile-d:${size * 2}px`}
+    data-dot={dot ? "" : undefined}
+    {...attrs}
+  >
+    <Svg
+      width={size}
+      height={size}
+      aria-hidden={label ? undefined : "true"}
+      aria-label={label}
+      role={label ? "img" : undefined}
+      focusable="false"
+    />
+  </span>
+) : (
+  <Svg
+    width={size}
+    height={size}
+    class={className}
+    aria-hidden={label ? undefined : "true"}
+    aria-label={label}
+    role={label ? "img" : undefined}
+    focusable="false"
+    {...attrs}
+  />
+)}
+
+<style>
+  .icon-tile {
+    --tile-size: var(--tile, var(--tile-d));
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    inline-size: var(--tile-size);
+    block-size: var(--tile-size);
+    border-radius: 28%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-stroke-green);
+    color: var(--color-primary-cta-strong);
+    isolation: isolate;
+  }
+  /* The soft tint shape sits behind the glyph, shifted down and towards the end corner (RTL mirrors it). */
+  .icon-tile::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inline-size: 62%;
+    block-size: 62%;
+    inset-block-start: 22%;
+    inset-inline-start: 24%;
+    border-radius: 50%;
+    background: var(--color-primary-bg);
+  }
+  .icon-tile > :global(svg) {
+    inline-size: 50%;
+    block-size: 50%;
+  }
+  .icon-tile[data-dot]::after {
+    content: "";
+    position: absolute;
+    inline-size: max(8px, 12%);
+    block-size: max(8px, 12%);
+    inset-block-start: 12%;
+    inset-inline-end: 12%;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+</style>
