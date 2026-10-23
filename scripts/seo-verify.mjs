@@ -51,6 +51,14 @@ for (const l of ["en", "ar"]) {
     ),
     "no retired claims (100 m, 15/20 min, old tagline, Arabic-first)",
   );
+  // Owner decision 38 (POC): no security / data-protection / privacy claims in the visible page text or the Security anchor.
+  const retired38 =
+    /encrypt|backed up|backups?|retention|your data (stays|is yours|belongs)|data belongs|permanently delet|GDPR|PDPL|complian|security|access by role|تشفير|مشفّر|مشفر|نسخ احتياطي|نسخة احتياطية|بياناتك ملك|بياناتك مشفّرة|الاحتفاظ بالبيانات|الأمان|امتثال/i;
+  const hit38 = text.match(retired38);
+  ok(!hit38, `no security/data claims (decision 38)${hit38 ? ": " + hit38[0] : ""}`);
+  ok(!/href="#security"|id="security"/.test(h), "no #security anchor or section");
+  const ld = blocks.map((b) => b[1]).join(" ");
+  ok(!retired38.test(ld), "no security/data claims in JSON-LD");
 }
 // Fonts: every @font-face in the built CSS must declare font-display (no invisible text while a font loads).
 {
@@ -75,4 +83,10 @@ for (const f of [
   "robots.txt",
 ])
   ok(statSync(`dist/${f}`, { throwIfNoEntry: false })?.size > 0, f);
+ok(
+  !/encrypt|backed up|backups?|retention|your data|access by role|#security|security|GDPR|PDPL/i.test(
+    readFileSync("dist/llms.txt", "utf8"),
+  ),
+  "llms.txt has no security/data claims (decision 38)",
+);
 process.exit(fail ? 1 : 0);

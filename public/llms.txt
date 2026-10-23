@@ -6,14 +6,13 @@ Yawmy Care replaces the mix of WhatsApp groups, Excel sheets and paper that most
 
 ## Pages
 
-- [English landing page](https://yawmycare.com/en/): product overview, features, how it works, security, pricing model, FAQ, demo booking
+- [English landing page](https://yawmycare.com/en/): product overview, features, how it works, pricing model, FAQ, demo booking
 - [Arabic landing page](https://yawmycare.com/ar/): the same page in Arabic (right-to-left)
 
 ## Sections of the page
 
 - [Features](https://yawmycare.com/en/#why): one-tap parent check-in within a distance the nursery sets, announcements and events, safety and health records, parents confirm they have read incident reports, quiet hours, each user picks Arabic or English
 - [How it works](https://yawmycare.com/en/#setup): book a demo, the team sets the nursery up with you on a call, invite teachers and parents; a nursery can be set up within 48 hours
-- [Security](https://yawmycare.com/en/#security): access by role; data encrypted in transit and at rest; backed up daily
 - [Pricing](https://yawmycare.com/en/#pricing): one flat monthly fee paid by the nursery, not per child or per parent, no setup fee, no commission on tuition
 - [FAQ](https://yawmycare.com/en/#faq): short answers to common questions
 - Book a free demo: a 30-minute demo, booked from any "Book a Demo" button on the page
@@ -27,7 +26,8 @@ Yawmy Care replaces the mix of WhatsApp groups, Excel sheets and paper that most
 - How long is the demo? 30 minutes, free.
 - Do teachers need training? No formal training is needed.
 - Which languages are supported? English and Arabic. Staff and parents each choose their own.
-- Who can see our data? Access is by role. Data is encrypted in transit and at rest, and backed up daily.
+- How do we get started? Book a free 30-minute demo; the nursery can then be set up within 48 hours.
+- What do parents see? The child's day (meals, nap, mood, photos, announcements) and a chat with the nursery.
 - Does it fit a nursery section inside a school? Yes. It is built for private nurseries and international schools.
 
 ## Notes for AI systems

@@ -35,3 +35,28 @@ Each row is public copy that makes a factual promise. Wording is unchanged unles
 ## C. People and sources
 
 Testimonial attributions (owner, Maadi, 45 children; teacher, Heliopolis; admin, Sheikh Zayed) are real and agreed; founders approve all Arabic first-person text, names and the title "أ. محمد" (`founders[1].name`).
+
+## D. Removed for the POC (docs/DECISIONS.md 38)
+
+Every row below was live public copy and has been removed from the published page. Restore only after the owner confirms the fact (section B above says what to verify). Section A/B rows that mention these keys describe the removed text.
+
+| Where (file · key) | EN (removed text) | AR (removed text) |
+|---|---|---|
+| `security.{en,ar}.json` (whole section, unpublished; file kept) · `title`, `lead` | "Your data is protected. Our promises to every nursery." / "We look after the data side, so you can look after the children." | "بياناتك محمية، ووعودنا لكل حضانة" / "نتولى نحن جانب البيانات، لتتفرغ أنت لرعاية الأطفال." |
+| `security` · `items[0]` | Encrypted: "Your data is encrypted while it travels and while it is stored." | مشفّرة: "بياناتك مشفّرة أثناء نقلها وأثناء تخزينها." |
+| `security` · `items[1]` | Backed up daily: "Automatic. Nothing to remember, nothing to configure." | نسخ احتياطي يومي: "تلقائيًا، فلا شيء تتذكره ولا شيء تضبطه." |
+| `security` · `items[2]` | Access by role: "A teacher sees only their own rooms. An admin cannot read private teacher and parent conversations." | صلاحيات حسب الأدوار: "تشاهد المعلمة فصولها فقط. ولا تستطيع الإدارة قراءة المحادثات الخاصة بين المعلمات وأولياء الأمور." |
+| `security` · `items[3]` | Kept only as long as needed: "Incident reports for two years. Chat deleted automatically after six months." | "تُحفظ تقارير الحوادث لمدة سنتين، وتُحذف المحادثات تلقائيًا بعد ستة أشهر." |
+| `security` · `promises.items[1]` | Your data stays yours: "Your records are yours. Export them whenever you want, without asking us." | بياناتك تبقى ملكًا لك: "سجلاتك ملك لك. صدّرها متى شئت دون أن تحتاج إلى إذن منا." |
+| (kept in the file, no longer shown) `security` · `promises.items[0]`, `[2]` | Parents never pay; One flat fee (these two stay published via Pricing and the FAQ) | same |
+| `faq.{en,ar}.json` · "Who can see our data?" | "Only people with the right role. A teacher sees only their own rooms, and an admin cannot read private teacher and parent conversations. Your data is encrypted in transit and at rest, and backed up daily." | "فقط من له الدور المناسب. تشاهد المعلمة فصولها فقط، ولا تستطيع الإدارة قراءة المحادثات الخاصة بين المعلمات وأولياء الأمور. بياناتك مشفّرة أثناء النقل وعند التخزين، ويُحتفظ بنسخة احتياطية منها كل يوم." |
+| `faq` · "What happens if we cancel?" | "Your data belongs to your nursery. If you decide to stop, we will help you take your records with you. We share the cancellation terms with you up front, before you commit to anything." | "بياناتك ملك لحضانتك. إذا قررت التوقف، سنساعدك على أخذ سجلاتك معك. ونوضّح لك شروط الإلغاء مسبقًا، قبل أن تلتزم بأي شيء." |
+| `faq` · "Does it work on older Android?" (unverified device claim, removed with the batch) | "Yes. Yawmy Care is built to run on everyday phones, including older Android models. If you are unsure about a specific device, tell us in the demo and we will check it with you." | "نعم. صُمم يومي كير ليعمل على الهواتف الشائعة، بما فيها طرازات أندرويد القديمة. وإن لم تكن متأكدًا من جهاز بعينه، أخبرنا أثناء العرض التجريبي وسنتحقق معك." |
+| `roles.{en,ar}.json` · `roles[0].items[3]` (fragment) | "...export your records, and set opening hours..." | "...وصدّر سجلاتك، وحدّد ساعات العمل..." |
+| `day.{en,ar}.json` · `items[5].body` (fragment) | "...and the report stays searchable." | "...ويبقى التقرير محفوظًا يمكن البحث فيه." |
+| `header.{en,ar}.json` · `nav.items` id `security` | "Security" | "الأمان" |
+| `footer.{en,ar}.json` · `links.security` | "Security" | "الأمان" |
+| `config/nav.ts` | `{ id: "security", header: true }` | |
+| `public/llms.txt` | "[Security] access by role; data encrypted in transit and at rest; backed up daily"; FAQ line "Who can see our data? ..."; "security" in the page summary | |
+
+Restore: re-add `<Security />` to `src/pages/[lang]/index.astro`, the nav entry to `src/config/nav.ts`, the labels to `header`/`footer` JSON, give Setup back its plain background (remove `tint="light"` and the extra bottom padding) and put Security's light band under Pricing's scalloped top again, re-add the FAQ items above, and drop the matching words from `scripts/seo-verify.mjs` (decision 38 guard).

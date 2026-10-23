@@ -12,6 +12,10 @@
       "answer": "No, never. Parents use the app for free. The nursery pays."
     },
     {
+      "question": "How do we get started?",
+      "answer": "Book a 30-minute demo. We show you Yawmy Care with your own nursery in mind, then set it up with you within 48 hours."
+    },
+    {
       "question": "How long does setup take?",
       "answer": "Within 48 hours. Book a 30-minute demo, then we set up your nursery with you: classes, children and teachers. You invite parents and start your first day."
     },
@@ -20,24 +24,20 @@
       "answer": "No formal training. The screens are simple, and we walk your team through the basics during setup."
     },
     {
-      "question": "Is the app available in Arabic?",
-      "answer": "Yes, in Arabic and English. Switch language anytime."
+      "question": "How does check-in work?",
+      "answer": "Parents check in and out from the gate in one tap, within a distance you set. Teachers can also mark a child in by hand."
     },
     {
-      "question": "Who can see our data?",
-      "answer": "Only people with the right role. A teacher sees only their own rooms, and an admin cannot read private teacher and parent conversations. Your data is encrypted in transit and at rest, and backed up daily."
-    },
-    {
-      "question": "What happens if we cancel?",
-      "answer": "Your data belongs to your nursery. If you decide to stop, we will help you take your records with you. We share the cancellation terms with you up front, before you commit to anything."
+      "question": "What do parents see in the app?",
+      "answer": "The child's day: meals, nap, mood, photos and announcements, without having to message anyone. They can also chat with the nursery in the app."
     },
     {
       "question": "Can we stop using WhatsApp and Excel?",
       "answer": "Yes. Most nurseries start there, so we help you bring your existing lists across during setup. Attendance, daily updates and parent messages then live in one place."
     },
     {
-      "question": "Does it work on older Android?",
-      "answer": "Yes. Yawmy Care is built to run on everyday phones, including older Android models. If you are unsure about a specific device, tell us in the demo and we will check it with you."
+      "question": "Is the app available in Arabic?",
+      "answer": "Yes, in Arabic and English. Switch language anytime."
     },
     {
       "question": "We run a nursery inside a school. Is Yawmy Care a fit?",

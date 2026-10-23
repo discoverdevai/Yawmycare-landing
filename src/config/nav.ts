@@ -1,20 +1,19 @@
 /**
- * The seven in-page sections shared by the header nav, the footer nav, the mobile menu and the scroll-spy.
+ * The six in-page sections shared by the header nav, the footer nav, the mobile menu and the scroll-spy.
  * The section ids are the contract (every section element carries its id); labels come from
  * `sections.header.nav.items` (one label per id, so header, menu and footer always agree, WCAG 3.2.4).
  *
- * `header: true` = shown as a text link in the desktop header row (5 links; Home is the logo link, so it has no
- * separate text link there). The footer nav and the menu panel (below the desktop breakpoint) list all seven, and the
- * scroll-spy tracks all seven whether or not they are in the header.
+ * `header: true` = shown as a text link in the desktop header row (4 links; Home is the logo link, so it has no
+ * separate text link there). The footer nav and the menu panel (below the desktop breakpoint) list all six, and the
+ * scroll-spy tracks all six whether or not they are in the header.
  *
- * Commitments (merged into #security) and Founders (unpublished until consent) have no entry: docs/DECISIONS.md 27-29.
+ * Commitments, Security (unpublished for the POC, docs/DECISIONS.md 38) and Founders (unpublished until consent) have no entry: docs/DECISIONS.md 27-29, 38.
  */
 export const navItems = [
   { id: "home", header: false },
   { id: "day", header: false },
   { id: "why", header: true },
   { id: "setup", header: true },
-  { id: "security", header: true },
   { id: "pricing", header: true },
   { id: "faq", header: true },
 ] as const;

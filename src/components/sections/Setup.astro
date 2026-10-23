@@ -6,7 +6,7 @@ import ConnectorLines from "./setup/ConnectorLines.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
 /**
- * Section 06 "How it works": four numbered steps on BlobCard shape="step" joined by dashed connector lines. No CTA band
+ * Section 06 "How it works" (light band that runs under pricing's scalloped top, docs/DECISIONS.md 38): four numbered steps on BlobCard shape="step" joined by dashed connector lines. No CTA band
  * here (the Final CTA is the only band on the page, docs/DECISIONS.md 29).
  *
  *  >= 1024  four columns; numbered circle above each card, one horizontal dashed rail with a drop per
@@ -35,7 +35,7 @@ const railDot =
   "lg:before:rounded-full lg:before:bg-stroke-green lg:before:content-['']";
 ---
 
-<Section id="setup" headingId="setup-title" gap="loose">
+<Section id="setup" headingId="setup-title" gap="loose" tint="light" class="pb-[calc(var(--band-py)+var(--wave-h))]">
   <SectionHeader slot="header" id="setup-title" title={t.title} lead={t.lead} />
 
   <div class="flex flex-col gap-8 lg:gap-12">

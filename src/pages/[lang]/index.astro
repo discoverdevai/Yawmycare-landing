@@ -8,7 +8,6 @@ import Compare from "@/components/sections/Compare.astro";
 import Proof from "@/components/sections/Proof.astro";
 import Roles from "@/components/sections/Roles.astro";
 import Setup from "@/components/sections/Setup.astro";
-import Security from "@/components/sections/Security.astro";
 import Pricing from "@/components/sections/Pricing.astro";
 import Faq from "@/components/sections/Faq.astro";
 import FinalCta from "@/components/sections/FinalCta.astro";
@@ -24,9 +23,9 @@ export function getStaticPaths() {
 const locale = Astro.params.lang as Locale;
 
 //  Page order and joins (docs/FIX-LOG-final-structure.md): hero (scalloped bottom) -> [proof: renders nothing while config/proof.ts is empty]
-//  -> roles (plain, so the hero scallop meets cream) -> day (light) -> features -> compare (sec) -> how it works (setup) -> security + promises (light, runs under
+//  -> roles (plain, so the hero scallop meets cream) -> day (light) -> features -> compare (sec) -> how it works (setup, light, runs under
 //  pricing's scalloped top) -> pricing -> FAQ (sec) -> final CTA + footer (scalloped top). Everything else is a flat join.
-//  Testimonials and Founders are unpublished (docs/DECISIONS.md 27-28); Commitments is merged into Security (29).
+//  Testimonials and Founders are unpublished (docs/DECISIONS.md 27-28); Security is unpublished for the POC (38).
 //  FinalCta must be the last section in <main> with Footer straight after it (the footer overlaps the band).
 ---
 
@@ -40,7 +39,6 @@ const locale = Astro.params.lang as Locale;
   <Features locale={locale} />
   <Compare locale={locale} />
   <Setup locale={locale} />
-  <Security locale={locale} />
   <Pricing locale={locale} />
   <Faq locale={locale} />
   <FinalCta locale={locale} />
