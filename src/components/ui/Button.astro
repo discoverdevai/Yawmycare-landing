@@ -14,7 +14,6 @@ import { getDictionary, isLocale } from "@/i18n";
  *  on-green          light fill, dark-green text                (primary on a green band)
  *  on-green-outline  white border + text                        (secondary on a green band)
  *  icon              56px round, tab-colour fill, language icon (language switch)
- *  social-bar        40px round, cream fill                     (top bar)
  *  social-footer     40px round, coral fill                     (footer)
  *
  * The icon sits first in the inline direction. Figma's AR frame (1434:3765) has it on the right, which
@@ -28,7 +27,6 @@ type Variant =
   | "on-green"
   | "on-green-outline"
   | "icon"
-  | "social-bar"
   | "social-footer";
 
 interface Props extends Omit<HTMLAttributes<"a">, "type"> {
@@ -38,7 +36,7 @@ interface Props extends Omit<HTMLAttributes<"a">, "type"> {
   /** Overrides the variant's default icon; `null` removes it. Icon-only variants must have one. */
   icon?: IconName | null;
   iconPosition?: "start" | "end";
-  /** Required for icon-only variants (icon / social-bar / social-footer): the accessible name. */
+  /** Required for icon-only variants (icon / social-footer): the accessible name. */
   label?: string;
   /** Full width (stacked buttons on mobile). */
   block?: boolean;
@@ -65,7 +63,7 @@ const {
   ...attrs
 } = Astro.props;
 
-const iconOnly = variant === "icon" || variant === "social-bar" || variant === "social-footer";
+const iconOnly = variant === "icon" || variant === "social-footer";
 const defaultIcons: Record<Variant, IconName | null> = {
   primary: "calendar",
   outline: "video-circle",
@@ -74,7 +72,6 @@ const defaultIcons: Record<Variant, IconName | null> = {
   "on-green": "calendar",
   "on-green-outline": "video-circle",
   icon: "language",
-  "social-bar": null,
   "social-footer": null,
 };
 const iconName = icon === undefined ? defaultIcons[variant] : icon;
@@ -111,7 +108,6 @@ const variants: Record<Variant, string> = {
   "on-green": `${labelled} ${ringLight} bg-primary-bg-light text-primary-text hover:bg-primary-bg active:bg-primary-bg disabled:hover:bg-surface-tabs`,
   "on-green-outline": `${labelled} ${ringLight} border border-ink-inverse text-ink-inverse hover:bg-primary-cta-hover active:bg-primary-cta-hover`,
   icon: `size-14 ${ringDark} bg-surface-tabs text-ink hover:bg-primary-bg active:bg-primary-bg`,
-  "social-bar": `size-[min(2.5rem,calc((100vw-2rem-2.25rem)/4))] ${ringDark} ${hitArea} bg-surface text-ink hover:bg-primary-bg active:bg-primary-bg`,
   // Footer is the light green (primary-bg): the ring must be dark (8.2:1 there, 3.3:1 against the coral button).
   "social-footer": `size-[min(2.5rem,calc((100vw-2rem-2.25rem)/4))] ${ringDark} ${hitArea} bg-accent text-ink-inverse hover:bg-accent-text active:bg-accent-text`,
 };

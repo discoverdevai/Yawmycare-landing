@@ -5,6 +5,8 @@ import Hero from "@/components/sections/Hero.astro";
 import Testimonials from "@/components/sections/Testimonials.astro";
 import DayTimeline from "@/components/sections/DayTimeline.astro";
 import Features from "@/components/sections/Features.astro";
+import Compare from "@/components/sections/Compare.astro";
+import Proof from "@/components/sections/Proof.astro";
 import Setup from "@/components/sections/Setup.astro";
 import Security from "@/components/sections/Security.astro";
 import Commitments from "@/components/sections/Commitments.astro";
@@ -23,7 +25,7 @@ export function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 
-//  Page order and wave joins (spec §8.1): hero → testimonials → day (down) → features (up) → setup (down)
+//  Page order and wave joins (spec §8.1): hero → testimonials → [proof: renders only when config/proof.ts has entries] → day (down) → features (up) → compare (down) → setup (down)
 //  → security (up) → commitments (down) → pricing (up) → founders (down) → FAQ (up) → final CTA + footer.
 //  FinalCta must be the last section in <main> with Footer straight after it (the footer overlaps the band).
 ---
@@ -33,8 +35,10 @@ const locale = Astro.params.lang as Locale;
   <Header slot="header" locale={locale} />
   <Hero locale={locale} />
   <Testimonials locale={locale} />
+  <Proof locale={locale} />
   <DayTimeline locale={locale} />
   <Features locale={locale} />
+  <Compare locale={locale} />
   <Setup locale={locale} />
   <Security locale={locale} />
   <Commitments locale={locale} />

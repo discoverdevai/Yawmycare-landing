@@ -1,20 +1,44 @@
 {
-  "topbar": {
-    "socialLabel": "تابع يومي كير"
-  },
   "nav": {
     "label": "التنقل الرئيسي",
     "menu": "القائمة",
     "items": [
-      { "id": "home", "label": "الرئيسية" },
-      { "id": "day", "label": "يوم في حضانتك" },
-      { "id": "why", "label": "لماذا يومي كير" },
-      { "id": "setup", "label": "ابدأ خلال 20 دقيقة" },
-      { "id": "security", "label": "الأمان" },
-      { "id": "commitments", "label": "التزاماتنا" },
-      { "id": "pricing", "label": "الأسعار" },
-      { "id": "founders", "label": "المؤسسون" },
-      { "id": "faq", "label": "الأسئلة الشائعة" }
+      {
+        "id": "home",
+        "label": "الرئيسية"
+      },
+      {
+        "id": "day",
+        "label": "يوم في حضانتك"
+      },
+      {
+        "id": "why",
+        "label": "لماذا يومي كير"
+      },
+      {
+        "id": "setup",
+        "label": "ابدأ خلال 20 دقيقة"
+      },
+      {
+        "id": "security",
+        "label": "الأمان"
+      },
+      {
+        "id": "commitments",
+        "label": "التزاماتنا"
+      },
+      {
+        "id": "pricing",
+        "label": "الأسعار"
+      },
+      {
+        "id": "founders",
+        "label": "المؤسسون"
+      },
+      {
+        "id": "faq",
+        "label": "الأسئلة الشائعة"
+      }
     ]
   }
 }

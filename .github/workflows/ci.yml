@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type-check
+        run: npx astro check
+      - name: English/Arabic text files match
+        run: node docs/tools/check-i18n-parity.mjs
+      - name: Formatting
+        run: npx prettier --check src scripts astro.config.mjs
+      - name: Production build
+        run: npx astro build

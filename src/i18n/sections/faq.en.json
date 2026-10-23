@@ -3,11 +3,11 @@
   "items": [
     {
       "question": "How much does it cost?",
-      "answer": "Yawmy Care is one flat monthly fee, paid by the nursery. Book a demo and we will go through the details with you."
+      "answer": "One flat monthly fee, paid by the nursery. Book a demo and we will go through the details with you."
     },
     {
       "question": "Do parents pay anything?",
-      "answer": "No. Parents never pay anything. The nursery pays the flat monthly fee, and parents use the app for free."
+      "answer": "No. Parents use the app for free. The nursery pays."
     },
     {
       "question": "How long does setup take?",
@@ -20,10 +20,6 @@
     {
       "question": "Is the app fully in Arabic?",
       "answer": "Yes. Yawmy Care was built in Arabic from day one, not translated afterwards. Staff and parents can use it in Arabic or English, with full right-to-left support."
-    },
-    {
-      "question": "How does check-in work?",
-      "answer": "Teachers mark each child in when they arrive and out when they leave, right from the app. The attendance record is kept automatically, so there is nothing to copy into a spreadsheet later."
     },
     {
       "question": "Who can see our data?",
@@ -44,14 +40,6 @@
     {
       "question": "We are a school nursery section. Does this fit?",
       "answer": "Yes. Yawmy Care is built for private nurseries and international schools, including a nursery or early-years section inside a school. Talk to us and we will show you how it fits your setup."
-    },
-    {
-      "question": "Who is behind Yawmy Care?",
-      "answer": "Yawmy Care is built by Dr. Rana Mustafa and Mr. Mohammed, together with the nurseries they talked to along the way. Their story is in the Founders section above."
-    },
-    {
-      "question": "Do you work outside Egypt?",
-      "answer": "Yes. The app works anywhere in the region, in Arabic and English. We are onboarding nurseries in Egypt first, and more countries will follow."
     }
   ]
 }

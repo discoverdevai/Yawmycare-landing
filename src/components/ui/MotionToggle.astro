@@ -3,9 +3,12 @@ import { getDictionary, type Locale } from "@/i18n";
 
 /**
  * Page-level "pause animations" control (WCAG 2.2.2). One toggle for every <AnimatedImage>: while pressed, each
- * animation is swapped for its still frame. Fixed to the inline-start bottom corner so it never sits in the
- * content flow. Hidden without JS (it could do nothing) and when the visitor already prefers reduced motion
- * (every animation is a still then). State lives only in the page: nothing is stored.
+ * animation is swapped for its still frame. Fixed to the inline-start bottom corner so it never sits in the content
+ * flow. Below 640px it is a compact 36px button (above WCAG 2.5.8's 24px minimum) tucked into the corner and
+ * slightly translucent until hovered or focused, so it covers less of the full-width FAQ rows and buttons it floats
+ * over; `scroll-padding-bottom` keeps a keyboard-focused element out from under it. Hidden without JS (it could do
+ * nothing) and when the visitor already prefers reduced motion (every animation is a still then). State lives only
+ * in the page: nothing is stored.
  */
 interface Props {
   locale: Locale;
@@ -20,7 +23,7 @@ const label = getDictionary(Astro.props.locale).a11y.pauseAnimations;
   data-motion-toggle
   aria-pressed="false"
   title={label}
-  class="group bg-surface text-primary-text border-primary-cta-strong focus-visible:outline-focus hover:bg-primary-bg fixed bottom-4 start-4 z-40 flex size-11 items-center justify-center rounded-full border-2 shadow-md focus-visible:outline-2 focus-visible:outline-offset-2"
+  class="group bg-surface text-primary-text border-primary-cta-strong focus-visible:outline-focus hover:bg-primary-bg fixed start-4 bottom-4 z-40 flex size-11 items-center justify-center rounded-full border-2 shadow-md max-sm:start-2 max-sm:bottom-2 max-sm:size-9 max-sm:opacity-80 max-sm:hover:opacity-100 max-sm:focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
 >
   <span class="sr-only">{label}</span>
   <svg viewBox="0 0 24 24" class="size-5 group-aria-pressed:hidden" fill="currentColor" aria-hidden="true">
@@ -55,3 +58,9 @@ const label = getDictionary(Astro.props.locale).a11y.pauseAnimations;
     });
   }
 </script>
+
+<style is:global>
+  html {
+    scroll-padding-bottom: 4.5rem;
+  }
+</style>

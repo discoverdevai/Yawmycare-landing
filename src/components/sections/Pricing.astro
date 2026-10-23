@@ -11,7 +11,10 @@ import daycare from "@/assets/pricing/daycare.webp";
 import daycareStill from "@/assets/pricing/daycare-still.webp";
 import diplomacy from "@/assets/pricing/diplomacy.webp";
 import diplomacyStill from "@/assets/pricing/diplomacy-still.webp";
+import RegionSwitch from "@/components/ui/RegionSwitch.astro";
 import { getDictionary, type Locale } from "@/i18n";
+import { regions, showRegionUi, defaultRegionForLocale } from "@/config/site";
+import { formatPrice } from "@/config/region";
 
 /**
  * Section 09: flat-fee pricing card (no price on purpose), international-school card, "first 10" card.
@@ -19,6 +22,12 @@ import { getDictionary, type Locale } from "@/i18n";
  * docs/sections/09-pricing/assets-original) with a first-frame still for prefers-reduced-motion
  * (see ui/AnimatedImage.astro). Every demo CTA opens the booking dialog (`data-demo-open`, href="#demo").
  * Layout is logical, so RTL mirrors itself; blobs and illustrations are not mirrored.
+ *
+ * Price block (roadmap 2.2, docs/DECISIONS.md #16-#18): shows the CURRENT region's price ("From EGP 1,500 / month" +
+ * optional note) when the owner configured one, otherwise a "Ask for pricing in {region}" line that opens the demo
+ * dialog. Nothing is ever invented. Server-rendered for the locale's default region; the script at the bottom swaps it
+ * on `yawmy:region-change`. Numbers use Western digits in both locales; the figure sits in <bdi>. The whole block and the
+ * RegionSwitch are absent in production while no region has anything configured.
  */
 interface Props {
   locale: Locale;
@@ -28,10 +37,20 @@ const { locale } = Astro.props;
 const dict = getDictionary(locale);
 const t = dict.sections.pricing;
 const demo = { href: "#demo", "data-demo-open": "" };
+
+const startId = defaultRegionForLocale(locale);
+const start = regions[startId];
+const parts = (tpl: string) => tpl.split("{amount}");
+const [fromBefore = "", fromAfter = ""] = parts(t.price.from);
+const askText = t.price.ask.replace("{region}", dict.regions.names[startId]);
+const startNote = start.price ? (locale === "ar" ? start.price.noteAr || start.price.note : start.price.note) : "";
 ---
 
 <Section id="pricing" headingId="pricing-title" wave="up" shadow>
-  <SectionHeader slot="header" id="pricing-title" title={t.title} />
+  <div slot="header" class="flex flex-col gap-6">
+    <SectionHeader id="pricing-title" title={t.title} />
+    <RegionSwitch locale={locale} name="region-pricing" legend align="start" />
+  </div>
 
   <div class="flex flex-col gap-6 lg:gap-12">
     <BlobCard shape="pricing" contentClass="px-6 py-8 md:px-12 lg:px-20 lg:py-12">
@@ -39,6 +58,36 @@ const demo = { href: "#demo", "data-demo-open": "" };
         <div class="flex w-full flex-col gap-8 md:flex-1">
           <div class="flex flex-col gap-6">
             <h3 class="text-h3 text-primary-text font-bold">{t.plan.title}</h3>
+            {showRegionUi && (
+              <div
+                class="flex flex-col gap-1"
+                data-price-block
+                data-tpl-from={t.price.from}
+                data-tpl-per={t.price.perMonth}
+                data-tpl-ask={t.price.ask}
+                data-names={JSON.stringify(dict.regions.names)}
+              >
+                <p class="text-title text-ink font-bold" data-price-line hidden={!start.price}>
+                  {fromBefore}
+                  <bdi class="text-h3 text-primary-cta-strong">
+                    {start.price ? formatPrice(start.price.amount, start.currency, locale) : ""}
+                  </bdi>
+                  {fromAfter} <span class="text-ink-muted font-medium">{t.price.perMonth}</span>
+                </p>
+                <p class="text-body-sm text-ink-muted font-medium" data-price-note hidden={!startNote}>
+                  {startNote}
+                </p>
+                <p class="text-body-sm font-medium" data-price-ask hidden={!!start.price}>
+                  <a
+                    href="#demo"
+                    data-demo-open
+                    class="text-primary-cta-strong hover:text-primary-cta-hover focus-visible:outline-focus inline-flex min-h-11 items-center rounded-sm font-bold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
+                    <span data-ask-text>{askText}</span>
+                  </a>
+                </p>
+              </div>
+            )}
             <ul class="flex flex-col gap-4" aria-label={t.plan.itemsLabel}>
               {t.plan.items.map((item) => (
                 <li class="text-title flex items-start gap-2 font-medium">
@@ -63,7 +112,7 @@ const demo = { href: "#demo", "data-demo-open": "" };
     </BlobCard>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,384fr)_minmax(0,792fr)]">
-      <BlobCard shape="intl-school" class="flex flex-col [&>div]:flex-1" contentClass="p-8 flex flex-col gap-1">
+      <BlobCard shape="intl-school" stretch contentClass="p-8 flex flex-col gap-1">
         <AnimatedImage src={daycare} still={daycareStill} width={125} height={125} class="size-[125px] object-cover" />
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
@@ -80,11 +129,7 @@ const demo = { href: "#demo", "data-demo-open": "" };
         </div>
       </BlobCard>
 
-      <BlobCard
-        shape="first10"
-        class="flex flex-col [&>div]:flex-1"
-        contentClass="relative px-6 py-8 @min-[594px]:px-[7.3%] lg:py-[12.7%]"
-      >
+      <BlobCard shape="first10" stretch contentClass="relative px-6 py-8 @min-[594px]:px-[7.3%] lg:py-[12.7%]">
         <AnimatedImage
           src={diplomacy}
           width={170}
@@ -107,3 +152,40 @@ const demo = { href: "#demo", "data-demo-open": "" };
     </div>
   </div>
 </Section>
+
+<script>
+  import { onRegion, regionData, pageLocale } from "@/config/region-client";
+  import { formatPrice, type RegionId } from "@/config/region";
+
+  const block = document.querySelector<HTMLElement>("[data-price-block]");
+  const data = regionData();
+  if (block && data) {
+    const line = block.querySelector<HTMLElement>("[data-price-line]")!;
+    const note = block.querySelector<HTMLElement>("[data-price-note]")!;
+    const ask = block.querySelector<HTMLElement>("[data-price-ask]")!;
+    const askText = block.querySelector<HTMLElement>("[data-ask-text]")!;
+    const names = JSON.parse(block.dataset.names ?? "{}") as Record<RegionId, string>;
+    const locale = pageLocale();
+
+    const render = (region: RegionId) => {
+      const r = data[region];
+      const price = r.price;
+      line.hidden = !price;
+      ask.hidden = !!price;
+      const noteText = price ? (locale === "ar" ? price.noteAr || price.note : price.note) : "";
+      note.textContent = noteText;
+      note.hidden = !noteText;
+      askText.textContent = (block.dataset.tplAsk ?? "").replace("{region}", names[region] ?? "");
+      if (!price) return;
+      const [before = "", after = ""] = (block.dataset.tplFrom ?? "").split("{amount}");
+      const amount = document.createElement("bdi");
+      amount.className = "text-h3 text-primary-cta-strong";
+      amount.textContent = formatPrice(price.amount, r.currency, locale);
+      const per = document.createElement("span");
+      per.className = "text-ink-muted font-medium";
+      per.textContent = block.dataset.tplPer ?? "";
+      line.replaceChildren(before, amount, `${after} `, per);
+    };
+    onRegion(render);
+  }
+</script>

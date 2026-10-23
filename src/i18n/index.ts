@@ -10,6 +10,10 @@ import dayEn from "./sections/day.en.json";
 import dayAr from "./sections/day.ar.json";
 import featuresEn from "./sections/features.en.json";
 import featuresAr from "./sections/features.ar.json";
+import compareEn from "./sections/compare.en.json";
+import compareAr from "./sections/compare.ar.json";
+import proofEn from "./sections/proof.en.json";
+import proofAr from "./sections/proof.ar.json";
 import setupEn from "./sections/setup.en.json";
 import setupAr from "./sections/setup.ar.json";
 import securityEn from "./sections/security.en.json";
@@ -44,6 +48,8 @@ const en = {
     testimonials: testimonialsEn,
     day: dayEn,
     features: featuresEn,
+    proof: proofEn,
+    compare: compareEn,
     setup: setupEn,
     security: securityEn,
     commitments: commitmentsEn,
@@ -66,6 +72,8 @@ const ar: Dictionary = {
     testimonials: testimonialsAr,
     day: dayAr,
     features: featuresAr,
+    proof: proofAr,
+    compare: compareAr,
     setup: setupAr,
     security: securityAr,
     commitments: commitmentsAr,

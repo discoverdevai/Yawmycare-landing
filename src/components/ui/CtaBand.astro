@@ -1,0 +1,111 @@
+---
+import BlobCard from "@/components/ui/BlobCard.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { resolveLink, demoVideoUrl } from "@/config/site";
+
+/**
+ * The green call-to-action band: title, lead and the Book a Demo / Watch demo buttons. Shared by Setup and FinalCta.
+ *
+ *  size="band"   Setup's inline band (BlobCard "cta-band", 40px title, buttons side by side from a 640px card).
+ *  size="final"  the page-closing band (BlobCard "final-cta", `bleed`: the 910px blob runs under the footer's
+ *                scalloped edge; the card clips it at the bottom, and the bottom padding leaves room for the
+ *                footer overlap). 48px title, buttons side by side from 560px.
+ *
+ * The buttons live here because both bands show the same two: Book a Demo (`data-demo-open`) and, when
+ * PUBLIC_DEMO_VIDEO_URL is set (docs/ENV.md), Watch demo. With only one button it keeps its 386px cap and the row
+ * centres it. The fill is `primary-cta-strong`, not Figma's `primary-cta`: the 18px bold labels and the lead are
+ * normal-size text and need 4.5:1.
+ */
+interface Props {
+  locale: Locale;
+  title: string;
+  lead: string;
+  size?: "band" | "final";
+  headingLevel?: 2 | 3;
+  /** Id of the heading (for `aria-labelledby` on the section). */
+  id?: string;
+  /** Colour token name of the fill. */
+  fill?: string;
+  class?: string;
+}
+
+const {
+  locale,
+  title,
+  lead,
+  size = "band",
+  headingLevel = size === "band" ? 3 : 2,
+  id,
+  fill = "primary-cta-strong",
+  class: className = "",
+} = Astro.props;
+
+const dict = getDictionary(locale);
+const watch = resolveLink(demoVideoUrl);
+const final = size === "final";
+
+// Literal class strings (Tailwind scans source). Container-query breakpoints belong to the card's own width.
+const content = final
+  ? "px-6 pt-12 pb-[calc(var(--wave-h)+2rem)] @min-[560px]:px-10 @min-[900px]:px-[58px] @min-[900px]:pt-[88px]"
+  : "px-6 py-10 @min-[900px]:px-[58px] @min-[900px]:pt-12 @min-[900px]:pb-10";
+const row = final ? "@min-[560px]:flex-row" : "@min-[640px]:flex-row";
+const bookClass = !final
+  ? "@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0"
+  : watch.render
+    ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
+    : "@min-[560px]:w-[386px] @min-[560px]:flex-none";
+const watchClass = final ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none" : bookClass;
+---
+
+<BlobCard
+  shape={final ? "final-cta" : "cta-band"}
+  bleed={final}
+  fill={fill}
+  contentClass={content}
+  class:list={[final && "overflow-y-clip", className]}
+>
+  <div class="flex flex-col items-center gap-[30px] text-center">
+    {final ? (
+      <SectionHeader
+        id={id}
+        title={title}
+        lead={lead}
+        headingLevel={headingLevel}
+        align="center"
+        tone="on-green"
+        class="w-full"
+      />
+    ) : (
+      <div class="flex w-full min-w-0 flex-col items-center gap-(--lead-gap)">
+        <SectionHeader
+          id={id}
+          align="center"
+          tone="on-green"
+          size="band"
+          headingLevel={headingLevel}
+          title={title}
+          class="w-full min-w-0 [&_h3]:max-w-full [&_h3]:text-balance"
+        />
+        <p class="text-lead text-ink-inverse max-w-full">{lead}</p>
+      </div>
+    )}
+    <div class:list={["flex w-full flex-col items-stretch justify-center gap-4", row]}>
+      <Button variant="on-green" href="#demo" data-demo-open class={bookClass}>
+        {dict.cta.bookDemo}
+      </Button>
+      {watch.render && (
+        <Button
+          variant="on-green-outline"
+          href={watch.href}
+          external={!watch.unconfigured}
+          unconfigured={watch.unconfigured}
+          class={watchClass}
+        >
+          {dict.cta.watchDemo}
+        </Button>
+      )}
+    </div>
+  </div>
+</BlobCard>

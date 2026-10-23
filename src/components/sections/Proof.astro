@@ -1,0 +1,56 @@
+---
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { proofEntries } from "@/config/proof";
+
+/**
+ * Optional customers strip. Data-driven: renders ONLY when src/config/proof.ts has entries (it ships empty),
+ * so there is never a placeholder or invented customer on the page. See docs/PROOF.md.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.proof;
+
+type Img = { default: ImageMetadata };
+const logos = import.meta.glob<Img>("@/assets/proof/*.{png,webp,avif,jpg,jpeg}", { eager: true });
+const logoFor = (file?: string) => (file ? logos[`/src/assets/proof/${file}`]?.default : undefined);
+---
+
+{proofEntries.length > 0 && (
+  <Section id="customers" headingId="proof-title">
+    <SectionHeader slot="header" id="proof-title" title={t.title} />
+    <ul role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {proofEntries.map((entry) => {
+        const logo = logoFor(entry.logo);
+        return (
+          <li class="bg-surface-sec border-stroke-green rounded-card flex flex-col gap-4 border-2 p-6">
+            <blockquote class="text-title text-ink font-medium">{entry.quote[locale]}</blockquote>
+            <div class="mt-auto flex items-center gap-4">
+              {logo && (
+                <img
+                  src={logo.src}
+                  width={logo.width}
+                  height={logo.height}
+                  alt={t.logoAlt.replace("{name}", entry.name)}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-12 w-auto max-w-32 shrink-0 object-contain"
+                />
+              )}
+              <p class="text-caption text-primary-text font-bold">
+                <bdi>{entry.name}</bdi>
+                <span class="text-ink-muted block font-medium">
+                  {entry.role[locale]}, {entry.city[locale]}
+                </span>
+              </p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </Section>
+)}

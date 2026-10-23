@@ -1,0 +1,90 @@
+---
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
+
+/**
+ * One field of the Book a Demo form (Figma 1326:4515): label with the required cue, 48px input with a 24px leading
+ * icon, and the empty error line the script fills (`#demo-<name>-error`, linked with aria-describedby).
+ * `picker` is the date/time variant: no placeholder, and the icon is repeated at the end, where it sits under the
+ * browser's invisible native picker button. Icons sit on the inline start, so RTL mirrors for free.
+ * The `.demo-input` rules live in DemoModal.astro (scoped to #demo).
+ */
+interface Props {
+  name: string;
+  label: string;
+  icon: IconName;
+  type: "text" | "email" | "tel" | "date" | "time";
+  placeholder?: string;
+  autocomplete?: string;
+  maxlength?: number;
+  picker?: boolean;
+  autofocus?: boolean;
+  /** Default true. Optional fields (step 2) get no asterisk and no `required`. */
+  required?: boolean;
+  /** Fixed text direction, for values that are always Latin digits (the phone number). */
+  dir?: "ltr";
+}
+
+const {
+  name,
+  label,
+  icon,
+  type,
+  placeholder,
+  autocomplete,
+  maxlength,
+  picker = false,
+  autofocus,
+  required = true,
+  dir,
+} = Astro.props;
+const id = `demo-${name}`;
+const email = type === "email";
+
+const labelClass = "text-body-sm font-medium text-ink";
+const inputClass =
+  "demo-input h-12 w-full min-w-0 rounded-input border border-field-border bg-transparent text-body-sm text-ink " +
+  "placeholder:text-caption placeholder:text-ink-muted aria-[invalid=true]:border-accent-text " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
+const iconClass = "pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-muted";
+---
+
+<div>
+  <div class="flex flex-col gap-3">
+    <label for={id} class={labelClass}>
+      {label}
+      {required && (
+        <span aria-hidden="true" class="text-accent-text">
+          {" "}
+          *
+        </span>
+      )}
+    </label>
+    <div class="relative">
+      <span class={`${iconClass} start-3`}>
+        <Icon name={icon} />
+      </span>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        class={picker ? `${inputClass} demo-input--picker` : inputClass}
+        placeholder={placeholder}
+        autocomplete={picker ? "off" : autocomplete}
+        maxlength={maxlength}
+        required={required}
+        dir={dir}
+        aria-describedby={`${id}-error`}
+        autofocus={autofocus ? true : undefined}
+        inputmode={email ? "email" : type === "tel" ? "tel" : undefined}
+        autocapitalize={email ? "none" : undefined}
+        spellcheck={email ? "false" : undefined}
+      />
+      {picker && (
+        <span class={`${iconClass} end-3`}>
+          <Icon name={icon} />
+        </span>
+      )}
+    </div>
+  </div>
+  <p id={`${id}-error`} class="text-caption text-accent-text [&:not(:empty)]:mt-2"></p>
+</div>

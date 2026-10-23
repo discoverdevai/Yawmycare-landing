@@ -153,9 +153,41 @@ interface Props {
   fill?: string;
   /** Mirrors the SVG outline horizontally (e.g. founders: the scalloped edge sits opposite the photo). */
   flip?: boolean;
+  /**
+   * The card fills the height its parent gives it (equal-height grid rows / flex columns): the card is a flex column
+   * and the frame grows. The content layer keeps its own height unless `fillContent` is set. Replaces the `[&>div]:flex-1` selectors sections used to aim at this component's inner div.
+   * `true` always; `"sm"` / `"lg"` only from that viewport breakpoint up.
+   */
+  stretch?: boolean | "sm" | "lg";
+  /**
+   * The frame is as tall as its content, not the shape's native aspect ratio; the SVG keeps its native height,
+   * pinned to the top, and runs past the frame (clip it with `overflow-y-clip` on the card). Used by the final
+   * CTA, whose 910px blob is mostly covered by the footer's scalloped edge. The rounded fallback fills the frame.
+   */
+  bleed?: boolean;
+  /** With `stretch`: the content layer grows to the frame's height too (so `flex-1` / `mt-auto` inside it can pin to the bottom). */
+  fillContent?: boolean;
 }
 
-const { shape, as: Tag = "div", contentClass = "p-8", class: className = "", fill, flip = false } = Astro.props;
+const {
+  shape,
+  as: Tag = "div",
+  contentClass = "p-8",
+  class: className = "",
+  fill,
+  flip = false,
+  stretch = false,
+  bleed = false,
+  fillContent = false,
+} = Astro.props;
+
+// Literal class strings so Tailwind sees them: [outer card, frame, frame when the content layer fills it].
+const stretchClasses = {
+  true: ["flex flex-col", "flex-1", "flex flex-col"],
+  sm: ["sm:flex sm:flex-col", "sm:flex-1", "sm:flex sm:flex-col"],
+  lg: ["lg:flex lg:flex-col", "lg:flex-1", "lg:flex lg:flex-col"],
+} as const;
+const [stretchCard, stretchFrame, fillFrame] = stretch ? stretchClasses[stretch === true ? "true" : stretch] : [];
 
 const cfg: ShapeConfig = shapes[shape];
 const Svg = svgs[`/src/assets/shapes/${shape}.svg`]?.default;
@@ -165,13 +197,26 @@ const vars =
   `--blob-fill:${fill ? C(fill) : cfg.fill};` +
   `--blob-stroke:${cfg.stroke ?? "transparent"};` +
   `--blob-stroke-w:${cfg.strokeW ?? 0}px;` +
-  `--blob-ar:${cfg.w}/${cfg.h}`;
+  `--blob-ar:${cfg.w}/${cfg.h};` +
+  `--blob-h:${cfg.h}px`;
 ---
 
-<Tag class:list={["@container", className]} style={vars}>
-  <div class:list={["relative aspect-(--blob-ar)", cfg.relax, cfg.grow]}>
+<Tag class:list={["@container", stretchCard, className]} style={vars}>
+  <div
+    class:list={[
+      "relative",
+      !bleed && ["aspect-(--blob-ar)", cfg.relax, cfg.grow],
+      stretchFrame,
+      fillContent && fillFrame,
+    ]}
+  >
     <Svg
-      class:list={["pointer-events-none absolute inset-0 hidden size-full", flip && "-scale-x-100", cfg.show]}
+      class:list={[
+        "pointer-events-none absolute hidden",
+        bleed ? "inset-x-0 top-0 h-(--blob-h) w-full" : "inset-0 size-full",
+        flip && "-scale-x-100",
+        cfg.show,
+      ]}
       aria-hidden="true"
       focusable="false"
     />

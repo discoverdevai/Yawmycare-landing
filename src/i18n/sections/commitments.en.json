@@ -4,7 +4,7 @@
   "cards": {
     "charge": {
       "title": "We never charge parents",
-      "body": "We will never charge your parents. One flat fee, paid by the nursery. No commission on tuition."
+      "body": "One flat fee, paid by the nursery. No commission on tuition."
     },
     "dataYours": {
       "title": "Your data is yours",
@@ -12,7 +12,7 @@
     },
     "arabic": {
       "title": "Arabic is not a translation",
-      "body": "Arabic is not a translation layer. Full RTL, Arabic notifications, Arabic support."
+      "body": "Full right to left, Arabic notifications, Arabic support."
     },
     "human": {
       "title": "You can talk to a human",

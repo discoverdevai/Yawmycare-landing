@@ -74,7 +74,9 @@ const rtl = locale === "ar";
                   <span class="bg-primary-cta text-ink-inverse inline-flex size-8 shrink-0 items-center justify-center rounded-full">
                     <Icon name="profile" size={24} />
                   </span>
-                  <cite class="text-primary-text text-caption font-bold not-italic">{founder.name}</cite>
+                  <cite class="text-primary-text text-caption min-w-0 font-bold [overflow-wrap:anywhere] not-italic">
+                    {founder.name}
+                  </cite>
                 </footer>
               </blockquote>
             </BlobCard>

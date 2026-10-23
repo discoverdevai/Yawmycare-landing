@@ -1,71 +1,27 @@
 ---
-import FinalCtaBlob from "@/assets/shapes/final-cta.svg";
 import Container from "@/components/ui/Container.astro";
-import SectionHeader from "@/components/ui/SectionHeader.astro";
-import Button from "@/components/ui/Button.astro";
+import CtaBand from "@/components/ui/CtaBand.astro";
 import { getDictionary, type Locale } from "@/i18n";
-import { resolveLink, demoVideoUrl } from "@/config/site";
 
 /**
  * Section 12a: final CTA band (Figma 1457:4197, AR 1434:4017).
  *
  * The green blob is 1200x910 in Figma but only its top ~380px is visible: the footer's scalloped top edge
- * (see Footer.astro) overlaps its lower part. So the band keeps its bottom padding at `--wave-h` + 32 and
- * the footer pulls itself up by `--wave-h`; the blob continues underneath the footer wave.
- * The fill is primary-cta-strong, not Figma's green (primary-cta): white 18px bold text on it was 3.4:1 (same fix as the Setup band).
- * Like BlobCard, the blob is chosen by the band's own width: the SVG from 900px, a rounded card below.
+ * (see Footer.astro) overlaps its lower part. So the band (CtaBand size="final", a `bleed` BlobCard) keeps its
+ * bottom padding at `--wave-h` + 32 and the footer pulls itself up by `--wave-h`; the blob continues underneath
+ * the footer wave. Like every BlobCard, the blob is chosen by the band's own width: the SVG from 900px, a rounded
+ * card below. The band and its buttons are shared with Setup (ui/CtaBand.astro).
  */
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const t = getDictionary(locale);
-const s = t.sections.footer;
-
-// Demo video (env PUBLIC_DEMO_VIDEO_URL, docs/ENV.md): not rendered in production while unset. With one button
-// left, it keeps the 386px width and the row centres it (no stretched full-width button at 560-899).
-const watch = resolveLink(demoVideoUrl);
-const bothButtons = watch.render;
+const s = getDictionary(locale).sections.footer;
 ---
 
 <section id="contact" aria-labelledby="final-cta-title" class="relative">
-  <Container class="@container relative overflow-x-visible overflow-y-clip">
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-0"
-      style="--blob-fill:var(--color-primary-cta-strong)"
-    >
-      <FinalCtaBlob class="absolute inset-x-0 top-0 hidden h-[910px] w-full @min-[900px]:block" focusable="false" />
-      <div class="rounded-card absolute inset-0 bg-(--blob-fill) @min-[900px]:hidden"></div>
-    </div>
-    <div class="relative px-6 pt-12 pb-[calc(var(--wave-h)+2rem)] @min-[560px]:px-10 @min-[900px]:px-[58px] @min-[900px]:pt-[88px]">
-      <SectionHeader id="final-cta-title" title={s.cta.title} lead={s.cta.lead} align="center" tone="on-green" />
-      <div class="mt-[30px] flex flex-col items-stretch justify-center gap-4 @min-[560px]:flex-row">
-        <Button
-          variant="on-green"
-          href="#demo"
-          data-demo-open
-          class:list={
-            bothButtons
-              ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
-              : "@min-[560px]:w-[386px] @min-[560px]:flex-none"
-          }
-        >
-          {t.cta.bookDemo}
-        </Button>
-        {watch.render && (
-          <Button
-            variant="on-green-outline"
-            href={watch.href}
-            external={!watch.unconfigured}
-            unconfigured={watch.unconfigured}
-            class="@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
-          >
-            {t.cta.watchDemo}
-          </Button>
-        )}
-      </div>
-    </div>
+  <Container>
+    <CtaBand locale={locale} size="final" id="final-cta-title" title={s.cta.title} lead={s.cta.lead} />
   </Container>
 </section>

@@ -6,8 +6,8 @@ import AnimatedImage from "@/components/ui/AnimatedImage.astro";
 import { getDictionary, type Locale } from "@/i18n";
 
 /**
- * 05 · "What no other nursery app in MENA has" (nav: Why Yawmy, #why).
- * Six differentiator cards on the `feature` blob. The illustrations are pre-optimised animated WebP
+ * 05 · "Built for how nurseries really work" (nav: Why Yawmy, #why).
+ * Four feature cards (2 x 2 from 640, one row of four from 1280; cut from six: photos live in the day timeline, "nursery pays" in pricing and commitments) on the `feature` blob. The illustrations are pre-optimised animated WebP
  * (docs/sections/05-features/optimise-illustrations.mjs), rendered by ui/AnimatedImage (reduced-motion still + page pause).
  */
 interface Props {
@@ -31,22 +31,17 @@ const showBadge = (id: string) => locale === "ar" && id === "arabic";
 
 <Section id="why" headingId="features-title" wave="up" shadow>
   <SectionHeader slot="header" id="features-title" title={t.title} />
-  <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
+  <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 xl:grid-cols-4 lg:gap-y-8">
     {t.items.map((item) => {
       const anim = img(item.id);
       const still = img(`${item.id}-still`);
       return (
-        <BlobCard
-          as="li"
-          shape="feature"
-          class="flex flex-col [&>div]:flex [&>div]:flex-1 [&>div]:flex-col"
-          contentClass="flex flex-1 flex-col gap-6 p-6 xl:p-8"
-        >
+        <BlobCard as="li" shape="feature" stretch fillContent contentClass="flex flex-1 flex-col gap-6 p-6 xl:p-8">
           <div class="flex flex-col gap-3">
             <h3 class="text-title text-primary-text font-black">{item.title}</h3>
             <p class="text-body text-ink">{item.body}</p>
           </div>
-          <div class="mt-auto flex items-end justify-between gap-4">
+          <div class="mt-auto flex flex-wrap items-end justify-between gap-4">
             <AnimatedImage src={anim} still={still} width={110} height={110} class="size-[110px] shrink-0" />
             {showBadge(item.id) && (
               <span

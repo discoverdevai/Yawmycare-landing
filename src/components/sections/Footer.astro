@@ -6,7 +6,17 @@ import Button from "@/components/ui/Button.astro";
 import type { IconName } from "@/components/ui/Icon.astro";
 import { getDictionary, type Locale } from "@/i18n";
 import { navLinks } from "@/config/nav";
-import { resolveLink, isExternal, socials as socialUrls, socialOrder } from "@/config/site";
+import RegionSwitch from "@/components/ui/RegionSwitch.astro";
+import {
+  resolveLink,
+  isExternal,
+  socials as socialUrls,
+  socialOrder,
+  regions,
+  showRegionUi,
+  anyRegionPhone,
+  defaultRegionForLocale,
+} from "@/config/site";
 
 /**
  * Section 12b: footer (Figma 1457:4213, AR 1434:4033). Renders a <footer> landmark, so it goes in
@@ -33,6 +43,10 @@ const links = navLinks(getDictionary(locale).sections.header.nav.items);
 const social = socialOrder
   .map((name) => ({ key: name, icon: name satisfies IconName, ...resolveLink(socialUrls[name]) }))
   .filter((x) => x.render);
+
+// Region switch + the current region's phone (docs/DECISIONS.md #16). Hidden in production while nothing is configured.
+const rt = t.regions;
+const startPhone = regions[defaultRegionForLocale(locale)].phone;
 ---
 
 <footer class="relative -mt-(--wave-h) overflow-hidden">
@@ -64,6 +78,25 @@ const social = socialOrder
           ))}
         </ul>
       </nav>
+      {showRegionUi && (
+        <div class="flex flex-col items-center gap-2">
+          <RegionSwitch locale={locale} name="region-footer" legend />
+          {anyRegionPhone && (
+            <p class="text-body-sm text-ink font-medium" data-region-phone hidden={!startPhone}>
+              <a
+                href={startPhone ? `tel:${startPhone.replace(/[^0-9+]/g, "")}` : "#"}
+                class="focus-visible:outline-focus inline-flex min-h-11 items-center gap-2 rounded hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                data-phone-link
+              >
+                {rt.call}
+                <bdi dir="ltr" data-phone-text>
+                  {startPhone}
+                </bdi>
+              </a>
+            </p>
+          )}
+        </div>
+      )}
       {social.length > 0 && (
         <ul aria-label={s.socialLabel} class="flex items-center gap-3">
           {social.map(({ key, icon, href, unconfigured }) => (
@@ -92,3 +125,20 @@ const social = socialOrder
     </p>
   </div>
 </footer>
+
+<script>
+  import { onRegion, regionData } from "@/config/region-client";
+
+  const box = document.querySelector<HTMLElement>("[data-region-phone]");
+  const data = regionData();
+  if (box && data) {
+    const link = box.querySelector<HTMLAnchorElement>("[data-phone-link]")!;
+    const text = box.querySelector<HTMLElement>("[data-phone-text]")!;
+    onRegion((region) => {
+      const phone = data[region].phone;
+      box.hidden = !phone;
+      text.textContent = phone;
+      link.href = phone ? `tel:${phone.replace(/[^0-9+]/g, "")}` : "#";
+    });
+  }
+</script>

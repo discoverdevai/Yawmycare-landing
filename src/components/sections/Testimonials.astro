@@ -29,12 +29,7 @@ const t = getDictionary(locale).sections.testimonials;
 
     <ul role="list" class="grid grid-cols-1 gap-6 md:grid-cols-3 xl:col-span-3">
       {t.items.map((item) => (
-        <BlobCard
-          as="li"
-          shape="testimonial"
-          class="flex flex-col [&>div]:flex-1"
-          contentClass="flex min-h-full flex-col justify-center px-6 py-5"
-        >
+        <BlobCard as="li" shape="testimonial" stretch contentClass="flex min-h-full flex-col justify-center px-6 py-5">
           <blockquote class="flex flex-col gap-4">
             <p class="text-title md:text-body lg:text-title font-medium">{item.quote}</p>
             <footer class="flex items-center gap-2">

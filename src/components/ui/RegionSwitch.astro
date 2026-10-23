@@ -1,0 +1,63 @@
+---
+import { getDictionary, type Locale } from "@/i18n";
+import { regionIds, defaultRegionForLocale, showRegionUi } from "@/config/site";
+
+/**
+ * Region switch (Egypt / Saudi Arabia / United States): a segmented control built from native radio buttons, so
+ * arrow keys, Tab grouping and screen-reader "1 of 3, selected" come from the browser. The choice is kept in memory
+ * only (src/config/region-client.ts: data-region on <html> + `yawmy:region-change`); every switch on the page stays in sync.
+ * Not rendered at all in production when no region has a contact or price configured (docs/ENV.md).
+ *
+ * `name` must be unique per instance (radio groups are per name). `legend` shows the visible caption;
+ * without it the caption is still announced to screen readers.
+ */
+interface Props {
+  locale: Locale;
+  name: string;
+  legend?: boolean;
+  align?: "start" | "center";
+  class?: string;
+}
+
+const { locale, name, legend = false, align = "center", class: className = "" } = Astro.props;
+const t = getDictionary(locale).regions;
+const initial = defaultRegionForLocale(locale);
+---
+
+{showRegionUi && (
+  <fieldset
+    class:list={[
+      "region-switch flex min-w-0 flex-col gap-2",
+      align === "center" ? "items-center" : "items-start",
+      className,
+    ]}
+    data-region-switch
+  >
+    <legend class:list={[legend ? "text-body-sm text-ink-muted mb-2 font-medium" : "sr-only"]}>{t.switchLabel}</legend>
+    <div class:list={["flex flex-wrap gap-2", align === "center" && "justify-center"]}>
+      {regionIds.map((id) => (
+        <label class="relative">
+          <input type="radio" name={name} value={id} checked={id === initial} class="peer sr-only" data-region-option />
+          <span class="text-body-sm border-primary-cta-strong bg-surface text-ink hover:bg-primary-bg peer-checked:bg-primary-cta-strong peer-checked:text-on-cta peer-focus-visible:outline-focus inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border px-4 py-1 text-center font-medium peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 motion-safe:transition-colors">
+            {t.names[id]}
+          </span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+)}
+
+<script>
+  import { getRegion, setRegion, onRegion } from "@/config/region-client";
+  import { isRegionId } from "@/config/region";
+
+  const radios = () => document.querySelectorAll<HTMLInputElement>("[data-region-option]");
+  if (radios().length) {
+    getRegion();
+    onRegion((region) => radios().forEach((r) => (r.checked = r.value === region)));
+    document.addEventListener("change", (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.matches?.("[data-region-option]") && isRegionId(el.value)) setRegion(el.value);
+    });
+  }
+</script>

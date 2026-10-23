@@ -82,3 +82,125 @@ export function resolveLink(url: string | undefined | null): ResolvedLink {
 
 /** Whether an href should open in a new tab (http/https, not mailto). */
 export const isExternal = (href: string) => /^https?:/i.test(href);
+
+/* ------------------------------------------------------------------------------------------------
+ * Regions (docs/DECISIONS.md #16-#18, docs/ENV.md). Contact numbers and prices are per region: Egypt, Saudi
+ * Arabia, United States. Everything defaults to unset and is then HIDDEN in production (never invented).
+ * The visitor's region is chosen in the browser (src/config/region-client.ts); nothing is stored.
+ * ---------------------------------------------------------------------------------------------- */
+import {
+  regionIds,
+  regionCurrency,
+  defaultRegionForLocale,
+  whatsappLink,
+  type RegionId,
+  type RegionPayload,
+  type RegionsPayload,
+} from "./region";
+
+export { regionIds, defaultRegionForLocale, type RegionId, type RegionPayload, type RegionsPayload };
+
+export interface RegionConfig {
+  id: RegionId;
+  /** i18n key (in the common dictionary) of the localized region name. */
+  label: `regions.names.${RegionId}`;
+  currency: string;
+  /** Digits only (wa.me), "" when unset. */
+  whatsapp: string;
+  /** As typed by the owner, "" when unset. */
+  phone: string;
+  /** Present only when a valid positive amount is configured. Period is always one month. */
+  price?: { amount: number; period: "month"; note: string; noteAr: string };
+}
+
+function digitsOf(value: unknown): string {
+  const digits = clean(value).replace(/\D/g, "");
+  return digits.length >= 7 ? digits : "";
+}
+
+function region(
+  id: RegionId,
+  v: { whatsapp?: string; phone?: string; amount?: string; note?: string; noteAr?: string },
+): RegionConfig {
+  const amount = Number(clean(v.amount).replace(/,/g, ""));
+  return {
+    id,
+    label: `regions.names.${id}`,
+    currency: regionCurrency[id],
+    whatsapp: digitsOf(v.whatsapp),
+    phone: clean(v.phone)
+      .replace(/[^\d+()\-\s]/g, "")
+      .trim(),
+    price:
+      Number.isFinite(amount) && amount > 0
+        ? { amount, period: "month", note: clean(v.note), noteAr: clean(v.noteAr) }
+        : undefined,
+  };
+}
+
+export const regions: Record<RegionId, RegionConfig> = {
+  eg: region("eg", {
+    whatsapp: env.PUBLIC_REGION_EG_WHATSAPP,
+    phone: env.PUBLIC_REGION_EG_PHONE,
+    amount: env.PUBLIC_REGION_EG_PRICE_AMOUNT,
+    note: env.PUBLIC_REGION_EG_PRICE_NOTE,
+    noteAr: env.PUBLIC_REGION_EG_PRICE_NOTE_AR,
+  }),
+  sa: region("sa", {
+    whatsapp: env.PUBLIC_REGION_SA_WHATSAPP,
+    phone: env.PUBLIC_REGION_SA_PHONE,
+    amount: env.PUBLIC_REGION_SA_PRICE_AMOUNT,
+    note: env.PUBLIC_REGION_SA_PRICE_NOTE,
+    noteAr: env.PUBLIC_REGION_SA_PRICE_NOTE_AR,
+  }),
+  us: region("us", {
+    whatsapp: env.PUBLIC_REGION_US_WHATSAPP,
+    phone: env.PUBLIC_REGION_US_PHONE,
+    amount: env.PUBLIC_REGION_US_PRICE_AMOUNT,
+    note: env.PUBLIC_REGION_US_PRICE_NOTE,
+    noteAr: env.PUBLIC_REGION_US_PRICE_NOTE_AR,
+  }),
+};
+
+const all = regionIds.map((id) => regions[id]);
+export const anyRegionWhatsapp = all.some((r) => r.whatsapp !== "");
+export const anyRegionPhone = all.some((r) => r.phone !== "");
+export const anyRegionPrice = all.some((r) => r.price !== undefined);
+/** Any region with a contact or a price. False in production = region UI, WhatsApp and prices are not rendered at all. */
+export const anyRegionConfigured = anyRegionWhatsapp || anyRegionPhone || anyRegionPrice;
+/** Render the region UI (switch, FAB, price block)? Production: only when something is configured; dev: always (dashed marker). */
+export const showRegionUi = anyRegionConfigured || !!env.DEV;
+/** Render WhatsApp links? Same rule, for numbers only. */
+export const showWhatsapp = anyRegionWhatsapp || !!env.DEV;
+
+/** Public data for the browser (embedded as JSON in the page). Contains only what the owner set. */
+export const regionsPayload: RegionsPayload = {
+  eg: toPayload(regions.eg),
+  sa: toPayload(regions.sa),
+  us: toPayload(regions.us),
+};
+function toPayload(r: RegionConfig): RegionPayload {
+  return {
+    currency: r.currency,
+    whatsapp: r.whatsapp,
+    phone: r.phone,
+    price: r.price ? { amount: r.price.amount, note: r.price.note, noteAr: r.price.noteAr } : null,
+  };
+}
+
+/**
+ * Server-side starting state of a WhatsApp link (the browser then follows the visitor's region). Starts on the
+ * locale's default region; when that region has no number but another has, the link is rendered hidden (the
+ * visitor may switch region). `render` is false in production when no region has a number.
+ */
+export function whatsappStart(locale: string, text: string) {
+  const first = regionIds.find((id) => regions[id].whatsapp !== "");
+  const start = regions[defaultRegionForLocale(locale)].whatsapp ? defaultRegionForLocale(locale) : first;
+  const digits = start ? regions[start].whatsapp : "";
+  return {
+    render: showWhatsapp,
+    href: digits ? whatsappLink(digits, text) : "#",
+    hidden: !!digits && start !== defaultRegionForLocale(locale),
+    unconfigured: !anyRegionWhatsapp,
+  };
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Why not WhatsApp, Excel or paper?",
+  "lead": "Most nurseries start there. Here is the same job, done both ways.",
+  "caption": "WhatsApp, Excel and paper compared with Yawmy Care, job by job",
+  "jobLabel": "The job",
+  "oldLabel": "WhatsApp, Excel and paper",
+  "newLabel": "Yawmy Care",
+  "rows": [
+    {
+      "job": "Daily report",
+      "old": "Written twice: once on paper, once on WhatsApp.",
+      "new": "Logged as it happens, then sent in one tap to every parent, in their own language."
+    },
+    {
+      "job": "Parent updates",
+      "old": "Parents message at midnight, and you answer in case they think something is wrong.",
+      "new": "Parents see what their child ate, how long she slept and the day's photos, without messaging anyone."
+    },
+    {
+      "job": "Attendance",
+      "old": "Marked on paper, then copied into a spreadsheet.",
+      "new": "Parents check in from the gate, within 100 metres. Teachers see who is in, late or out at a glance."
+    },
+    {
+      "job": "Finding last week's photo",
+      "old": "Scrolling a group where twelve families look for their own.",
+      "new": "Each photo goes to that child's own gallery."
+    }
+  ]
+}

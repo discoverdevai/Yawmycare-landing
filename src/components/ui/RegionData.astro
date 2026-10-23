@@ -1,0 +1,18 @@
+---
+import { regionsPayload, showRegionUi } from "@/config/site";
+
+/**
+ * Public per-region data for the browser (digits of the WhatsApp number, phone, price). Rendered once in BaseLayout,
+ * and only when the region UI is on (production: at least one region has a contact or price configured).
+ * JSON in a non-executing script block: it is data, not code, so it needs no CSP allowance.
+ */
+---
+
+{showRegionUi && (
+  <script
+    is:inline
+    type="application/json"
+    id="region-data"
+    set:html={JSON.stringify(regionsPayload).replace(/</g, "\\u003c")}
+  />
+)}

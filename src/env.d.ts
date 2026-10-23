@@ -17,6 +17,22 @@ interface ImportMetaEnv {
   readonly PUBLIC_CONTACT_EMAIL?: string;
   /** Demo/tour video URL (https). Unset: the "Watch demo" buttons are not rendered in production. */
   readonly PUBLIC_DEMO_VIDEO_URL?: string;
+  /** Per-region contact + price (Egypt, Saudi Arabia, United States). Unset: hidden in production. See docs/ENV.md. */
+  readonly PUBLIC_REGION_EG_WHATSAPP?: string;
+  readonly PUBLIC_REGION_EG_PHONE?: string;
+  readonly PUBLIC_REGION_EG_PRICE_AMOUNT?: string;
+  readonly PUBLIC_REGION_EG_PRICE_NOTE?: string;
+  readonly PUBLIC_REGION_EG_PRICE_NOTE_AR?: string;
+  readonly PUBLIC_REGION_SA_WHATSAPP?: string;
+  readonly PUBLIC_REGION_SA_PHONE?: string;
+  readonly PUBLIC_REGION_SA_PRICE_AMOUNT?: string;
+  readonly PUBLIC_REGION_SA_PRICE_NOTE?: string;
+  readonly PUBLIC_REGION_SA_PRICE_NOTE_AR?: string;
+  readonly PUBLIC_REGION_US_WHATSAPP?: string;
+  readonly PUBLIC_REGION_US_PHONE?: string;
+  readonly PUBLIC_REGION_US_PRICE_AMOUNT?: string;
+  readonly PUBLIC_REGION_US_PRICE_NOTE?: string;
+  readonly PUBLIC_REGION_US_PRICE_NOTE_AR?: string;
 }
 
 interface ImportMeta {

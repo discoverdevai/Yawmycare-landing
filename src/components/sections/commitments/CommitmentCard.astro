@@ -36,7 +36,7 @@ const iconPos = wide
 const titleGap = wide ? "@min-[900px]:pe-0" : "@min-[441px]:pe-[12.9cqw]";
 ---
 
-<BlobCard shape={shape} as="li" contentClass={pad} class:list={["flex flex-col [&>div]:flex-1", className]}>
+<BlobCard shape={shape} as="li" contentClass={pad} stretch class={className}>
   <AnimatedImage
     src={icon}
     still={iconStill}

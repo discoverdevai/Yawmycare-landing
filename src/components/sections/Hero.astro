@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button.astro";
 import WaveDivider from "@/components/ui/WaveDivider.astro";
 import children from "@/assets/hero/hero-children.webp";
 import { getDictionary, type Locale } from "@/i18n";
-import { resolveLink, demoVideoUrl } from "@/config/site";
+import { resolveLink, demoVideoUrl, whatsappStart } from "@/config/site";
 
 /**
  * Section 02: hero (Figma 1457:3898, AR reference 1434:3718).
@@ -29,6 +29,10 @@ const titleParts = t.title.split("*");
 
 // Demo video (env PUBLIC_DEMO_VIDEO_URL, docs/ENV.md): the button is not rendered in production while unset.
 const watch = resolveLink(demoVideoUrl);
+
+// WhatsApp secondary CTA: current region's number (src/config/site.ts regions); not rendered in production while no region has one.
+const regionsT = getDictionary(locale).regions;
+const wa = whatsappStart(locale, regionsT.whatsappMessage);
 ---
 
 <section id="home" aria-labelledby="hero-title" class="hero relative mb-8 bg-surface-sec">
@@ -41,6 +45,22 @@ const watch = resolveLink(demoVideoUrl);
       <Button variant="primary" href="#demo" data-demo-open block class="sm:w-auto sm:min-w-[282px]">
         {t.ctaPrimary}
       </Button>
+      {wa.render && (
+        <Button
+          variant="outline"
+          icon="whatsapp"
+          href={wa.href}
+          external={!wa.unconfigured}
+          unconfigured={wa.unconfigured}
+          hidden={wa.hidden}
+          data-wa-link
+          data-wa-text={regionsT.whatsappMessage}
+          block
+          class="sm:w-auto"
+        >
+          {regionsT.chatOnWhatsApp}
+        </Button>
+      )}
       {watch.render && (
         <Button
           variant="outline"

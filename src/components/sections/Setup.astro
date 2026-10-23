@@ -2,14 +2,13 @@
 import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
-import Button from "@/components/ui/Button.astro";
+import CtaBand from "@/components/ui/CtaBand.astro";
 import ConnectorLines from "./setup/ConnectorLines.astro";
 import { getDictionary, type Locale } from "@/i18n";
-import { resolveLink, demoVideoUrl } from "@/config/site";
 
 /**
  * Section 06: four numbered steps on BlobCard shape="step" joined by dashed connector lines, then the
- * green CTA band (BlobCard shape="cta-band").
+ * green CTA band (ui/CtaBand).
  *
  *  >= 1024  four columns; numbered circle above each card, one horizontal dashed rail with a drop per
  *           column (ConnectorLines). Circles are centred on the cards, as in Figma.
@@ -17,9 +16,6 @@ import { resolveLink, demoVideoUrl } from "@/config/site";
  *  <  640   one column; circle on the start side of each card, a vertical dashed line through the
  *           circles. Cards are capped at 288px so the 282x201 blob is never stretched much.
  * Grid and flex order follow `dir`, so step 1 lands on the right in Arabic (AR frame 1434:3912).
- *
- * Contrast (docs/sections/06-setup/review.md): the band uses `primary-cta-strong` instead of Figma's
- * `primary-cta` because the 18px bold button labels and the lead are normal-size text and need 4.5:1.
  */
 interface Props {
   locale: Locale;
@@ -28,10 +24,6 @@ interface Props {
 const { locale } = Astro.props;
 const dict = getDictionary(locale);
 const t = dict.sections.setup;
-
-// Demo video (env PUBLIC_DEMO_VIDEO_URL, docs/ENV.md): not rendered in production while unset; the Book a Demo
-// button then stays centred (the row is justify-center and the button keeps its 386px cap).
-const watch = resolveLink(demoVideoUrl);
 
 // Dashed vertical line on the start side below 640 (token colour, no raw hex); sm+ has no vertical line (2x2 grid, then the ConnectorLines rail at lg).
 const verticalLine =
@@ -70,7 +62,8 @@ const railDot =
             </BlobCard>
             <BlobCard
               shape="step"
-              class="w-full max-w-72 min-w-0 sm:flex sm:max-w-none sm:flex-1 sm:flex-col sm:[&>div]:flex-1"
+              stretch="sm"
+              class="w-full max-w-72 min-w-0 sm:max-w-none sm:flex-1"
               contentClass="px-4 pt-8 pb-5"
             >
               <div class="flex flex-col gap-3">
@@ -83,45 +76,6 @@ const railDot =
       </ol>
     </div>
 
-    <BlobCard
-      shape="cta-band"
-      fill="primary-cta-strong"
-      contentClass="px-6 py-10 @min-[900px]:px-[58px] @min-[900px]:pt-12 @min-[900px]:pb-10"
-    >
-      <div class="flex flex-col items-center gap-[30px] text-center">
-        <div class="flex w-full min-w-0 flex-col items-center gap-(--lead-gap)">
-          <SectionHeader
-            align="center"
-            tone="on-green"
-            size="band"
-            headingLevel={3}
-            title={t.band.title}
-            class="w-full min-w-0 [&_h3]:max-w-full [&_h3]:text-balance"
-          />
-          <p class="text-lead text-ink-inverse max-w-full">{t.band.lead}</p>
-        </div>
-        <div class="flex w-full flex-col items-stretch justify-center gap-4 @min-[640px]:flex-row">
-          <Button
-            variant="on-green"
-            href="#demo"
-            data-demo-open
-            class="@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0"
-          >
-            {dict.cta.bookDemo}
-          </Button>
-          {watch.render && (
-            <Button
-              variant="on-green-outline"
-              href={watch.href}
-              external={!watch.unconfigured}
-              unconfigured={watch.unconfigured}
-              class="@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0"
-            >
-              {dict.cta.watchDemo}
-            </Button>
-          )}
-        </div>
-      </div>
-    </BlobCard>
+    <CtaBand locale={locale} title={t.band.title} lead={t.band.lead} />
   </div>
 </Section>

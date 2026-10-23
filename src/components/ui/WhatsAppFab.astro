@@ -1,0 +1,61 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { whatsappStart } from "@/config/site";
+
+/**
+ * Floating click-to-chat button, bottom inline-end (the MotionToggle is bottom inline-start). Opens
+ * https://wa.me/<digits>?text=<localized message> in a new tab with the CURRENT region's number (docs/DECISIONS.md #16).
+ * Not rendered in production when no region has a number. The script below also keeps every other
+ * `[data-wa-link]` on the page (e.g. the hero's secondary CTA) in step with the region: href updates, and the link is
+ * hidden while the current region has no number. Dev with nothing configured: dashed marker, href="#".
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const text = t.regions.whatsappMessage;
+const start = whatsappStart(locale, text);
+---
+
+{start.render && (
+  <a
+    href={start.href}
+    target="_blank"
+    rel="noopener noreferrer"
+    hidden={start.hidden}
+    aria-label={t.social.whatsapp}
+    data-wa-link
+    data-wa-text={text}
+    data-unconfigured={start.unconfigured ? "" : undefined}
+    class:list={[
+      "bg-primary-cta-strong text-on-cta hover:bg-primary-cta-hover focus-visible:outline-focus fixed end-4 bottom-4 z-40 flex size-14 items-center justify-center rounded-full shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors",
+      start.unconfigured &&
+        "not-focus-visible:outline-accent-text not-focus-visible:outline-2 not-focus-visible:outline-offset-2 not-focus-visible:outline-dashed",
+    ]}
+  >
+    <Icon name="whatsapp" size={28} />
+    <span class="sr-only">{t.a11y.opensInNewTab}</span>
+  </a>
+)}
+
+<script>
+  import { onRegion, regionData } from "@/config/region-client";
+  import { whatsappLink } from "@/config/region";
+
+  const links = () => document.querySelectorAll<HTMLAnchorElement>("[data-wa-link]");
+  const data = regionData();
+  const anyNumber = !!data && Object.values(data).some((r) => r.whatsapp);
+  // Nothing configured (dev preview): leave the dashed placeholders alone.
+  if (links().length && anyNumber) {
+    onRegion((region) => {
+      const digits = data![region].whatsapp;
+      links().forEach((a) => {
+        a.hidden = !digits;
+        if (digits) a.href = whatsappLink(digits, a.dataset.waText ?? "");
+      });
+    });
+  }
+</script>

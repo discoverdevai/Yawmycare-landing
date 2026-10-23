@@ -9,6 +9,12 @@
       "placeholder": "Enter your Name",
       "required": "Please enter your name."
     },
+    "phone": {
+      "label": "Mobile / WhatsApp number",
+      "placeholder": "+20 100 000 0000",
+      "required": "Please enter your mobile or WhatsApp number.",
+      "invalid": "Please enter a valid number with 8 to 15 digits. Include the country code if you can."
+    },
     "nursery": {
       "label": "Nursery Name",
       "placeholder": "Enter your Nursery Name",
@@ -31,14 +37,44 @@
       "required": "Please choose a preferred time.",
       "invalid": "Please enter a valid time.",
       "past": "That time has already passed today. Please choose a later time."
+    },
+    "region": {
+      "label": "Country",
+      "required": "Please choose your country."
+    },
+    "children": {
+      "legend": "Number of children"
+    },
+    "tool": {
+      "legend": "What do you use today?"
     }
   },
   "submit": "Book My Free Demo",
   "submitting": "Sending…",
   "summary": "Please fix the highlighted fields and try again.",
-  "success": {
-    "title": "Thank you! We’ve received your request",
-    "body": "Our team will get in touch shortly by email to confirm your demo.",
+  "step2": {
+    "received": "Request received",
+    "title": "Help us prepare your demo",
+    "lead": "We will contact you to confirm your demo. Add a few details so we can prepare.",
+    "optionalNote": "Every field on this step is optional.",
+    "submit": "Send details",
+    "skip": "Skip for now",
+    "childrenOptions": ["1-30", "31-80", "81-150", "150+"],
+    "toolOptions": {
+      "whatsapp": "WhatsApp",
+      "excel": "Excel",
+      "paper": "Paper",
+      "other": "Other"
+    }
+  },
+  "done": {
+    "title": "Thank you. You are all set",
+    "body": "We will contact you to confirm your demo.",
+    "nextTitle": "What happens next",
+    "next": [
+      "We will contact you on the number you gave us to confirm a day and time.",
+      "We will walk you through Yawmy Care and answer your questions."
+    ],
     "close": "Close"
   },
   "error": {

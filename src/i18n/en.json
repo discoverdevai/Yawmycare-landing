@@ -26,5 +26,17 @@
     "instagram": "Yawmy Care on Instagram",
     "whatsapp": "Chat with Yawmy Care on WhatsApp",
     "facebook": "Yawmy Care on Facebook"
+  },
+  "regions": {
+    "label": "Region",
+    "switchLabel": "Show contact details and prices for",
+    "names": {
+      "eg": "Egypt",
+      "sa": "Saudi Arabia",
+      "us": "United States"
+    },
+    "chatOnWhatsApp": "Chat on WhatsApp",
+    "whatsappMessage": "Hello Yawmy Care, I would like to learn more about your nursery app.",
+    "call": "Call us"
   }
 }

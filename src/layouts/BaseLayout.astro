@@ -3,6 +3,8 @@ import "@/styles/global.css";
 import { getDictionary, localeMeta, locales, type Locale } from "@/i18n";
 import { fontFaceCss, fontPreloads } from "@/styles/fonts";
 import MotionToggle from "@/components/ui/MotionToggle.astro";
+import RegionData from "@/components/ui/RegionData.astro";
+import WhatsAppFab from "@/components/ui/WhatsAppFab.astro";
 
 interface Props {
   locale: Locale;
@@ -82,6 +84,8 @@ const ogAlt = `${t.brand.name}: ${t.brand.tagline}`;
     </a>
     <slot name="header" />
     <MotionToggle locale={locale} />
+    <RegionData />
+    <WhatsAppFab locale={locale} />
     <main id="main">
       <slot />
     </main>

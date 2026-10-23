@@ -1,0 +1,95 @@
+---
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import { getDictionary, type Locale } from "@/i18n";
+
+/**
+ * "Why not WhatsApp, Excel or paper?" (no nav entry: the header has no room for a tenth link).
+ * Four jobs, the old way against Yawmy Care, using only claims that already appear elsewhere on the page.
+ *
+ *  >= 768  a real <table> (caption, column + row headers) so screen readers get the grid.
+ *  <  768  one card per job with the two answers stacked and labelled (a table that wraps to cards loses its roles).
+ * Only one of the two is visible at a time (the other is display:none, so it is also hidden from assistive tech).
+ * Wave: the waves are cream-on-cream edges with a soft shadow. Features above is "up", so "down" here alternates
+ * with it, and Setup below keeps its own "down" edge.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.compare;
+---
+
+<Section id="compare" headingId="compare-title" wave="down" shadow>
+  <SectionHeader slot="header" id="compare-title" title={t.title} lead={t.lead} />
+
+  <table class="text-body text-ink hidden w-full border-separate border-spacing-0 md:table">
+    <caption class="sr-only">{t.caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="text-caption text-ink-muted w-[20%] p-4 text-start font-bold">
+          {t.jobLabel}
+        </th>
+        <th
+          scope="col"
+          class="bg-surface-tabs text-ink-muted text-title rounded-ss-card border-stroke-green border-x-2 border-t-2 p-4 text-start font-bold"
+        >
+          {t.oldLabel}
+        </th>
+        <th
+          scope="col"
+          class="bg-primary-bg text-primary-text text-title rounded-se-card border-primary-cta border-x-2 border-t-2 p-4 text-start font-bold"
+        >
+          {t.newLabel}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {t.rows.map((row, i) => {
+        const last = i === t.rows.length - 1;
+        return (
+          <tr>
+            <th scope="row" class="text-primary-text text-title p-4 text-start align-top font-bold">
+              {row.job}
+            </th>
+            <td
+              class:list={[
+                "bg-surface-tabs border-stroke-green border-x-2 p-4 align-top",
+                last ? "rounded-be-card border-b-2" : "border-b-stroke-gray border-b",
+              ]}
+            >
+              {row.old}
+            </td>
+            <td
+              class:list={[
+                "bg-primary-bg border-primary-cta border-x-2 p-4 align-top font-medium",
+                last ? "rounded-ee-card border-b-2" : "border-b-stroke-gray border-b",
+              ]}
+            >
+              {row.new}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+
+  <ul role="list" aria-label={t.caption} class="flex flex-col gap-4 md:hidden">
+    {t.rows.map((row) => (
+      <li class="bg-surface-sec border-stroke-green rounded-card flex flex-col gap-4 border-2 p-5">
+        <h3 class="text-title text-primary-text font-bold">{row.job}</h3>
+        <dl class="flex flex-col gap-3">
+          <div class="bg-surface-tabs rounded-input flex flex-col gap-1 p-4">
+            <dt class="text-caption text-ink-muted font-bold">{t.oldLabel}</dt>
+            <dd class="text-body text-ink">{row.old}</dd>
+          </div>
+          <div class="bg-primary-bg rounded-input border-primary-cta flex flex-col gap-1 border-2 p-4">
+            <dt class="text-caption text-primary-text font-bold">{t.newLabel}</dt>
+            <dd class="text-body text-ink font-medium">{row.new}</dd>
+          </div>
+        </dl>
+      </li>
+    ))}
+  </ul>
+</Section>

@@ -1,5 +1,5 @@
 {
-  "title": "What no other nursery app in MENA has",
+  "title": "Built for how nurseries really work",
   "arabicBadge": "Arabic",
   "items": [
     {
@@ -13,24 +13,14 @@
       "body": "See which parents opened a closure notice or illness alert. Know who has seen it."
     },
     {
-      "id": "photo",
-      "title": "Every photo, in place",
-      "body": "Each child gets a dedicated gallery. Photos stay organised, never buried in a shared feed."
-    },
-    {
       "id": "evenings",
-      "title": "Evenings back for teachers",
+      "title": "Respects your hours",
       "body": "Parents see when they are messaging outside nursery hours, before they hit send."
     },
     {
       "id": "arabic",
       "title": "Arabic from day one",
-      "body": "Full right to left, Arabic notifications and support. Each person picks their own language."
-    },
-    {
-      "id": "wallet",
-      "title": "Nursery pays, not parents",
-      "body": "One flat monthly fee, with no commission on tuition and no charges to parents."
+      "body": "Staff and parents each pick their own language, Arabic or English, and see the whole app in it."
     }
   ]
 }

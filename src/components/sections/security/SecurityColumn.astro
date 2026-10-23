@@ -22,12 +22,7 @@ const { items } = Astro.props;
 
 <ul class="flex flex-col gap-6 lg:gap-12">
   {items.map((item) => (
-    <BlobCard
-      as="li"
-      shape="security"
-      class="lg:flex lg:flex-1 lg:flex-col lg:[&>div]:flex-1"
-      contentClass="p-8 flex flex-col gap-4"
-    >
+    <BlobCard as="li" shape="security" stretch="lg" class="lg:flex-1" contentClass="p-8 flex flex-col gap-4">
       <AnimatedImage src={item.icon} still={item.still} width={85} height={85} class="size-[85px]" />
       <div class="flex flex-col gap-3">
         <h3 class="text-h3 text-accent-text font-bold">{item.title}</h3>
