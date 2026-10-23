@@ -2,10 +2,10 @@
 
 Drop WOFF2 files here and they are picked up automatically by `src/styles/fonts.ts` (no code change):
 
-| Family | Files |
-|---|---|
-| Recoleta (English) | `recoleta-400.woff2`, `recoleta-500.woff2`, `recoleta-600.woff2`, `recoleta-700.woff2`, `recoleta-900.woff2` |
-| Expo Arabic (Arabic) | `expo-arabic-400.woff2`, `expo-arabic-500.woff2`, `expo-arabic-700.woff2` |
+| Family               | Files                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Recoleta (English)   | `recoleta-400.woff2`, `recoleta-500.woff2`, `recoleta-600.woff2`, `recoleta-700.woff2`, `recoleta-900.woff2` |
+| Expo Arabic (Arabic) | `expo-arabic-400.woff2`, `expo-arabic-500.woff2`, `expo-arabic-700.woff2`                                    |
 
 Until then the open-licence stand-ins (Fraunces, Readex Pro) render.
 

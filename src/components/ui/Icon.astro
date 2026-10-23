@@ -1,10 +1,9 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-const icons = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>(
-  "@/assets/icons/*.svg",
-  { eager: true },
-);
+const icons = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>("@/assets/icons/*.svg", {
+  eager: true,
+});
 
 export type IconName =
   | "calendar"

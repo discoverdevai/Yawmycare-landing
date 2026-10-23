@@ -86,8 +86,7 @@ const inputClass =
   "demo-input h-12 w-full min-w-0 rounded-input border border-field-border bg-transparent text-body-sm text-ink " +
   "placeholder:text-caption placeholder:text-ink-muted aria-[invalid=true]:border-accent-text " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
-const iconClass =
-  "pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-muted";
+const iconClass = "pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-muted";
 const errorClass = "text-caption text-accent-text [&:not(:empty)]:mt-2";
 const titleClass = `font-bold text-ink ${locale === "ar" ? "text-h3" : "text-title"}`;
 const panelClass = "px-5 py-8 sm:px-6";
@@ -116,17 +115,16 @@ const panelClass = "px-5 py-8 sm:px-6";
         <h2 id="demo-title" class={titleClass}>
           {t.title}
         </h2>
-        <p id="demo-lead" class="text-body-sm text-ink-muted [line-height:1.5]">{t.lead}</p>
+        <p id="demo-lead" class="text-body-sm text-ink-muted [line-height:1.5]">
+          {t.lead}
+        </p>
       </div>
 
-      <form
-        data-demo-form
-        method="post"
-        novalidate
-        class="mt-8 flex flex-col gap-6"
-      >
+      <form data-demo-form method="post" novalidate class="mt-8 flex flex-col gap-6">
         <p class="text-caption text-ink-muted -mb-2">
-          <span aria-hidden="true" class="text-accent-text">*</span>
+          <span aria-hidden="true" class="text-accent-text">
+            *
+          </span>
           {dict.a11y.requiredFields}
         </p>
         <div class="flex flex-col gap-4">
@@ -135,7 +133,10 @@ const panelClass = "px-5 py-8 sm:px-6";
               <div class="flex flex-col gap-3">
                 <label for={`demo-${f.name}`} class={labelClass}>
                   {t.fields[f.name].label}
-                  <span aria-hidden="true" class="text-accent-text"> *</span>
+                  <span aria-hidden="true" class="text-accent-text">
+                    {" "}
+                    *
+                  </span>
                 </label>
                 <div class="relative">
                   <span class={`${iconClass} start-3`}>
@@ -158,10 +159,7 @@ const panelClass = "px-5 py-8 sm:px-6";
                   />
                 </div>
               </div>
-              <p
-                id={`demo-${f.name}-error`}
-                class={errorClass}
-              />
+              <p id={`demo-${f.name}-error`} class={errorClass} />
             </div>
           ))}
 
@@ -171,7 +169,10 @@ const panelClass = "px-5 py-8 sm:px-6";
                 <div class="flex flex-col gap-3">
                   <label for={`demo-${f.name}`} class={labelClass}>
                     {t.fields[f.name].label}
-                    <span aria-hidden="true" class="text-accent-text"> *</span>
+                    <span aria-hidden="true" class="text-accent-text">
+                      {" "}
+                      *
+                    </span>
                   </label>
                   <div class="relative">
                     <span class={`${iconClass} start-3`}>
@@ -191,28 +192,15 @@ const panelClass = "px-5 py-8 sm:px-6";
                     </span>
                   </div>
                 </div>
-                <p
-                  id={`demo-${f.name}-error`}
-                  class={errorClass}
-                />
+                <p id={`demo-${f.name}-error`} class={errorClass} />
               </div>
             ))}
           </div>
 
           <!-- Honeypot: invisible to people and assistive tech (aria-hidden + inert: no focus, no autofill), tempting to bots. -->
-          <div
-            aria-hidden="true"
-            inert
-            class="pointer-events-none absolute -z-10 size-px overflow-hidden opacity-0"
-          >
+          <div aria-hidden="true" inert class="pointer-events-none absolute -z-10 size-px overflow-hidden opacity-0">
             <label for="demo-company-website">{t.honeypotLabel}</label>
-            <input
-              id="demo-company-website"
-              name="company_website"
-              type="text"
-              tabindex="-1"
-              autocomplete="off"
-            />
+            <input id="demo-company-website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
           </div>
         </div>
 
@@ -227,13 +215,7 @@ const panelClass = "px-5 py-8 sm:px-6";
             data-demo-status
             class="text-caption text-accent-text [&:not(:empty)]:mb-3"
           ></p>
-          <Button
-            type="submit"
-            variant="primary"
-            icon={null}
-            block
-            data-demo-submit
-          >
+          <Button type="submit" variant="primary" icon={null} block data-demo-submit>
             {t.submit}
           </Button>
         </div>
@@ -241,20 +223,9 @@ const panelClass = "px-5 py-8 sm:px-6";
     </div>
 
     <!-- success -->
-    <div
-      data-panel="success"
-      hidden
-      class={`${panelClass} flex flex-col items-center gap-6 text-center`}
-    >
+    <div data-panel="success" hidden class={`${panelClass} flex flex-col items-center gap-6 text-center`}>
       <span class="bg-primary-bg text-primary-text inline-flex size-16 items-center justify-center rounded-full">
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          focusable="false"
-        >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
           <path
             d="M5 12.5l4.5 4.5L19 7.5"
             stroke="currentColor"
@@ -265,11 +236,7 @@ const panelClass = "px-5 py-8 sm:px-6";
         </svg>
       </span>
       <div class="flex flex-col gap-2">
-        <h2
-          id="demo-success-title"
-          tabindex="-1"
-          class={`${titleClass} focus-visible:outline-none`}
-        >
+        <h2 id="demo-success-title" tabindex="-1" class={`${titleClass} focus-visible:outline-none`}>
           {t.success.title}
         </h2>
         <p id="demo-success-body" class="text-body-sm text-ink-muted [line-height:1.5]">
@@ -282,37 +249,30 @@ const panelClass = "px-5 py-8 sm:px-6";
     </div>
 
     <!-- error -->
-    <div
-      data-panel="error"
-      hidden
-      class={`${panelClass} flex flex-col items-center gap-6 text-center`}
-    >
+    <div data-panel="error" hidden class={`${panelClass} flex flex-col items-center gap-6 text-center`}>
       <div class="flex flex-col gap-2">
-        <h2
-          id="demo-error-title"
-          tabindex="-1"
-          class={`${titleClass} focus-visible:outline-none`}
-        >
+        <h2 id="demo-error-title" tabindex="-1" class={`${titleClass} focus-visible:outline-none`}>
           {t.error.title}
         </h2>
-        <p
-          data-demo-error-body
-          role="alert"
-          class="text-body-sm text-ink-muted [line-height:1.5]"
-        >
+        <p data-demo-error-body role="alert" class="text-body-sm text-ink-muted [line-height:1.5]">
           {t.error.body}
         </p>
-        {
-          contactLinks.length > 0 && (
-            <div hidden data-demo-contact class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
-              {contactLinks.map((c) => (
-                <Button variant="outline-deep" icon={c.icon} href={c.href.href} external={!c.href.href.startsWith("mailto:")} class="sm:w-auto" block>
-                  {c.label}
-                </Button>
-              ))}
-            </div>
-          )
-        }
+        {contactLinks.length > 0 && (
+          <div hidden data-demo-contact class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
+            {contactLinks.map((c) => (
+              <Button
+                variant="outline-deep"
+                icon={c.icon}
+                href={c.href.href}
+                external={!c.href.href.startsWith("mailto:")}
+                class="sm:w-auto"
+                block
+              >
+                {c.label}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
       <Button variant="primary" icon={null} block data-demo-retry>
         {t.error.retry}
@@ -370,8 +330,9 @@ const panelClass = "px-5 py-8 sm:px-6";
   };
   type State = "idle" | "submitting" | "success" | "error";
 
-  // A submit with no trusted keyboard/pointer interaction, or sooner than this after the FIRST such interaction
-  // (not after page load or dialog open), is treated as a bot. Browser/password-manager autofill skips the timing.
+  // A submit with no trusted user event at all (key, pointer, touch, input, click: covers assistive tech and
+  // dictation), or sooner than this after the dialog was OPENED (not after page load), is treated as a bot.
+  // Browser / password-manager autofill (:autofill) skips the timing, so it never trips the check.
   const MIN_FILL_MS = 2000;
   const TIMEOUT_MS = 10000;
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -385,20 +346,13 @@ const panelClass = "px-5 py-8 sm:px-6";
       error: dialog.querySelector<HTMLElement>('[data-panel="error"]')!,
     };
     const status = dialog.querySelector<HTMLElement>("[data-demo-status]")!;
-    const errorBody = dialog.querySelector<HTMLElement>(
-      "[data-demo-error-body]",
-    )!;
+    const errorBody = dialog.querySelector<HTMLElement>("[data-demo-error-body]")!;
     const contactBox = dialog.querySelector<HTMLElement>("[data-demo-contact]");
-    const submitButton =
-      dialog.querySelector<HTMLButtonElement>("[data-demo-submit]")!;
+    const submitButton = dialog.querySelector<HTMLButtonElement>("[data-demo-submit]")!;
     const submitLabel = submitButton.querySelector("span")!;
-    const honeypot = form.elements.namedItem(
-      "company_website",
-    ) as HTMLInputElement;
+    const honeypot = form.elements.namedItem("company_website") as HTMLInputElement;
     const fieldNames = ["name", "nursery", "email", "date", "time"] as const;
-    const inputs = fieldNames.map(
-      (n) => form.elements.namedItem(n) as HTMLInputElement,
-    );
+    const inputs = fieldNames.map((n) => form.elements.namedItem(n) as HTMLInputElement);
     const [nameInput, , emailInput, dateInput, timeInput] = inputs as [
       HTMLInputElement,
       HTMLInputElement,
@@ -409,18 +363,18 @@ const panelClass = "px-5 py-8 sm:px-6";
 
     let state: State = "idle";
     let opener: HTMLElement | null = null;
-    let firstInteractionAt = -1; // performance.now() of the first trusted key/pointer event since open
+    let firstInteractionAt = -1; // performance.now() of the first trusted user event since open (-1 = none yet)
+    let openedAt = 0; // performance.now() when the dialog opened
     let openedFromHash = false;
 
     const emit = (name: string, detail: Record<string, unknown>) =>
       document.dispatchEvent(new CustomEvent(name, { detail }));
 
-    for (const type of ["keydown", "pointerdown", "touchstart"]) {
+    for (const type of ["keydown", "pointerdown", "touchstart", "input", "change", "click"]) {
       dialog.addEventListener(
         type,
         (event) => {
-          if (event.isTrusted && firstInteractionAt < 0)
-            firstInteractionAt = performance.now();
+          if (event.isTrusted && firstInteractionAt < 0) firstInteractionAt = performance.now();
         },
         true,
       );
@@ -450,8 +404,7 @@ const panelClass = "px-5 py-8 sm:px-6";
     };
 
     /* ---------- validation ---------- */
-    const errorEl = (input: HTMLInputElement) =>
-      document.getElementById(`${input.id}-error`)!;
+    const errorEl = (input: HTMLInputElement) => document.getElementById(`${input.id}-error`)!;
 
     function messageFor(input: HTMLInputElement): string {
       const key = input.name as (typeof fieldNames)[number];
@@ -459,14 +412,10 @@ const panelClass = "px-5 py-8 sm:px-6";
       const value = input.value.trim();
       const v = input.validity;
       if (value === "" || v.valueMissing) return msgs.required;
-      if (key === "email" && (v.typeMismatch || !EMAIL_RE.test(value)))
-        return msgs.invalid ?? msgs.required;
-      if ((key === "date" || key === "time") && v.badInput)
-        return msgs.invalid ?? msgs.required;
-      if (key === "date" && (v.rangeUnderflow || value < today()))
-        return msgs.min ?? msgs.required;
-      if (key === "time" && dateInput.value === today() && value < nowTime())
-        return msgs.past ?? msgs.required;
+      if (key === "email" && (v.typeMismatch || !EMAIL_RE.test(value))) return msgs.invalid ?? msgs.required;
+      if ((key === "date" || key === "time") && v.badInput) return msgs.invalid ?? msgs.required;
+      if (key === "date" && (v.rangeUnderflow || value < today())) return msgs.min ?? msgs.required;
+      if (key === "time" && dateInput.value === today() && value < nowTime()) return msgs.past ?? msgs.required;
       return "";
     }
 
@@ -487,13 +436,11 @@ const panelClass = "px-5 py-8 sm:px-6";
 
     for (const input of inputs) {
       input.addEventListener("blur", () => {
-        if (input.value !== "" || input.hasAttribute("aria-invalid"))
-          validate(input);
+        if (input.value !== "" || input.hasAttribute("aria-invalid")) validate(input);
       });
       input.addEventListener("input", () => {
         if (input.getAttribute("aria-invalid") === "true") validate(input);
-        if (input === dateInput && timeInput.hasAttribute("aria-invalid"))
-          validate(timeInput);
+        if (input === dateInput && timeInput.hasAttribute("aria-invalid")) validate(timeInput);
       });
     }
     // The email is Latin even on an Arabic page: set it LTR as soon as there is a value.
@@ -513,12 +460,7 @@ const panelClass = "px-5 py-8 sm:px-6";
       submitButton.setAttribute("aria-busy", String(busy));
       submitLabel.textContent = busy ? messages.submitting : messages.submit;
       status.textContent = busy ? messages.submitting : "";
-      const heading =
-        next === "success"
-          ? "demo-success-title"
-          : next === "error"
-            ? "demo-error-title"
-            : "demo-title";
+      const heading = next === "success" ? "demo-success-title" : next === "error" ? "demo-error-title" : "demo-title";
       dialog.setAttribute("aria-labelledby", heading);
       // The error panel's body is a role="alert" and is announced by itself, so it is not repeated as a description.
       const describedBy = next === "success" ? "demo-success-body" : next === "error" ? "" : "demo-lead";
@@ -554,10 +496,7 @@ const panelClass = "px-5 py-8 sm:px-6";
       try {
         const url = new URL(raw.trim());
         // https only; plain http is allowed for a local test endpoint in dev builds.
-        return url.protocol === "https:" ||
-          (import.meta.env.DEV && url.protocol === "http:")
-          ? url
-          : null;
+        return url.protocol === "https:" || (import.meta.env.DEV && url.protocol === "http:") ? url : null;
       } catch {
         return null;
       }
@@ -581,10 +520,7 @@ const panelClass = "px-5 py-8 sm:px-6";
         succeed();
         return;
       }
-      if (
-        firstInteractionAt < 0 ||
-        (!isAutofilled() && performance.now() - firstInteractionAt < MIN_FILL_MS)
-      ) {
+      if (firstInteractionAt < 0 || (!isAutofilled() && performance.now() - openedAt < MIN_FILL_MS)) {
         emit("yawmy:demo-submit", { status: "blocked", reason: "too-fast" });
         showError(messages.error.tooFast);
         return;
@@ -667,6 +603,7 @@ const panelClass = "px-5 py-8 sm:px-6";
       opener = from;
       openedFromHash = viaHash;
       firstInteractionAt = -1;
+      openedAt = performance.now();
       // Min date is "today" in the visitor's timezone, refreshed on every open.
       dateInput.min = today();
       if (state === "success" || state === "error") setState("idle");
@@ -677,8 +614,7 @@ const panelClass = "px-5 py-8 sm:px-6";
     }
 
     dialog.addEventListener("close", () => {
-      if (location.hash === "#demo")
-        history.replaceState(null, "", location.pathname + location.search);
+      if (location.hash === "#demo") history.replaceState(null, "", location.pathname + location.search);
       if (state === "success" || state === "error") setState("idle");
       // Browsers restore focus to the opener themselves. When the opener is no longer rendered (the mobile
       // menu panel closes when its link is clicked, so its Book a Demo button is display:none), focus the
@@ -693,20 +629,14 @@ const panelClass = "px-5 py-8 sm:px-6";
     // Delegated, so openers added later (or in other sections) work with no wiring.
     document.addEventListener("click", (event) => {
       const target = event.target instanceof Element ? event.target : null;
-      const trigger = target?.closest<HTMLElement>(
-        '[data-demo-open], a[href="#demo"]',
-      );
+      const trigger = target?.closest<HTMLElement>('[data-demo-open], a[href="#demo"]');
       if (!trigger) return;
       event.preventDefault();
       open(trigger);
     });
 
     dialog.addEventListener("click", (event) => {
-      if (
-        event.target instanceof Element &&
-        event.target.closest("[data-demo-close]")
-      )
-        dialog.close();
+      if (event.target instanceof Element && event.target.closest("[data-demo-close]")) dialog.close();
     });
 
     // Backdrop click closes, but only when the press also started on the backdrop

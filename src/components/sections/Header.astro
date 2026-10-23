@@ -37,9 +37,7 @@ const switchHref = Astro.url.pathname.replace(new RegExp(`^/${locale}(?=/|$)`), 
 
 // Social URLs come from env (src/config/site.ts, docs/ENV.md). Unset ones are not rendered in production;
 // in dev they render with a dashed marker.
-const socials = socialOrder
-  .map((name) => ({ name, ...resolveLink(socialUrls[name]) }))
-  .filter((s) => s.render);
+const socials = socialOrder.map((name) => ({ name, ...resolveLink(socialUrls[name]) })).filter((s) => s.render);
 
 // Single nav source (src/config/nav.ts): ids + header labels, shared with the footer.
 const navItems = navLinks(h.nav.items);
@@ -62,25 +60,25 @@ const linkClass =
     <WaveDivider direction="down" class="bg-primary-bg" />
     <div class="absolute inset-x-0 top-2 md:top-3">
       <Container class:list={["flex items-center justify-center gap-4", socials.length > 0 && "sm:justify-between"]}>
-        <p class:list={["text-body-sm text-ink text-center font-medium", socials.length > 0 && "hidden sm:block"]}>{t.brand.tagline}</p>
-        {
-          socials.length > 0 && (
-            <ul class="flex items-center gap-3" aria-label={h.topbar.socialLabel}>
-              {socials.map((s) => (
-                <li>
-                  <Button
-                    variant="social-bar"
-                    icon={s.name}
-                    label={t.social[s.name]}
-                    href={s.href}
-                    external={isExternal(s.href)}
-                    unconfigured={s.unconfigured}
-                  />
-                </li>
-              ))}
-            </ul>
-          )
-        }
+        <p class:list={["text-body-sm text-ink text-center font-medium", socials.length > 0 && "hidden sm:block"]}>
+          {t.brand.tagline}
+        </p>
+        {socials.length > 0 && (
+          <ul class="flex items-center gap-3" aria-label={h.topbar.socialLabel}>
+            {socials.map((s) => (
+              <li>
+                <Button
+                  variant="social-bar"
+                  icon={s.name}
+                  label={t.social[s.name]}
+                  href={s.href}
+                  external={isExternal(s.href)}
+                  unconfigured={s.unconfigured}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </Container>
     </div>
   </div>
@@ -97,20 +95,18 @@ const linkClass =
         />
         <nav class="hidden min-[85rem]:block" aria-label={h.nav.label}>
           <ul class="flex items-center gap-2 rtl:gap-3">
-            {
-              navItems.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class={`${linkClass} text-nav inline-block py-1 rtl:text-[0.9375rem]`}
-                    data-nav-link={item.id}
-                    aria-current={item.id === "home" ? "location" : undefined}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
+            {navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class={`${linkClass} text-nav inline-block py-1 rtl:text-[0.9375rem]`}
+                  data-nav-link={item.id}
+                  aria-current={item.id === "home" ? "location" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>
@@ -118,7 +114,9 @@ const linkClass =
       <div class="flex items-center gap-3">
         <div class="hidden items-center gap-3 md:flex">
           <Button variant="icon" href={switchHref} label={t.a11y.switchLanguage} hreflang={other} data-lang-switch />
-          <Button variant="primary" href="#demo" data-demo-open>{t.cta.bookDemo}</Button>
+          <Button variant="primary" href="#demo" data-demo-open>
+            {t.cta.bookDemo}
+          </Button>
         </div>
         <button
           type="button"
@@ -128,10 +126,32 @@ const linkClass =
           aria-label={h.nav.menu}
           data-nav-toggle
         >
-          <svg class="icon-open" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <svg
+            class="icon-open"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path d="M4 7h16M4 12h16M4 17h16"></path>
           </svg>
-          <svg class="icon-close" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <svg
+            class="icon-close"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path d="M6 6l12 12M18 6L6 18"></path>
           </svg>
         </button>
@@ -140,29 +160,42 @@ const linkClass =
   </div>
 
   <!-- Menu panel (below 1360) -->
-  <div id="nav-panel" class="nav-panel border-stroke-green border-y min-[85rem]:hidden" data-state="closed" data-nav-panel>
+  <div
+    id="nav-panel"
+    class="nav-panel border-stroke-green border-y min-[85rem]:hidden"
+    data-state="closed"
+    data-nav-panel
+  >
     <Container class="py-4">
       <nav aria-label={h.nav.label}>
         <ul class="flex flex-col md:grid md:grid-flow-col md:grid-cols-3 md:grid-rows-3 md:gap-x-8">
-          {
-            navItems.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class={`${linkClass} text-lead inline-flex min-h-11 items-center`}
-                  data-nav-link={item.id}
-                  aria-current={item.id === "home" ? "location" : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
+          {navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class={`${linkClass} text-lead inline-flex min-h-11 items-center`}
+                data-nav-link={item.id}
+                aria-current={item.id === "home" ? "location" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
       <div class="mt-4 flex flex-col gap-3 md:hidden">
-        <Button variant="primary" href="#demo" data-demo-open block>{t.cta.bookDemo}</Button>
-        <Button variant="outline" icon="language" href={switchHref} hreflang={other} lang={other} block data-lang-switch>
+        <Button variant="primary" href="#demo" data-demo-open block>
+          {t.cta.bookDemo}
+        </Button>
+        <Button
+          variant="outline"
+          icon="language"
+          href={switchHref}
+          hreflang={other}
+          lang={other}
+          block
+          data-lang-switch
+        >
           {localeMeta[other].label}
         </Button>
       </div>

@@ -24,12 +24,27 @@ const width = size === "footer" ? 158 : locale === "ar" ? 84 : 71;
 const height = Math.round(width / ratio);
 ---
 
-{
-  href ? (
-    <a href={href} aria-label={t.brand.logoAlt} class={className}>
-      <Image src={logo} alt="" width={width} height={height} densities={[1, 2]} format="webp" loading={size === "nav" ? "eager" : "lazy"} />
-    </a>
-  ) : (
-    <Image src={logo} alt="" width={width} height={height} densities={[1, 2]} format="webp" loading={size === "nav" ? "eager" : "lazy"} class={className} />
-  )
-}
+{href ? (
+  <a href={href} aria-label={t.brand.logoAlt} class={className}>
+    <Image
+      src={logo}
+      alt=""
+      width={width}
+      height={height}
+      densities={[1, 2]}
+      format="webp"
+      loading={size === "nav" ? "eager" : "lazy"}
+    />
+  </a>
+) : (
+  <Image
+    src={logo}
+    alt=""
+    width={width}
+    height={height}
+    densities={[1, 2]}
+    format="webp"
+    loading={size === "nav" ? "eager" : "lazy"}
+    class={className}
+  />
+)}

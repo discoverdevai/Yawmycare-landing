@@ -40,7 +40,11 @@ const hasHeader = Astro.slots.has("header");
 <section id={id} aria-labelledby={headingId} class:list={["mb-(--section-gap)", className]}>
   {wave !== "none" && <WaveDivider direction={wave} shadow={shadow} class={waveClass} />}
   <Container class={wave !== "none" ? "mt-(--wave-gap)" : undefined}>
-    {hasHeader && <div class={headerGap}><slot name="header" /></div>}
+    {hasHeader && (
+      <div class={headerGap}>
+        <slot name="header" />
+      </div>
+    )}
     <slot />
   </Container>
 </section>

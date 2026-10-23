@@ -1,0 +1,59 @@
+---
+import type { ImageMetadata } from "astro";
+
+/**
+ * Decorative animated WebP with a still frame for motion-averse visitors. The single place for this pattern.
+ *
+ * - `prefers-reduced-motion: reduce` swaps in the still through <picture> (no JS).
+ * - `data-anim` / `data-still` let the page-level pause control (ui/MotionToggle.astro) swap the same pair at
+ *   runtime, so WCAG 2.2.2 (pause, stop, hide) holds for visitors who have not set the OS preference.
+ * - A plain <img>, not <Image>: astro:assets would re-encode the already optimised animation and flatten it.
+ *   The files come from the pre-optimise scripts in docs/sections/*\/.
+ * - Decorative by default (`alt=""`); pass `alt` only when the animation carries information.
+ */
+interface Props {
+  /** Animated WebP, already sized for the slot at 2x. */
+  src: ImageMetadata;
+  /** First frame of the animation (WebP). */
+  still: ImageMetadata;
+  /** Displayed size in CSS px (the files are 2x). */
+  width: number;
+  height: number;
+  alt?: string;
+  loading?: "lazy" | "eager";
+  /** Classes for the <img> (size, fit, position). */
+  class?: string;
+  /** Classes for the wrapping <picture> (e.g. absolute positioning). Defaults to no layout box of its own. */
+  pictureClass?: string;
+}
+
+const {
+  src,
+  still,
+  width,
+  height,
+  alt = "",
+  loading = "lazy",
+  class: className,
+  pictureClass = "contents",
+} = Astro.props;
+
+// A space in a srcset URL splits the candidate. The dev server serves assets from a path that can contain one
+// (e.g. "C:/Users/Mohamed Ali/..."), so the still would be ignored; built URLs have none. Encoded here, once.
+const stillUrl = still.src.replace(/ /g, "%20");
+---
+
+<picture class={pictureClass} aria-hidden={alt === "" ? "true" : undefined}>
+  <source media="(prefers-reduced-motion: reduce)" srcset={stillUrl} type="image/webp" />
+  <img
+    src={src.src}
+    width={width}
+    height={height}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+    class={className}
+    data-anim={src.src}
+    data-still={still.src}
+  />
+</picture>

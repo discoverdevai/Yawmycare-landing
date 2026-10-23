@@ -2,4 +2,6 @@ dist/
 .astro/
 node_modules/
 package-lock.json
-docs/sections/*/assets/
+docs/
+.claude/
+public/

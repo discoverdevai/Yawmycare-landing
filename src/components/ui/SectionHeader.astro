@@ -37,13 +37,22 @@ const onGreen = tone === "on-green";
 ---
 
 <header class:list={["flex flex-col gap-(--lead-gap)", align === "center" && "items-center text-center", className]}>
-  {
-    eyebrow && (
-      <p class="border-accent-text text-accent-text text-caption border-s-2 ps-2 font-semibold">{eyebrow}</p>
-    )
-  }
-  <Heading id={id} class:list={[size === "band" ? "text-band" : "text-h2", "font-bold", onGreen ? "text-ink-inverse" : "text-ink"]}>
+  {eyebrow && <p class="border-accent-text text-accent-text text-caption border-s-2 ps-2 font-semibold">{eyebrow}</p>}
+  <Heading
+    id={id}
+    class:list={[size === "band" ? "text-band" : "text-h2", "font-bold", onGreen ? "text-ink-inverse" : "text-ink"]}
+  >
     {title}
   </Heading>
-  {lead && <p class:list={["text-lead max-w-[62ch]", onGreen ? "text-primary-bg-light" : "text-ink", align === "center" && "text-balance"]}>{lead}</p>}
+  {lead && (
+    <p
+      class:list={[
+        "text-lead max-w-[62ch]",
+        onGreen ? "text-primary-bg-light" : "text-ink",
+        align === "center" && "text-balance",
+      ]}
+    >
+      {lead}
+    </p>
+  )}
 </header>

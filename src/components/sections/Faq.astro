@@ -43,46 +43,44 @@ const jsonLdHtml = JSON.stringify(jsonLd)
   <SectionHeader slot="header" id="faq-title" title={t.title} />
 
   <div data-faq class="flex flex-col gap-6">
-    {
-      t.items.map((item, i) => {
-        const n = i + 1;
-        const open = initialOpen.includes(n);
-        return (
-          <div
-            data-faq-item
-            data-open={open ? "true" : "false"}
-            class="group bg-stroke-sec rounded-faq has-[button:focus-visible]:outline-focus border-2 border-transparent has-[button:focus-visible]:outline-3 has-[button:focus-visible]:outline-offset-2 data-[open=true]:border-primary-cta"
-          >
-            <h3>
-              <button
-                type="button"
-                id={`faq-q-${n}`}
-                aria-expanded={open ? "true" : "false"}
-                aria-controls={`faq-a-${n}`}
-                class="text-ink flex w-full cursor-pointer items-center justify-between gap-3 px-[22px] py-[14px] text-start outline-none"
-              >
-                <span class="flex min-w-0 items-center gap-3">
-                  <span
-                    aria-hidden="true"
-                    class="bg-primary-bg text-primary-text text-title rounded-pill flex size-10 shrink-0 items-center justify-center font-bold"
-                  >
-                    {n}
-                  </span>
-                  <span class="text-title font-bold">{item.question}</span>
+    {t.items.map((item, i) => {
+      const n = i + 1;
+      const open = initialOpen.includes(n);
+      return (
+        <div
+          data-faq-item
+          data-open={open ? "true" : "false"}
+          class="group bg-stroke-sec rounded-faq has-[button:focus-visible]:outline-focus border-2 border-transparent has-[button:focus-visible]:outline-3 has-[button:focus-visible]:outline-offset-2 data-[open=true]:border-primary-cta"
+        >
+          <h3>
+            <button
+              type="button"
+              id={`faq-q-${n}`}
+              aria-expanded={open ? "true" : "false"}
+              aria-controls={`faq-a-${n}`}
+              class="text-ink flex w-full cursor-pointer items-center justify-between gap-3 px-[22px] py-[14px] text-start outline-none"
+            >
+              <span class="flex min-w-0 items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  class="bg-primary-bg text-primary-text text-title rounded-pill flex size-10 shrink-0 items-center justify-center font-bold"
+                >
+                  {n}
                 </span>
-                <Icon name="plus" size={24} class="shrink-0 group-data-[open=true]:hidden" />
-                <Icon name="minus" size={24} class="hidden shrink-0 group-data-[open=true]:block" />
-              </button>
-            </h3>
-            <div id={`faq-a-${n}`} class="faq-panel">
-              <div class="faq-panel-inner">
-                <p class="text-lead text-ink px-[22px] pt-0 pb-[14px]">{item.answer}</p>
-              </div>
+                <span class="text-title min-w-0 font-bold">{item.question}</span>
+              </span>
+              <Icon name="plus" size={24} class="shrink-0 group-data-[open=true]:hidden" />
+              <Icon name="minus" size={24} class="hidden shrink-0 group-data-[open=true]:block" />
+            </button>
+          </h3>
+          <div id={`faq-a-${n}`} class="faq-panel">
+            <div class="faq-panel-inner">
+              <p class="text-lead text-ink px-[22px] pt-0 pb-[14px]">{item.answer}</p>
             </div>
           </div>
-        );
-      })
-    }
+        </div>
+      );
+    })}
   </div>
   <script type="application/ld+json" set:html={jsonLdHtml} />
 </Section>

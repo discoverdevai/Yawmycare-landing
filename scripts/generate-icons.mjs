@@ -8,8 +8,12 @@ const cream = "#fffff5"; // --color-surface; apple-touch-icon must be opaque
 /** Logo centred on a square canvas, with `pad` as a fraction of the side. */
 async function square(size, { pad, background }) {
   const inner = Math.round(size * (1 - pad * 2));
-  const logo = await sharp(src).resize(inner, inner, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
-  return sharp({ create: { width: size, height: size, channels: 4, background: background ?? { r: 0, g: 0, b: 0, alpha: 0 } } })
+  const logo = await sharp(src)
+    .resize(inner, inner, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .toBuffer();
+  return sharp({
+    create: { width: size, height: size, channels: 4, background: background ?? { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
     .composite([{ input: logo, gravity: "centre" }])
     .png()
     .toBuffer();

@@ -40,18 +40,16 @@ const cards = [
 <Section id="commitments" headingId="commitments-title" wave="down" shadow>
   <SectionHeader slot="header" id="commitments-title" title={t.title} lead={t.lead} />
   <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-10">
-    {
-      cards.map((c) => (
-        <CommitmentCard
-          shape={c.shape}
-          title={t.cards[c.key].title}
-          body={t.cards[c.key].body}
-          icon={c.icon}
-          iconStill={c.iconStill}
-          titleClass={c.titleClass}
-          class={c.shape === "commitment-wide" ? "md:col-span-2" : ""}
-        />
-      ))
-    }
+    {cards.map((c) => (
+      <CommitmentCard
+        shape={c.shape}
+        title={t.cards[c.key].title}
+        body={t.cards[c.key].body}
+        icon={c.icon}
+        iconStill={c.iconStill}
+        titleClass={c.titleClass}
+        class={c.shape === "commitment-wide" ? "md:col-span-2" : ""}
+      />
+    ))}
   </ul>
 </Section>

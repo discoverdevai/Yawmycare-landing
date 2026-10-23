@@ -41,13 +41,18 @@ const watch = resolveLink(demoVideoUrl);
       <Button variant="primary" href="#demo" data-demo-open block class="sm:w-auto sm:min-w-[282px]">
         {t.ctaPrimary}
       </Button>
-      {
-        watch.render && (
-          <Button variant="outline" href={watch.href} external={!watch.unconfigured} unconfigured={watch.unconfigured} block class="sm:w-auto">
-            {t.ctaWatch}
-          </Button>
-        )
-      }
+      {watch.render && (
+        <Button
+          variant="outline"
+          href={watch.href}
+          external={!watch.unconfigured}
+          unconfigured={watch.unconfigured}
+          block
+          class="sm:w-auto"
+        >
+          {t.ctaWatch}
+        </Button>
+      )}
     </div>
   </Container>
 

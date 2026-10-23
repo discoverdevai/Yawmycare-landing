@@ -14,6 +14,7 @@ const outDir = "src/assets/commitments";
 const SIZE = Number(process.env.SIZE ?? 220);
 const FRAME_STEP = Number(process.env.FRAME_STEP ?? 3);
 const QUALITY = Number(process.env.QUALITY ?? 60);
+const ALPHA_QUALITY = Number(process.env.ALPHA_QUALITY ?? 30); // the alpha plane costs most of the bytes at the default 100
 mkdirSync(outDir, { recursive: true });
 
 let totalGif = 0;
@@ -34,7 +35,7 @@ for (const f of readdirSync(srcDir).filter((f) => f.endsWith(".gif"))) {
   for (let i = 0; i < pages; i += FRAME_STEP) kept.push(data.subarray(i * frameBytes, (i + 1) * frameBytes));
 
   await sharp(Buffer.concat(kept), { raw: { width: SIZE, height: pageHeight * kept.length, channels: 4, pageHeight } })
-    .webp({ quality: QUALITY, effort: 4, loop: 0, delay: Array(kept.length).fill(30 * FRAME_STEP) })
+    .webp({ quality: QUALITY, effort: 4, alphaQuality: ALPHA_QUALITY, loop: 0, delay: Array(kept.length).fill(30 * FRAME_STEP) })
     .toFile(`${outDir}/${name}.webp`);
   await sharp(kept[0], { raw: { width: SIZE, height: pageHeight, channels: 4 } })
     .webp({ quality: 80, effort: 6 })

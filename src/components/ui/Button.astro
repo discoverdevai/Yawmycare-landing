@@ -104,47 +104,56 @@ const variants: Record<Variant, string> = {
   // Hover/active darken the label as well as tint the fill: 18px bold is not "large" text, so >= 4.5:1 is needed
   // (text-primary-cta-strong on a 10% tint was 4.26:1; hover text is 5.3:1, active text-primary-text is 8+:1).
   outline: `${labelled} ${ringDark} border border-primary-cta-strong text-primary-cta-strong hover:bg-primary-cta-strong/10 hover:text-primary-cta-hover active:bg-primary-cta-strong/10 active:text-primary-text`,
-  "outline-deep": `${labelled} ${ringDark} border border-primary-cta-hover text-primary-cta-hover hover:bg-primary-cta-hover/10 active:bg-primary-cta-hover/20`,
-  // Tint capped at 5% (4.5:1+ for accent-text on accent-bg-light / cream); pressed is shown by the darker border.
+  "outline-deep": `${labelled} ${ringDark} border border-primary-cta-hover text-primary-cta-hover hover:bg-primary-cta-hover/10 active:bg-primary-cta-hover/20 active:text-primary-text`,
+  // Tint capped at 5% (accent-text on 5% accent over accent-bg-light, the only card it sits on, is 4.53:1); pressed is shown by the darker border.
+  // outline-deep: hover text 4.87:1 on stroke-sec; pressed (20% tint) darkens the label to primary-text, 7.0:1.
   "outline-accent": `${labelled} ${ringDark} border-2 border-accent text-accent-text hover:bg-accent/5 active:bg-accent/5 active:border-accent-text`,
   "on-green": `${labelled} ${ringLight} bg-primary-bg-light text-primary-text hover:bg-primary-bg active:bg-primary-bg disabled:hover:bg-surface-tabs`,
   "on-green-outline": `${labelled} ${ringLight} border border-ink-inverse text-ink-inverse hover:bg-primary-cta-hover active:bg-primary-cta-hover`,
   icon: `size-14 ${ringDark} bg-surface-tabs text-ink hover:bg-primary-bg active:bg-primary-bg`,
   "social-bar": `size-[min(2.5rem,calc((100vw-2rem-2.25rem)/4))] ${ringDark} ${hitArea} bg-surface text-ink hover:bg-primary-bg active:bg-primary-bg`,
   // Footer is the light green (primary-bg): the ring must be dark (8.2:1 there, 3.3:1 against the coral button).
-  "social-footer": `size-10 ${ringDark} ${hitArea} bg-accent text-ink-inverse hover:bg-accent-text active:bg-accent-text`,
+  "social-footer": `size-[min(2.5rem,calc((100vw-2rem-2.25rem)/4))] ${ringDark} ${hitArea} bg-accent text-ink-inverse hover:bg-accent-text active:bg-accent-text`,
 };
 
 // Dev-only marker for a link/button whose URL is still unset (never rendered in production at all).
-const unconfiguredMark = "outline-2 outline-dashed outline-offset-2 outline-accent-text";
+// Not while focused: the keyboard focus ring (solid, dark) must stay visible and distinguishable in dev too.
+const unconfiguredMark =
+  "not-focus-visible:outline-2 not-focus-visible:outline-dashed not-focus-visible:outline-offset-2 not-focus-visible:outline-accent-text";
 const classes = [base, variants[variant], block && "w-full", unconfigured && unconfiguredMark, className];
 const accessibleName = iconOnly ? label : undefined;
 const iconSize = variant === "icon" ? 32 : 24;
 ---
 
-{
-  href ? (
-    <a
-      href={href}
-      class:list={classes}
-      aria-label={accessibleName}
-      aria-disabled={disabled ? "true" : undefined}
-      tabindex={disabled ? -1 : undefined}
-      data-unconfigured={unconfigured ? "" : undefined}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      {...attrs}
-    >
-      {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
-      {!iconOnly && <span><slot /></span>}
-      {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
-      {external && <span class="sr-only">{newTabHint}</span>}
-    </a>
-  ) : (
-    <button type={type} disabled={disabled} class:list={classes} aria-label={accessibleName} {...attrs}>
-      {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
-      {!iconOnly && <span><slot /></span>}
-      {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
-    </button>
-  )
-}
+{href ? (
+  <a
+    href={href}
+    class:list={classes}
+    aria-label={accessibleName}
+    aria-disabled={disabled ? "true" : undefined}
+    tabindex={disabled ? -1 : undefined}
+    data-unconfigured={unconfigured ? "" : undefined}
+    target={external ? "_blank" : undefined}
+    rel={external ? "noopener noreferrer" : undefined}
+    {...attrs}
+  >
+    {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
+    {!iconOnly && (
+      <span>
+        <slot />
+      </span>
+    )}
+    {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
+    {external && <span class="sr-only">{newTabHint}</span>}
+  </a>
+) : (
+  <button type={type} disabled={disabled} class:list={classes} aria-label={accessibleName} {...attrs}>
+    {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
+    {!iconOnly && (
+      <span>
+        <slot />
+      </span>
+    )}
+    {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
+  </button>
+)}

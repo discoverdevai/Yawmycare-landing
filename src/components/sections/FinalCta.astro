@@ -31,7 +31,11 @@ const bothButtons = watch.render;
 
 <section id="contact" aria-labelledby="final-cta-title" class="relative">
   <Container class="@container relative overflow-x-visible overflow-y-clip">
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="--blob-fill:var(--color-primary-cta-strong)">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0"
+      style="--blob-fill:var(--color-primary-cta-strong)"
+    >
       <FinalCtaBlob class="absolute inset-x-0 top-0 hidden h-[910px] w-full @min-[900px]:block" focusable="false" />
       <div class="rounded-card absolute inset-0 bg-(--blob-fill) @min-[900px]:hidden"></div>
     </div>
@@ -42,23 +46,25 @@ const bothButtons = watch.render;
           variant="on-green"
           href="#demo"
           data-demo-open
-          class:list={bothButtons ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none" : "@min-[560px]:w-[386px] @min-[560px]:flex-none"}
+          class:list={
+            bothButtons
+              ? "@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
+              : "@min-[560px]:w-[386px] @min-[560px]:flex-none"
+          }
         >
           {t.cta.bookDemo}
         </Button>
-        {
-          watch.render && (
-            <Button
-              variant="on-green-outline"
-              href={watch.href}
-              external={!watch.unconfigured}
-              unconfigured={watch.unconfigured}
-              class="@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
-            >
-              {t.cta.watchDemo}
-            </Button>
-          )
-        }
+        {watch.render && (
+          <Button
+            variant="on-green-outline"
+            href={watch.href}
+            external={!watch.unconfigured}
+            unconfigured={watch.unconfigured}
+            class="@min-[560px]:flex-1 @min-[900px]:w-[386px] @min-[900px]:flex-none"
+          >
+            {t.cta.watchDemo}
+          </Button>
+        )}
       </div>
     </div>
   </Container>

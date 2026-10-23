@@ -4,7 +4,7 @@ import SectionHeader from "@/components/ui/SectionHeader.astro";
 import BlobCard from "@/components/ui/BlobCard.astro";
 import Button from "@/components/ui/Button.astro";
 import Check from "@/assets/pricing/check.svg";
-import Illustration from "@/components/sections/pricing/Illustration.astro";
+import AnimatedImage from "@/components/ui/AnimatedImage.astro";
 import recurring from "@/assets/pricing/recurring.webp";
 import recurringStill from "@/assets/pricing/recurring-still.webp";
 import daycare from "@/assets/pricing/daycare.webp";
@@ -17,7 +17,7 @@ import { getDictionary, type Locale } from "@/i18n";
  * Section 09: flat-fee pricing card (no price on purpose), international-school card, "first 10" card.
  * The illustrations are animated WebP (converted from the Figma GIFs, originals in
  * docs/sections/09-pricing/assets-original) with a first-frame still for prefers-reduced-motion
- * (see pricing/Illustration.astro). Every demo CTA opens the booking dialog (`data-demo-open`, href="#demo").
+ * (see ui/AnimatedImage.astro). Every demo CTA opens the booking dialog (`data-demo-open`, href="#demo").
  * Layout is logical, so RTL mirrors itself; blobs and illustrations are not mirrored.
  */
 interface Props {
@@ -40,39 +40,55 @@ const demo = { href: "#demo", "data-demo-open": "" };
           <div class="flex flex-col gap-6">
             <h3 class="text-h3 text-primary-text font-bold">{t.plan.title}</h3>
             <ul class="flex flex-col gap-4" aria-label={t.plan.itemsLabel}>
-              {
-                t.plan.items.map((item) => (
-                  <li class="text-title flex items-start gap-2 font-medium">
-                    <Check class="text-primary-cta-strong mt-0.5 size-6 shrink-0" aria-hidden="true" focusable="false" />
-                    <span>{item}</span>
-                  </li>
-                ))
-              }
+              {t.plan.items.map((item) => (
+                <li class="text-title flex items-start gap-2 font-medium">
+                  <Check class="text-primary-cta-strong mt-0.5 size-6 shrink-0" aria-hidden="true" focusable="false" />
+                  <span class="min-w-0">{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
-          <Button {...demo} block class="lg:max-w-[610px]">{dict.cta.bookDemo}</Button>
+          <Button {...demo} block class="lg:max-w-[610px]">
+            {dict.cta.bookDemo}
+          </Button>
         </div>
-        <Illustration anim={recurring} still={recurringStill} class="size-40 shrink-0 object-cover md:size-48 lg:size-[319px]" />
+        <AnimatedImage
+          src={recurring}
+          still={recurringStill}
+          width={319}
+          height={319}
+          class="size-40 shrink-0 object-cover md:size-48 lg:size-[319px]"
+        />
       </div>
     </BlobCard>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,384fr)_minmax(0,792fr)]">
       <BlobCard shape="intl-school" class="flex flex-col [&>div]:flex-1" contentClass="p-8 flex flex-col gap-1">
-        <Illustration anim={daycare} still={daycareStill} class="size-[125px] object-cover" />
+        <AnimatedImage src={daycare} still={daycareStill} width={125} height={125} class="size-[125px] object-cover" />
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <h3 class="text-h3 text-primary-text font-bold">
-              {t.school.title.map((part) => (part.em ? <span class="text-primary-cta-strong">{part.text}</span> : part.text))}
+              {t.school.title.map((part) =>
+                part.em ? <span class="text-primary-cta-strong">{part.text}</span> : part.text,
+              )}
             </h3>
             <p class="text-title text-ink-muted font-medium">{t.school.body}</p>
           </div>
-          <Button variant="outline-deep" {...demo} block>{t.school.cta}</Button>
+          <Button variant="outline-deep" {...demo} block>
+            {t.school.cta}
+          </Button>
         </div>
       </BlobCard>
 
-      <BlobCard shape="first10" class="flex flex-col [&>div]:flex-1" contentClass="relative px-6 py-8 @min-[594px]:px-[7.3%] lg:py-[12.7%]">
-        <Illustration
-          anim={diplomacy}
+      <BlobCard
+        shape="first10"
+        class="flex flex-col [&>div]:flex-1"
+        contentClass="relative px-6 py-8 @min-[594px]:px-[7.3%] lg:py-[12.7%]"
+      >
+        <AnimatedImage
+          src={diplomacy}
+          width={170}
+          height={170}
           still={diplomacyStill}
           class="mb-4 size-24 object-cover lg:absolute lg:end-[3%] lg:top-[8%] lg:mb-0 lg:size-auto lg:w-[21%]"
         />
@@ -83,7 +99,9 @@ const demo = { href: "#demo", "data-demo-open": "" };
             </h3>
             <p class="text-title text-ink font-medium">{t.partner.body}</p>
           </div>
-          <Button variant="outline-accent" {...demo} block>{t.partner.cta}</Button>
+          <Button variant="outline-accent" {...demo} block>
+            {t.partner.cta}
+          </Button>
         </div>
       </BlobCard>
     </div>

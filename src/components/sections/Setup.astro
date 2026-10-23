@@ -49,31 +49,37 @@ const railDot =
 
   <div class="flex flex-col gap-8 lg:gap-12">
     <div class="relative lg:pt-[129px]">
-      <ConnectorLines
-        class="pointer-events-none absolute start-[calc((100%-4.5rem)/8)] top-0 hidden h-28 w-[calc((100%-4.5rem)*3/4+4.5rem)] lg:block"
-      />
+      <ConnectorLines class="pointer-events-none absolute start-[calc((100%-4.5rem)/8)] top-0 hidden h-28 w-[calc((100%-4.5rem)*3/4+4.5rem)] lg:block" />
       <ol role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-        {
-          t.steps.map((step, i) => (
-            <li
-              class:list={[
-                "relative grid grid-cols-[3rem_minmax(0,1fr)] items-start gap-x-4 sm:flex sm:flex-col sm:items-center sm:gap-6",
-                verticalLine,
-                railDot,
-              ]}
+        {t.steps.map((step, i) => (
+          <li
+            class:list={[
+              "relative grid grid-cols-[3rem_minmax(0,1fr)] items-start gap-x-4 sm:flex sm:flex-col sm:items-center sm:gap-6",
+              verticalLine,
+              railDot,
+            ]}
+          >
+            <BlobCard
+              shape="step-number"
+              class="relative z-10 size-12 shrink-0"
+              contentClass="grid size-full place-items-center p-0"
             >
-              <BlobCard shape="step-number" class="relative z-10 size-12 shrink-0" contentClass="grid size-full place-items-center p-0">
-                <span aria-hidden="true" class="text-h3 text-primary-text leading-none font-bold">{i + 1}</span>
-              </BlobCard>
-              <BlobCard shape="step" class="w-full max-w-72 min-w-0 sm:flex sm:max-w-none sm:flex-1 sm:flex-col sm:[&>div]:flex-1" contentClass="px-4 pt-8 pb-5">
-                <div class="flex flex-col gap-3">
-                  <h3 class="text-title text-primary-text font-bold lg:min-h-[2.6em]">{step.title}</h3>
-                  <p class="text-body-sm text-ink">{step.body}</p>
-                </div>
-              </BlobCard>
-            </li>
-          ))
-        }
+              <span aria-hidden="true" class="text-h3 text-primary-text leading-none font-bold">
+                {i + 1}
+              </span>
+            </BlobCard>
+            <BlobCard
+              shape="step"
+              class="w-full max-w-72 min-w-0 sm:flex sm:max-w-none sm:flex-1 sm:flex-col sm:[&>div]:flex-1"
+              contentClass="px-4 pt-8 pb-5"
+            >
+              <div class="flex flex-col gap-3">
+                <h3 class="text-title text-primary-text font-bold lg:min-h-[2.6em]">{step.title}</h3>
+                <p class="text-body-sm text-ink">{step.body}</p>
+              </div>
+            </BlobCard>
+          </li>
+        ))}
       </ol>
     </div>
 
@@ -83,12 +89,24 @@ const railDot =
       contentClass="px-6 py-10 @min-[900px]:px-[58px] @min-[900px]:pt-12 @min-[900px]:pb-10"
     >
       <div class="flex flex-col items-center gap-[30px] text-center">
-        <div class="flex flex-col items-center gap-(--lead-gap)">
-          <SectionHeader align="center" tone="on-green" size="band" headingLevel={3} title={t.band.title} class="[&_h3]:text-balance" />
-          <p class="text-lead text-ink-inverse">{t.band.lead}</p>
+        <div class="flex w-full min-w-0 flex-col items-center gap-(--lead-gap)">
+          <SectionHeader
+            align="center"
+            tone="on-green"
+            size="band"
+            headingLevel={3}
+            title={t.band.title}
+            class="w-full min-w-0 [&_h3]:max-w-full [&_h3]:text-balance"
+          />
+          <p class="text-lead text-ink-inverse max-w-full">{t.band.lead}</p>
         </div>
         <div class="flex w-full flex-col items-stretch justify-center gap-4 @min-[640px]:flex-row">
-          <Button variant="on-green" href="#demo" data-demo-open class="@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0">
+          <Button
+            variant="on-green"
+            href="#demo"
+            data-demo-open
+            class="@min-[640px]:max-w-[386px] @min-[640px]:grow @min-[640px]:basis-0"
+          >
             {dict.cta.bookDemo}
           </Button>
           {watch.render && (

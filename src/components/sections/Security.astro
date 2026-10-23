@@ -4,10 +4,14 @@ import Section from "@/components/ui/Section.astro";
 import SectionHeader from "@/components/ui/SectionHeader.astro";
 import SecurityColumn from "./security/SecurityColumn.astro";
 import { getDictionary, type Locale } from "@/i18n";
-import secureIcon from "@/assets/security/secure.png";
-import cloudIcon from "@/assets/security/cloud.png";
-import serverIcon from "@/assets/security/server.png";
-import copywritingIcon from "@/assets/security/copywriting.png";
+import secureIcon from "@/assets/security/secure.webp";
+import secureStill from "@/assets/security/secure-still.webp";
+import cloudIcon from "@/assets/security/cloud.webp";
+import cloudStill from "@/assets/security/cloud-still.webp";
+import serverIcon from "@/assets/security/server.webp";
+import serverStill from "@/assets/security/server-still.webp";
+import copywritingIcon from "@/assets/security/copywriting.webp";
+import copywritingStill from "@/assets/security/copywriting-still.webp";
 import centerImage from "@/assets/security/center.png";
 
 /**
@@ -26,8 +30,14 @@ const { locale } = Astro.props;
 const t = getDictionary(locale).sections.security;
 
 // Icons follow the order of `items` in the i18n files (Figma: secure, cloud, server, copywriting).
-const icons = [secureIcon, cloudIcon, serverIcon, copywritingIcon];
-const items = t.items.map((item, i) => ({ ...item, icon: icons[i]! }));
+// Small animated WebP + first-frame still (docs/sections/07-security/optimise-icons.mjs).
+const icons = [
+  { icon: secureIcon, still: secureStill },
+  { icon: cloudIcon, still: cloudStill },
+  { icon: serverIcon, still: serverStill },
+  { icon: copywritingIcon, still: copywritingStill },
+];
+const items = t.items.map((item, i) => ({ ...item, ...icons[i]! }));
 ---
 
 <Section id="security" headingId="security-title" wave="up" shadow>

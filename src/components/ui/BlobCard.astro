@@ -14,10 +14,9 @@ import type { HTMLAttributes } from "astro/types";
  *
  * Tailwind needs literal class strings, so the per-shape thresholds live in the lookup below.
  */
-const svgs = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>(
-  "@/assets/shapes/*.svg",
-  { eager: true },
-);
+const svgs = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>("@/assets/shapes/*.svg", {
+  eager: true,
+});
 
 interface ShapeConfig {
   w: number;
@@ -48,19 +47,97 @@ interface ShapeConfig {
 const C = (name: string) => `var(--color-${name})`;
 
 const shapes = {
-  feature: { w: 384, h: 312, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[288px]:block", hide: "@min-[288px]:hidden", grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[312px]" },
-  step: { w: 282, h: 201, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[212px]:block", hide: "@min-[212px]:hidden", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[201px]" },
-  "step-number": { w: 48, h: 48, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[36px]:block", hide: "@min-[36px]:hidden" },
+  feature: {
+    w: 384,
+    h: 312,
+    fill: C("surface-tabs"),
+    stroke: C("stroke-green"),
+    strokeW: 3,
+    show: "@min-[288px]:block",
+    hide: "@min-[288px]:hidden",
+    grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[312px]",
+  },
+  step: {
+    w: 282,
+    h: 201,
+    fill: C("surface-tabs"),
+    stroke: C("stroke-green"),
+    strokeW: 3,
+    show: "@min-[212px]:block",
+    hide: "@min-[212px]:hidden",
+    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[201px]",
+  },
+  "step-number": {
+    w: 48,
+    h: 48,
+    fill: C("surface-tabs"),
+    stroke: C("stroke-green"),
+    strokeW: 3,
+    show: "@min-[36px]:block",
+    hide: "@min-[36px]:hidden",
+  },
   "cta-band": { w: 1200, h: 348, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
   "final-cta": { w: 1200, h: 910, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
-  testimonial: { w: 282, h: 236, fill: C("accent-bg-soft"), show: "@min-[212px]:block", hide: "@min-[212px]:hidden", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[236px]" },
-  security: { w: 282, h: 416, fill: C("accent-bg-light"), stroke: C("stroke-accent-strong"), strokeW: 3, show: "@min-[212px]:block", hide: "@min-[212px]:hidden", relax: "md:@min-[283px]:aspect-[282/312]", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[312px]" },
-  "commitment-peach": { w: 588, h: 247, fill: C("accent-bg-light"), show: "@min-[441px]:block", hide: "@min-[441px]:hidden", grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]" },
-  "commitment-green": { w: 588, h: 247, fill: C("surface-tabs"), show: "@min-[441px]:block", hide: "@min-[441px]:hidden", grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]" },
-  "commitment-wide": { w: 1200, h: 183, fill: C("stroke-sec"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  testimonial: {
+    w: 282,
+    h: 236,
+    fill: C("accent-bg-soft"),
+    show: "@min-[212px]:block",
+    hide: "@min-[212px]:hidden",
+    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[236px]",
+  },
+  security: {
+    w: 282,
+    h: 416,
+    fill: C("accent-bg-light"),
+    stroke: C("stroke-accent-strong"),
+    strokeW: 3,
+    show: "@min-[212px]:block",
+    hide: "@min-[212px]:hidden",
+    relax: "md:@min-[283px]:aspect-[282/312]",
+    grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[312px]",
+  },
+  "commitment-peach": {
+    w: 588,
+    h: 247,
+    fill: C("accent-bg-light"),
+    show: "@min-[441px]:block",
+    hide: "@min-[441px]:hidden",
+    grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]",
+  },
+  "commitment-green": {
+    w: 588,
+    h: 247,
+    fill: C("surface-tabs"),
+    show: "@min-[441px]:block",
+    hide: "@min-[441px]:hidden",
+    grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]",
+  },
+  "commitment-wide": {
+    w: 1200,
+    h: 183,
+    fill: C("stroke-sec"),
+    show: "@min-[900px]:block",
+    hide: "@min-[900px]:hidden",
+  },
   pricing: { w: 1200, h: 424, fill: C("primary-bg"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
-  "intl-school": { w: 384, h: 503, fill: C("stroke-sec"), show: "@min-[288px]:block", hide: "@min-[288px]:hidden", grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[360px]" },
-  first10: { w: 792, h: 503, fill: C("accent-bg-light"), stroke: C("accent-text"), strokeW: 2, show: "@min-[594px]:block", hide: "@min-[594px]:hidden" },
+  "intl-school": {
+    w: 384,
+    h: 503,
+    fill: C("stroke-sec"),
+    show: "@min-[288px]:block",
+    hide: "@min-[288px]:hidden",
+    grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[360px]",
+  },
+  first10: {
+    w: 792,
+    h: 503,
+    fill: C("accent-bg-light"),
+    stroke: C("accent-text"),
+    strokeW: 2,
+    show: "@min-[594px]:block",
+    hide: "@min-[594px]:hidden",
+  },
   "founder-text": { w: 1181, h: 423, fill: C("primary-bg"), show: "@min-[886px]:block", hide: "@min-[886px]:hidden" },
 } satisfies Record<string, ShapeConfig>;
 
@@ -93,15 +170,20 @@ const vars =
 
 <Tag class:list={["@container", className]} style={vars}>
   <div class:list={["relative aspect-(--blob-ar)", cfg.relax, cfg.grow]}>
-    <Svg class:list={["pointer-events-none absolute inset-0 hidden size-full", flip && "-scale-x-100", cfg.show]} aria-hidden="true" focusable="false" />
+    <Svg
+      class:list={["pointer-events-none absolute inset-0 hidden size-full", flip && "-scale-x-100", cfg.show]}
+      aria-hidden="true"
+      focusable="false"
+    />
     <div
       aria-hidden="true"
       class:list={[
         "rounded-card pointer-events-none absolute inset-0 border-(length:--blob-stroke-w) border-(--blob-stroke) bg-(--blob-fill)",
         cfg.hide,
       ]}
-    >
+    ></div>
+    <div class:list={["relative flex-1", contentClass]}>
+      <slot />
     </div>
-    <div class:list={["relative flex-1", contentClass]}><slot /></div>
   </div>
 </Tag>
