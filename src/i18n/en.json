@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Nursery Management Software & Parent App | Yawmy Care",
+    "description": "Nursery management software with Arabic and English apps: attendance, daily reports and parent chat in one place. Book a free demo of Yawmy Care."
+  },
+  "brand": {
+    "name": "Yawmy Care",
+    "tagline": "Manage Smarter with Yawmy Care.",
+    "logoAlt": "Yawmy Care home"
+  },
+  "cta": {
+    "bookDemo": "Book a Demo",
+    "watchDemo": "Watch Demo",
+    "contactWhatsApp": "Message us on WhatsApp",
+    "contactEmail": "Email us"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "switchLanguage": "Switch language to Arabic",
+    "opensInNewTab": "(opens in a new tab)",
+    "requiredFields": "Required fields"
+  },
+  "social": {
+    "linkedin": "Yawmy Care on LinkedIn",
+    "instagram": "Yawmy Care on Instagram",
+    "whatsapp": "Chat with Yawmy Care on WhatsApp",
+    "facebook": "Yawmy Care on Facebook"
+  }
+}

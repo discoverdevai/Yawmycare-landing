@@ -1,0 +1,195 @@
+/* Scan only src/ for class names: docs/ (specs, audits) contain example class strings that are not real. */
+@import "tailwindcss" source("../");
+
+/*
+ * Stand-in fonts (open licence, self-hosted by fontsource) until the licensed Recoleta / Expo Arabic
+ * files are supplied. Licensed files dropped into src/assets/fonts/ are picked up by src/styles/fonts.ts.
+ */
+@import "@fontsource-variable/fraunces/wght.css";
+@import "@fontsource-variable/readex-pro/wght.css";
+
+/*
+ * Design tokens — names mirror the Figma variables (file oSQUBKWEqG5XrY4sHCzjzy).
+ * Components use these utilities (bg-primary-bg, text-primary-text, ...), never raw hex.
+ * `static` keeps every variable in the output even when only read through var() (wave shadow, blobs).
+ * The one allowed raw hex outside this file is <meta name="theme-color"> in BaseLayout.
+ */
+@theme static {
+  /* Primary (green) */
+  --color-primary-bg: #dfebd1; /* primary/bgColor */
+  --color-primary-bg-light: #f8faee; /* primary/bglightColor */
+  --color-primary-cta: #76945c; /* primary/CTAprimarycolor — Figma value; decorative fills only (CTA bands, underline) */
+  --color-primary-cta-strong: #5e7748; /* buttons + green text: 4.95:1 vs #FEFEFE, 4.8:1 vs surface-sec, 4.5:1 vs surface-tabs (was #637c4d = 4.48:1 on surface-sec, a fail; Figma green is 3.4:1) */
+  --color-primary-cta-hover: #526840; /* hover/pressed for the strong CTA: 6.1:1 vs #FEFEFE */
+  --color-primary-text: #334722; /* primary/textColor */
+
+  /* Surfaces */
+  --color-surface: #fffff5; /* bg/whiteColor */
+  --color-surface-sec: #fcfcec; /* bg/secColor */
+  --color-surface-tabs: #f3f5e8; /* bg/tapsColor */
+  --color-stroke-sec: #f5f5dc; /* sec/strokeColor */
+
+  /* Text */
+  --color-ink: #333333; /* text/blackColor */
+  --color-ink-muted: #535353; /* text/grayColor */
+  --color-ink-inverse: #fefefe; /* text/whitecolor */
+
+  /* Accent (terracotta) */
+  --color-accent: #e2725b; /* AccentColor/main */
+  --color-accent-text: #b5503c; /* Accent/textColor */
+  --color-accent-bg-light: #fef8ed; /* AccentColor/bglightcolor */
+  --color-accent-stroke: #ffccc1; /* stroke/accentColor */
+  --color-accent-display: #e06950; /* hero highlight words: Figma #E2725B is 2.99:1, this is 3.2:1 (large-text AA needs 3:1) */
+  --color-stroke-gray: #d8d8d8; /* stroke/grayColor — decorative hairlines only (1.4:1 vs cream) */
+  --color-field-border: #898989; /* form-field boundary: 3.5:1 vs cream (WCAG 1.4.11 needs 3:1); Figma's #D8D8D8 is 1.4:1 */
+
+  /* Promoted from off-token Figma values (owner delegated; see docs/DECISIONS.md #3) */
+  --color-stroke-green: #adc697; /* 3px stroke on feature/step blobs + setup connector lines */
+  --color-stroke-accent-strong: #f5a292; /* 3px stroke on security cards */
+  --color-accent-bg-soft: #fcf1e6; /* testimonial blob fill */
+  --color-wordmark: #c7d8b6; /* footer giant wordmark */
+
+  /* Semantic aliases */
+  --color-on-cta: var(--color-ink-inverse);
+  --color-focus: var(--color-primary-text);
+  --color-overlay: rgb(0 0 0 / 0.6); /* modal backdrop */
+
+  /* Font stacks: licensed face first, open stand-in second, system last. */
+  --font-sans: "Recoleta", "Fraunces Variable", Georgia, "Times New Roman", serif;
+  --font-arabic: "Expo Arabic", "Readex Pro Variable", Tahoma, "Segoe UI", sans-serif;
+
+  /* Layout */
+  --container-content: 75rem; /* 1200px content width at the 1440 canvas */
+  --container-wide: 80rem; /* 1280px — the nav is the one exception to the 1200 grid */
+
+  /* Radii (Figma: pill 100, input 20, FAQ row 32, modal 50) */
+  --radius-pill: 6.25rem;
+  --radius-input: 1.25rem;
+  --radius-faq: 2rem;
+  --radius-card: 2rem; /* simplified blob fallback */
+  --radius-modal: 3.125rem;
+
+  /*
+   * Type scale (utilities text-*). Sizes read the responsive --fs-* variables and line-heights read the
+   * language-aware --lh-* variables defined below, so a single class scales across breakpoints and
+   * Arabic gets its own sizes and roomier line-heights from the same utility.
+   */
+  --text-hero: var(--fs-hero);
+  --text-hero--line-height: var(--lh-normal);
+  --text-h2: var(--fs-h2);
+  --text-h2--line-height: var(--lh-heading);
+  --text-band: var(--fs-band);
+  --text-band--line-height: var(--lh-heading);
+  --text-h3: var(--fs-h3);
+  --text-h3--line-height: var(--lh-heading);
+  --text-title: var(--fs-title);
+  --text-title--line-height: var(--lh-normal);
+  --text-lead: var(--fs-lead);
+  --text-lead--line-height: var(--lh-normal);
+  --text-body: var(--fs-body);
+  --text-body--line-height: var(--lh-normal);
+  --text-body-sm: 1rem;
+  --text-body-sm--line-height: var(--lh-normal);
+  --text-button: 1.125rem;
+  --text-button--line-height: var(--lh-ui);
+  --text-nav: var(--fs-nav);
+  --text-nav--line-height: var(--lh-ui);
+  --text-caption: 0.875rem;
+  --text-caption--line-height: var(--lh-normal);
+}
+
+/*
+ * Responsive + language-aware values consumed by the theme above (spec §4.2 / §4.3).
+ * Mobile-first: base < 768, tablet >= 768, desktop >= 1024 (= Tailwind md / lg).
+ * Line-heights are larger than Figma's 1 / 48px for headings on purpose: Figma is inconsistent and
+ * Arabic diacritics (e.g. the tanween in عرضًا) clip at 1.0.
+ */
+:root {
+  --fs-hero: 2.25rem; /* 36 */
+  --fs-h2: 1.75rem; /* 28 */
+  --fs-band: 1.625rem; /* 26 */
+  --fs-h3: 1.5rem; /* 24 */
+  --fs-title: 1.25rem; /* 20 */
+  --fs-lead: 1.125rem; /* 18 */
+  --fs-body: 1rem; /* 16 */
+  --fs-nav: 1rem; /* EN nav 16 */
+
+  --lh-heading: 1.2;
+  --lh-normal: 1.3;
+  --lh-ui: 1;
+
+  /* Section rhythm */
+  --wave-h: 32px;
+  --wave-gap: 32px; /* wave -> content */
+  --section-gap: 24px; /* between section frames */
+  --header-gap-tight: 24px;
+  --header-gap-default: 32px;
+  --header-gap-loose: 40px;
+  --lead-gap: 16px; /* h2 -> lead */
+  --gutter: 16px;
+}
+
+:root:lang(ar) {
+  --fs-hero: 2.375rem; /* 38 */
+  --fs-nav: 1.25rem; /* AR nav 20 */
+  --lh-heading: 1.4;
+  --lh-normal: 1.5;
+  --lh-ui: 1.4;
+}
+
+/*
+ * Tablet -> desktop is FLUID, not stepped: from 768 (tablet value) to 1280 (Figma 1440-canvas value) each
+ * size and rhythm token interpolates linearly, then holds. size(vw) = tablet + (desktop - tablet) * (vw - 768) / 512,
+ * written as clamp(tablet, c + slope*vw, desktop). No jump at 768 / 1024 / 1280, and 1440 is exactly Figma.
+ */
+@media (min-width: 48rem) {
+  :root {
+    --fs-hero: 2.75rem; /* 44 */
+    --fs-h2: clamp(2.25rem, 1.125rem + 2.34375vw, 3rem); /* 36 -> 48 */
+    --fs-band: clamp(2rem, 1.25rem + 1.5625vw, 2.5rem); /* 32 -> 40 */
+    --fs-h3: clamp(1.75rem, 1.375rem + 0.78125vw, 2rem); /* 28 -> 32 */
+    --fs-title: clamp(1.375rem, 1.1875rem + 0.390625vw, 1.5rem); /* 22 -> 24 */
+    --fs-lead: clamp(1.25rem, 0.875rem + 0.78125vw, 1.5rem); /* 20 -> 24 */
+    --fs-body: clamp(1.125rem, 0.9375rem + 0.390625vw, 1.25rem); /* 18 -> 20 */
+
+    --wave-h: clamp(48px, 6px + 5.46875vw, 76px);
+    --wave-gap: clamp(40px, 13px + 3.515625vw, 58px);
+    --section-gap: clamp(32px, 8px + 3.125vw, 48px);
+    --header-gap-tight: clamp(32px, 20px + 1.5625vw, 40px);
+    --header-gap-default: clamp(40px, 28px + 1.5625vw, 48px);
+    --header-gap-loose: clamp(48px, 33px + 1.953125vw, 58px);
+    --lead-gap: clamp(16px, 4px + 1.5625vw, 24px);
+    --gutter: 32px;
+  }
+  :root:lang(ar) {
+    --fs-hero: 2.875rem; /* 46 */
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    /* 58 at 1440, 44 at <= ~1050 so the headline clears the photo. rem + vw (not vw alone) so browser text-size / zoom still enlarges it (WCAG 1.4.4); within 1.5px of the old 4.03vw from 1100 to 1440. */
+    --fs-hero: clamp(2.75rem, 0.1rem + 3.95vw, 3.625rem);
+  }
+  :root:lang(ar) {
+    --fs-hero: clamp(2.875rem, 0.1rem + 4.2vw, 3.875rem); /* 62 at 1440, 46 at <= ~1070 */
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-synthesis: none; /* no faux bold/italic */
+    /* Small screens / 200% text size (WCAG 1.4.4, 1.4.10): a word that cannot fit breaks instead of widening the page.
+       break-word (not anywhere) leaves min-content alone and never splits Arabic words that do fit; flex/grid children
+       that must be allowed to shrink below their longest word carry min-w-0 in the component. */
+    overflow-wrap: break-word;
+  }
+  html:lang(ar) {
+    font-family: var(--font-arabic);
+  }
+  /* Latin spans inside an Arabic page keep the Latin stack. */
+  :lang(en):not(html) {
+    font-family: var(--font-sans);
+  }
+}

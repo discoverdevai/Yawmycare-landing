@@ -1,0 +1,19 @@
+{
+  "title": "We talked to nurseries on three continents before we wrote a line of code.",
+  "lead": "We sat with owners, teachers and parents in nurseries in Egypt, across the wider region, and in the United States. Everything on this page came out of those conversations. Nothing came out of a feature list.",
+  "label": "What owners, teachers and parents say",
+  "items": [
+    {
+      "quote": "“My phone is the nursery's filing system. If I lose it, I lose everything.”",
+      "attribution": "Owner, Maadi, 45 children"
+    },
+    {
+      "quote": "“I write the same daily report twice. Once on paper, once on WhatsApp.”",
+      "attribution": "Teacher, Heliopolis"
+    },
+    {
+      "quote": "“Parents message me at midnight and I answer, because if I don't they think something is wrong.”",
+      "attribution": "Admin, Sheikh Zayed"
+    }
+  ]
+}

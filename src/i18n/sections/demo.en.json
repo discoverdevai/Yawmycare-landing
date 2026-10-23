@@ -1,0 +1,51 @@
+{
+  "title": "See Yawmy Care in Action",
+  "lead": "Discover how Yawmy Care can simplify your nursery’s daily operations and keep your team and parents connected.",
+  "closeLabel": "Close",
+  "honeypotLabel": "Leave this field empty",
+  "fields": {
+    "name": {
+      "label": "Name",
+      "placeholder": "Enter your Name",
+      "required": "Please enter your name."
+    },
+    "nursery": {
+      "label": "Nursery Name",
+      "placeholder": "Enter your Nursery Name",
+      "required": "Please enter your nursery’s name."
+    },
+    "email": {
+      "label": "Work Email",
+      "placeholder": "Enter your Work Email",
+      "required": "Please enter your work email.",
+      "invalid": "Please enter a valid email address, like name@example.com."
+    },
+    "date": {
+      "label": "Preferred Date",
+      "required": "Please choose a preferred date.",
+      "invalid": "Please enter a valid date.",
+      "min": "Please choose today or a later date."
+    },
+    "time": {
+      "label": "Preferred Time",
+      "required": "Please choose a preferred time.",
+      "invalid": "Please enter a valid time.",
+      "past": "That time has already passed today. Please choose a later time."
+    }
+  },
+  "submit": "Book My Free Demo",
+  "submitting": "Sending…",
+  "summary": "Please fix the highlighted fields and try again.",
+  "success": {
+    "title": "Thank you! We’ve received your request",
+    "body": "Our team will get in touch shortly by email to confirm your demo.",
+    "close": "Close"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "We couldn’t send your request. Please check your connection and try again.",
+    "notConnected": "This form is not connected yet. Please contact us on WhatsApp or by email.",
+    "tooFast": "That was very quick. Please check your details and try again.",
+    "retry": "Try again"
+  }
+}

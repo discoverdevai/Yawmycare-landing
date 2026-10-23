@@ -1,0 +1,115 @@
+---
+import { Picture } from "astro:assets";
+import Container from "@/components/ui/Container.astro";
+import Button from "@/components/ui/Button.astro";
+import WaveDivider from "@/components/ui/WaveDivider.astro";
+import children from "@/assets/hero/hero-children.webp";
+import { getDictionary, type Locale } from "@/i18n";
+import { resolveLink, demoVideoUrl } from "@/config/site";
+
+/**
+ * Section 02: hero (Figma 1457:3898, AR reference 1434:3718).
+ * The header (top bar + nav) is its own component; this starts under the nav row (y = 180 in Figma).
+ *
+ * Desktop (>= 1024): the photo is pinned to the inline-end edge of the viewport and bleeds off it, the
+ * text column stops where the photo's transparent margin begins (128px overlap, as in Figma).
+ * Below 1024 everything stacks: text, then photo. In RTL the layout mirrors; the photo is NOT flipped.
+ * The bottom scalloped edge covers the last 16px of the photo (Figma: photo bottom is 60px above the
+ * hero bottom, the wave is 76px tall), so the children "stand" behind the scallops.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.hero;
+
+// "*word*" marks the coral highlight words; odd indexes after the split are highlighted.
+const titleParts = t.title.split("*");
+
+// Demo video (env PUBLIC_DEMO_VIDEO_URL, docs/ENV.md): the button is not rendered in production while unset.
+const watch = resolveLink(demoVideoUrl);
+---
+
+<section id="home" aria-labelledby="hero-title" class="hero relative mb-8 bg-surface-sec">
+  <Container class="relative z-10 pt-8 md:pt-12 lg:pt-[82px] lg:pb-[calc(var(--wave-h)+32px)]">
+    <h1 id="hero-title" class="hero-title text-hero text-ink font-semibold rtl:font-bold">
+      {titleParts.map((part, i) => (i % 2 === 1 ? <span class="text-accent-display">{part}</span> : part))}
+    </h1>
+    <p class="text-lead text-ink-muted mt-4 max-w-[565px] font-medium md:mt-6 rtl:font-normal">{t.lead}</p>
+    <div class="hero-actions mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+      <Button variant="primary" href="#demo" data-demo-open block class="sm:w-auto sm:min-w-[282px]">
+        {t.ctaPrimary}
+      </Button>
+      {
+        watch.render && (
+          <Button variant="outline" href={watch.href} external={!watch.unconfigured} unconfigured={watch.unconfigured} block class="sm:w-auto">
+            {t.ctaWatch}
+          </Button>
+        )
+      }
+    </div>
+  </Container>
+
+  <div class="hero-photo">
+    <Picture
+      src={children}
+      alt={t.imageAlt}
+      formats={["avif"]}
+      fallbackFormat="webp"
+      widths={[480, 656, 960, 1220]}
+      sizes="(min-width: 1024px) clamp(26rem, 45.5vw, 41rem), min(480px, 100vw)"
+      width={1220}
+      height={1136}
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      class="block h-auto w-full"
+    />
+  </div>
+
+  <div class="absolute inset-x-0 bottom-0 z-20">
+    <WaveDivider direction="up" shadow="glow" class="bg-surface" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    /* Photo sits 16px behind the wave; the wave itself is --wave-h tall. */
+    padding-bottom: calc(var(--wave-h) - 16px);
+  }
+  .hero-photo {
+    position: relative;
+    width: min(calc(100% - 2 * var(--gutter)), 30rem);
+    margin: 2rem auto 0;
+  }
+  @media (min-width: 64rem) {
+    .hero {
+      padding-bottom: 0; /* the text column carries its own clearance above the wave */
+      --hero-img-w: clamp(26rem, 45.5vw, 41rem); /* 656px at the 1440 canvas */
+      --hero-overlap: 72px; /* how far the text column may run into the photo's box */
+      --hero-text-w: min(792px, calc(100% + (100vw - 100%) / 2 - var(--hero-img-w) + var(--hero-overlap)));
+      /* photo height + room above it (86px) + the part of the wave it sits behind */
+      min-height: calc(var(--hero-img-w) * 611 / 656 + var(--wave-h) - 16px + 86px);
+    }
+    .hero-photo {
+      position: absolute;
+      inset-inline-end: 0;
+      bottom: calc(var(--wave-h) - 16px);
+      width: var(--hero-img-w);
+      margin: 0;
+    }
+    /*
+     * Text column cap (var above). Figma lets it run 128px into the photo's box (792px column, photo at
+     * x=784); with the wider stand-in font the headline then touches the girl's hair, so --hero-overlap is 72px.
+     * TODO(owner): with the licensed Recoleta / Expo Arabic try --hero-overlap: 128px again.
+     */
+    .hero-title {
+      max-width: var(--hero-text-w);
+    }
+    /* The buttons sit level with the girl's sweater, which starts further left than her hair. */
+    .hero-actions {
+      max-width: calc(var(--hero-text-w) - 56px);
+    }
+  }
+</style>

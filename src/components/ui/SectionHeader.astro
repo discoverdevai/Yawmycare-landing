@@ -1,0 +1,49 @@
+---
+/**
+ * Section heading block: h2 + lead (no eyebrow in the Updated Version; `eyebrow` exists for the legacy
+ * design only). `headingLevel` changes the tag, never the look.
+ *
+ *  default            start aligned, dark text           (all content sections)
+ *  align="center"     centred                            (CTA bands)
+ *  tone="on-green"    inverse text on the green band
+ *  size="band"        40px title (CTA band); "h2" is the 48px section title
+ */
+interface Props {
+  title: string;
+  lead?: string;
+  headingLevel?: 2 | 3 | 4;
+  align?: "start" | "center";
+  tone?: "default" | "on-green";
+  size?: "h2" | "band";
+  eyebrow?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  lead,
+  headingLevel = 2,
+  align = "start",
+  tone = "default",
+  size = "h2",
+  eyebrow,
+  id,
+  class: className = "",
+} = Astro.props;
+
+const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
+const onGreen = tone === "on-green";
+---
+
+<header class:list={["flex flex-col gap-(--lead-gap)", align === "center" && "items-center text-center", className]}>
+  {
+    eyebrow && (
+      <p class="border-accent-text text-accent-text text-caption border-s-2 ps-2 font-semibold">{eyebrow}</p>
+    )
+  }
+  <Heading id={id} class:list={[size === "band" ? "text-band" : "text-h2", "font-bold", onGreen ? "text-ink-inverse" : "text-ink"]}>
+    {title}
+  </Heading>
+  {lead && <p class:list={["text-lead max-w-[62ch]", onGreen ? "text-primary-bg-light" : "text-ink", align === "center" && "text-balance"]}>{lead}</p>}
+</header>

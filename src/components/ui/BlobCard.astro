@@ -1,0 +1,107 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/**
+ * Card with one of the hand-drawn organic outlines from Figma.
+ *
+ * The shape is chosen by the card's OWN width (container query), not the viewport:
+ *  - at >= 75% of the shape's native width the SVG is shown (stretched a little at most);
+ *  - below that it falls back to a simplified rounded card with the same fill and stroke
+ *    (docs spec §8.4 option A). Scaling a 1200px blob down to 343px would turn the scallops and the
+ *    3px stroke to mush.
+ * The frame keeps the native aspect ratio but grows with its content, so longer Arabic copy never
+ * overflows. Shapes are not mirrored in RTL (the AR Figma frame uses them unmirrored).
+ *
+ * Tailwind needs literal class strings, so the per-shape thresholds live in the lookup below.
+ */
+const svgs = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>(
+  "@/assets/shapes/*.svg",
+  { eager: true },
+);
+
+interface ShapeConfig {
+  w: number;
+  h: number;
+  fill: string;
+  stroke?: string;
+  /** Visible stroke width in px (outer 3px for outside-stroke shapes, centred 2-3px otherwise). */
+  strokeW?: number;
+  /** Literal classes: show the SVG from 75% of native width, hide the fallback from there. */
+  show: string;
+  hide: string;
+  /**
+   * Optional literal class that loosens the native aspect ratio once the card is WIDER than the shape's native
+   * width (e.g. a 282x416 card at 343px would be 506px tall). The shape then stretches horizontally and is
+   * only ~25% shorter than proportional, so cards are not taller than their content needs. Never applies at or
+   * below native width, so the Figma size at 1440 is unchanged.
+   */
+  relax?: string;
+  /**
+   * Phones and small tablets (below md): once the card is wider than the shape's native width (a single column
+   * at 480-767px, a 343px card for a 282px shape) the native aspect ratio would make it taller than any content
+   * needs (a 735px-wide feature card was 598px tall). There the aspect lock is dropped and the card is as tall as
+   * its content, with the native height as a floor. Literal classes, so Tailwind can see them.
+   */
+  grow?: string;
+}
+
+const C = (name: string) => `var(--color-${name})`;
+
+const shapes = {
+  feature: { w: 384, h: 312, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[288px]:block", hide: "@min-[288px]:hidden", grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[312px]" },
+  step: { w: 282, h: 201, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[212px]:block", hide: "@min-[212px]:hidden", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[201px]" },
+  "step-number": { w: 48, h: 48, fill: C("surface-tabs"), stroke: C("stroke-green"), strokeW: 3, show: "@min-[36px]:block", hide: "@min-[36px]:hidden" },
+  "cta-band": { w: 1200, h: 348, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  "final-cta": { w: 1200, h: 910, fill: C("primary-cta"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  testimonial: { w: 282, h: 236, fill: C("accent-bg-soft"), show: "@min-[212px]:block", hide: "@min-[212px]:hidden", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[236px]" },
+  security: { w: 282, h: 416, fill: C("accent-bg-light"), stroke: C("stroke-accent-strong"), strokeW: 3, show: "@min-[212px]:block", hide: "@min-[212px]:hidden", relax: "md:@min-[283px]:aspect-[282/312]", grow: "max-md:@min-[283px]:flex max-md:@min-[283px]:flex-col max-md:@min-[283px]:aspect-auto max-md:@min-[283px]:min-h-[312px]" },
+  "commitment-peach": { w: 588, h: 247, fill: C("accent-bg-light"), show: "@min-[441px]:block", hide: "@min-[441px]:hidden", grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]" },
+  "commitment-green": { w: 588, h: 247, fill: C("surface-tabs"), show: "@min-[441px]:block", hide: "@min-[441px]:hidden", grow: "max-md:@min-[589px]:flex max-md:@min-[589px]:flex-col max-md:@min-[589px]:aspect-auto max-md:@min-[589px]:min-h-[247px]" },
+  "commitment-wide": { w: 1200, h: 183, fill: C("stroke-sec"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  pricing: { w: 1200, h: 424, fill: C("primary-bg"), show: "@min-[900px]:block", hide: "@min-[900px]:hidden" },
+  "intl-school": { w: 384, h: 503, fill: C("stroke-sec"), show: "@min-[288px]:block", hide: "@min-[288px]:hidden", grow: "max-md:@min-[385px]:flex max-md:@min-[385px]:flex-col max-md:@min-[385px]:aspect-auto max-md:@min-[385px]:min-h-[360px]" },
+  first10: { w: 792, h: 503, fill: C("accent-bg-light"), stroke: C("accent-text"), strokeW: 2, show: "@min-[594px]:block", hide: "@min-[594px]:hidden" },
+  "founder-text": { w: 1181, h: 423, fill: C("primary-bg"), show: "@min-[886px]:block", hide: "@min-[886px]:hidden" },
+} satisfies Record<string, ShapeConfig>;
+
+export type BlobShape = keyof typeof shapes;
+
+interface Props {
+  shape: BlobShape;
+  as?: "div" | "li" | "article" | "blockquote";
+  /** Padding etc. for the content layer. Figma cards use 32px. */
+  contentClass?: string;
+  class?: string;
+  /** Overrides the shape's fill with another colour token name (e.g. "primary-cta-strong" for a text-bearing band). */
+  fill?: string;
+  /** Mirrors the SVG outline horizontally (e.g. founders: the scalloped edge sits opposite the photo). */
+  flip?: boolean;
+}
+
+const { shape, as: Tag = "div", contentClass = "p-8", class: className = "", fill, flip = false } = Astro.props;
+
+const cfg: ShapeConfig = shapes[shape];
+const Svg = svgs[`/src/assets/shapes/${shape}.svg`]?.default;
+if (!Svg) throw new Error(`Blob shape "${shape}" not found in src/assets/shapes`);
+
+const vars =
+  `--blob-fill:${fill ? C(fill) : cfg.fill};` +
+  `--blob-stroke:${cfg.stroke ?? "transparent"};` +
+  `--blob-stroke-w:${cfg.strokeW ?? 0}px;` +
+  `--blob-ar:${cfg.w}/${cfg.h}`;
+---
+
+<Tag class:list={["@container", className]} style={vars}>
+  <div class:list={["relative aspect-(--blob-ar)", cfg.relax, cfg.grow]}>
+    <Svg class:list={["pointer-events-none absolute inset-0 hidden size-full", flip && "-scale-x-100", cfg.show]} aria-hidden="true" focusable="false" />
+    <div
+      aria-hidden="true"
+      class:list={[
+        "rounded-card pointer-events-none absolute inset-0 border-(length:--blob-stroke-w) border-(--blob-stroke) bg-(--blob-fill)",
+        cfg.hide,
+      ]}
+    >
+    </div>
+    <div class:list={["relative flex-1", contentClass]}><slot /></div>
+  </div>
+</Tag>

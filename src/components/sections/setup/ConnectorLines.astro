@@ -1,0 +1,34 @@
+---
+/**
+ * Dashed connector from the Figma "Group 55" (setup-steps-connector-lines.svg), rebuilt as ONE path:
+ * a horizontal rail with four drops, one per step column. Desktop only (>= 1024); below that the
+ * steps stack and the parent draws a vertical dashed line on the start side instead.
+ *
+ * The SVG stretches (preserveAspectRatio="none") so the drops always land on the column centres:
+ * the parent positions it from the first column centre to the last one, i.e. the 0 / 1/3 / 2/3 / 1
+ * x-positions below. `vector-effect: non-scaling-stroke` keeps the 1.5px dashes crisp.
+ * The dot at the foot of each drop is drawn by the step item (a circle must not be stretched).
+ * Colour is the `stroke-green` token (Figma #ADC697); the shape is symmetric, so it is not mirrored in RTL.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 900 112"
+  preserveAspectRatio="none"
+  overflow="visible"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path
+    d="M0 0H900M0 0V112M300 0V112M600 0V112M900 0V112"
+    fill="none"
+    stroke-width="1.5"
+    stroke-dasharray="10 9"
+    vector-effect="non-scaling-stroke"
+    style="stroke:var(--color-stroke-green)"></path>
+</svg>

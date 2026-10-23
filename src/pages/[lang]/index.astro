@@ -1,0 +1,47 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/sections/Header.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Testimonials from "@/components/sections/Testimonials.astro";
+import DayTimeline from "@/components/sections/DayTimeline.astro";
+import Features from "@/components/sections/Features.astro";
+import Setup from "@/components/sections/Setup.astro";
+import Security from "@/components/sections/Security.astro";
+import Commitments from "@/components/sections/Commitments.astro";
+import Pricing from "@/components/sections/Pricing.astro";
+import Founders from "@/components/sections/Founders.astro";
+import Faq from "@/components/sections/Faq.astro";
+import FinalCta from "@/components/sections/FinalCta.astro";
+import Footer from "@/components/sections/Footer.astro";
+import DemoModal from "@/components/sections/DemoModal.astro";
+import JsonLd from "@/components/seo/JsonLd.astro";
+import { locales, type Locale } from "@/i18n";
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+
+//  Page order and wave joins (spec §8.1): hero → testimonials → day (down) → features (up) → setup (down)
+//  → security (up) → commitments (down) → pricing (up) → founders (down) → FAQ (up) → final CTA + footer.
+//  FinalCta must be the last section in <main> with Footer straight after it (the footer overlaps the band).
+---
+
+<BaseLayout locale={locale}>
+  <JsonLd slot="head" locale={locale} />
+  <Header slot="header" locale={locale} />
+  <Hero locale={locale} />
+  <Testimonials locale={locale} />
+  <DayTimeline locale={locale} />
+  <Features locale={locale} />
+  <Setup locale={locale} />
+  <Security locale={locale} />
+  <Commitments locale={locale} />
+  <Pricing locale={locale} />
+  <Founders locale={locale} />
+  <Faq locale={locale} />
+  <FinalCta locale={locale} />
+  <Footer slot="footer" locale={locale} />
+  <DemoModal slot="footer" locale={locale} />
+</BaseLayout>

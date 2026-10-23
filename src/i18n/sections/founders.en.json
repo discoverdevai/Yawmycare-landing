@@ -1,0 +1,23 @@
+{
+  "title": "Why we built this?",
+  "founders": [
+    {
+      "name": "Dr. Rana Mustafa",
+      "photoAlt": "Portrait of Dr. Rana Mustafa",
+      "paragraphs": [
+        "After years of living outside Egypt, we came back and enrolled our children in local nurseries. That is when we started seeing the gaps for ourselves.",
+        "Parents had little visibility into their child’s day, while nursery teams were managing updates, photos, attendance, and communication across WhatsApp groups and manual processes.",
+        "We realised the problem was not the care. It was the way everything was connected."
+      ]
+    },
+    {
+      "name": "Mr. Mohammed",
+      "photoAlt": "Portrait of Mr. Mohammed",
+      "paragraphs": [
+        "We started sitting down with nursery owners and listening to what was happening behind the scenes. We heard the same challenges again and again, and began building Yawmy Care around them.",
+        "Today, Yawmy brings the nursery, teachers, and parents into one organised space, making it easier to manage the day and stay connected.",
+        "And one thing we will never do: charge parents to stay connected to their children."
+      ]
+    }
+  ]
+}

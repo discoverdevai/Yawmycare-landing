@@ -1,0 +1,153 @@
+---
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { getDictionary, localeMeta, type Locale } from "@/i18n";
+
+/**
+ * Section 11: FAQ accordion (13 rows) + FAQPage JSON-LD built from the same i18n entries.
+ *
+ * Semantics: each question is a <button aria-expanded aria-controls> inside an <h3>; the answer is a plain
+ * panel (no role="region": 13 of them would flood the landmark list). Rows toggle independently (several can be open at once, so
+ * closing a row above never shifts the one being read). Height animates with grid-template-rows
+ * 0fr -> 1fr under prefers-reduced-motion: no-preference only. Without JS every answer stays visible.
+ * `initialOpen` (1-based row numbers) is for previews; the shipped page starts fully collapsed.
+ */
+interface Props {
+  locale: Locale;
+  initialOpen?: number[];
+}
+
+const { locale, initialOpen = [] } = Astro.props;
+const t = getDictionary(locale).sections.faq;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: localeMeta[locale].htmlLang,
+  mainEntity: t.items.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+// Escape "<" so no answer can close the script element, plus U+2028/2029. The replacement strings use a
+// doubled backslash on purpose: a single one would be parsed back into the raw character by JavaScript itself.
+const jsonLdHtml = JSON.stringify(jsonLd)
+  .replace(/</g, "\\u003c")
+  .replace(/\u2028/g, "\\u2028")
+  .replace(/\u2029/g, "\\u2029");
+---
+
+<Section id="faq" headingId="faq-title" wave="up" shadow gap="tight">
+  <SectionHeader slot="header" id="faq-title" title={t.title} />
+
+  <div data-faq class="flex flex-col gap-6">
+    {
+      t.items.map((item, i) => {
+        const n = i + 1;
+        const open = initialOpen.includes(n);
+        return (
+          <div
+            data-faq-item
+            data-open={open ? "true" : "false"}
+            class="group bg-stroke-sec rounded-faq has-[button:focus-visible]:outline-focus border-2 border-transparent has-[button:focus-visible]:outline-3 has-[button:focus-visible]:outline-offset-2 data-[open=true]:border-primary-cta"
+          >
+            <h3>
+              <button
+                type="button"
+                id={`faq-q-${n}`}
+                aria-expanded={open ? "true" : "false"}
+                aria-controls={`faq-a-${n}`}
+                class="text-ink flex w-full cursor-pointer items-center justify-between gap-3 px-[22px] py-[14px] text-start outline-none"
+              >
+                <span class="flex min-w-0 items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    class="bg-primary-bg text-primary-text text-title rounded-pill flex size-10 shrink-0 items-center justify-center font-bold"
+                  >
+                    {n}
+                  </span>
+                  <span class="text-title font-bold">{item.question}</span>
+                </span>
+                <Icon name="plus" size={24} class="shrink-0 group-data-[open=true]:hidden" />
+                <Icon name="minus" size={24} class="hidden shrink-0 group-data-[open=true]:block" />
+              </button>
+            </h3>
+            <div id={`faq-a-${n}`} class="faq-panel">
+              <div class="faq-panel-inner">
+                <p class="text-lead text-ink px-[22px] pt-0 pb-[14px]">{item.answer}</p>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+  <script type="application/ld+json" set:html={jsonLdHtml} />
+</Section>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector("[data-faq]");
+    if (!root) return;
+    root.setAttribute("data-js", "");
+    var buttons = Array.prototype.slice.call(root.querySelectorAll("[data-faq-item] > h3 > button"));
+    buttons.forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        var item = btn.closest("[data-faq-item]");
+        var open = btn.getAttribute("aria-expanded") !== "true";
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        item.setAttribute("data-open", open ? "true" : "false");
+      });
+      // Arrow / Home / End move between question buttons (WAI-ARIA accordion pattern).
+      btn.addEventListener("keydown", function (e) {
+        var next = null;
+        if (e.key === "ArrowDown") next = buttons[(i + 1) % buttons.length];
+        else if (e.key === "ArrowUp") next = buttons[(i - 1 + buttons.length) % buttons.length];
+        else if (e.key === "Home") next = buttons[0];
+        else if (e.key === "End") next = buttons[buttons.length - 1];
+        if (next) {
+          e.preventDefault();
+          next.focus();
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .faq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+  }
+  .faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  [data-open="true"] > .faq-panel {
+    grid-template-rows: 1fr;
+  }
+  [data-open="true"] > .faq-panel > .faq-panel-inner {
+    visibility: visible;
+  }
+  /* No JS: every answer stays readable. */
+  [data-faq]:not([data-js]) .faq-panel {
+    grid-template-rows: 1fr;
+  }
+  [data-faq]:not([data-js]) .faq-panel-inner {
+    visibility: visible;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .faq-panel {
+      transition: grid-template-rows 0.3s;
+    }
+    .faq-panel-inner {
+      transition: visibility 0s linear 0.3s;
+    }
+    [data-open="true"] > .faq-panel > .faq-panel-inner {
+      transition-delay: 0s;
+    }
+  }
+</style>

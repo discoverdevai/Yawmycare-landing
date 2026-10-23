@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import BlobCard from "@/components/ui/BlobCard.astro";
+
+/**
+ * One column of security cards (a real list, one card per item). From 1024 the cards share the column height
+ * (flex-1), so both columns end up with equal cards and aligned top and bottom edges.
+ */
+interface Item {
+  title: string;
+  body: string;
+  icon: ImageMetadata;
+}
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="flex flex-col gap-6 lg:gap-12">
+  {
+    items.map((item) => (
+      <BlobCard
+        as="li"
+        shape="security"
+        class="lg:flex lg:flex-1 lg:flex-col lg:[&>div]:flex-1"
+        contentClass="p-8 flex flex-col gap-4"
+      >
+        <Image src={item.icon} alt="" width={85} height={85} densities={[1, 2]} format="webp" loading="lazy" class="size-[85px]" />
+        <div class="flex flex-col gap-3">
+          <h3 class="text-h3 text-accent-text font-bold">{item.title}</h3>
+          <p class="text-lead text-ink">{item.body}</p>
+        </div>
+      </BlobCard>
+    ))
+  }
+</ul>

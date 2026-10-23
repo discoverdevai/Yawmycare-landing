@@ -1,0 +1,63 @@
+---
+/**
+ * Scalloped section edge from the Figma "Group 42/43/44" vectors.
+ * The Figma art is 20 scallops across 1440px, so one scallop is a 72px tile; repeating it keeps the
+ * shape identical at every viewport width (no stretching on mobile).
+ *
+ *  direction="up"   flat bottom, scallops point up   → sits at the TOP of a section
+ *  direction="down" flat top, scallops point down    → sits at the BOTTOM of a section
+ *
+ * Set the fill with a background-color utility on `class`, e.g. class="bg-surface".
+ */
+interface Props {
+  direction: "up" | "down";
+  /** Soft green drop shadow used on the cream (bg-surface) dividers. Top bar and footer waves have none.
+   *  "glow" = the hero's stronger, centred shadow (0 0 12px at 48%, Figma 1457:3920). */
+  shadow?: boolean | "glow";
+  class?: string;
+}
+
+const { direction, shadow = false, class: className = "" } = Astro.props;
+
+const TILE_W = 72;
+const TILE_H = 76;
+
+// Half-scallop curve measured from the Figma path: cusp (0, 55.68) → crest (36, 76) → cusp (72, 55.68).
+const paths = {
+  down: "M0 0H72V55.68C68.11 67.33 53.52 76 36 76C18.48 76 3.89 67.33 0 55.68Z",
+  up: "M0 76H72V20.32C68.11 8.67 53.52 0 36 0C18.48 0 3.89 8.67 0 20.32Z",
+};
+
+const tile = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${TILE_W} ${TILE_H}' preserveAspectRatio='none'><path d='${paths[direction]}'/></svg>`;
+const mask = `url("data:image/svg+xml,${encodeURIComponent(tile)}")`;
+---
+
+<div
+  aria-hidden="true"
+  class:list={["wave-shadow", shadow === "glow" ? "wave-shadow--glow" : shadow && `wave-shadow--${direction}`]}
+  style={`--wave-mask:${mask}`}
+>
+  <div class:list={["wave", className]}></div>
+</div>
+
+<style>
+  /* Height follows --wave-h (76 / 48 / 32); the tile keeps its 72:76 proportion so scallops never stretch. */
+  .wave {
+    height: var(--wave-h);
+    mask-image: var(--wave-mask);
+    mask-size: calc(var(--wave-h) * 72 / 76) 100%;
+    mask-repeat: repeat-x;
+    mask-position: center;
+  }
+  /* Figma: 0 5px 12px (down) / 0 -5px 12px (up) in primary/CTAprimarycolor at 20%. */
+  .wave-shadow--down {
+    filter: drop-shadow(0 5px 6px color-mix(in srgb, var(--color-primary-cta) 20%, transparent));
+  }
+  /* Hero bottom edge: 0 0 12px in primary/CTAprimarycolor at 48%. */
+  .wave-shadow--glow {
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-primary-cta) 48%, transparent));
+  }
+  .wave-shadow--up {
+    filter: drop-shadow(0 -5px 6px color-mix(in srgb, var(--color-primary-cta) 20%, transparent));
+  }
+</style>

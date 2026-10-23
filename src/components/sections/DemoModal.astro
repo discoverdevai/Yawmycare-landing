@@ -1,0 +1,732 @@
+---
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { contact, resolveLink } from "@/config/site";
+
+/**
+ * Section 13: the "Book a Demo" modal. A native <dialog id="demo"> that the whole site opens with any
+ * `[data-demo-open]` element, an `href="#demo"` link, or a `#demo` URL hash on load.
+ * Mount it once per page (the lead wires it in index.astro). See docs/sections/13-demo/spec.md.
+ *
+ * Figma 1326:4515 (EN) / 1437:4595 (AR): 767 wide, 24/32 padding, radius 50, fields 48 high with a 20px
+ * radius and a 24px leading icon; the date/time pair shares a row and repeats its icon at the end
+ * (there it opens the native picker). Icons sit on the inline start, so RTL mirrors the layout for free.
+ *
+ * The behaviour script below is bundled by Astro (progressive enhancement: the dialog cannot open
+ * without it, and the form never posts anywhere on its own). All copy comes from i18n; user input is
+ * only ever written back with textContent.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const t = dict.sections.demo;
+
+// "Not connected yet" error: link to the configured WhatsApp / email (docs/ENV.md). Unset: plain text, no links.
+const contactLinks = [
+  { key: "whatsapp", icon: "whatsapp", label: dict.cta.contactWhatsApp, href: resolveLink(contact.whatsapp) },
+  { key: "email", icon: "sms", label: dict.cta.contactEmail, href: resolveLink(contact.email) },
+].filter((c) => !c.href.unconfigured) as { key: string; icon: IconName; label: string; href: { href: string } }[];
+
+type TextField = {
+  name: "name" | "nursery" | "email";
+  icon: IconName;
+  type: "text" | "email";
+  autocomplete: string;
+  maxlength: number;
+};
+const textFields: TextField[] = [
+  {
+    name: "name",
+    icon: "profile",
+    type: "text",
+    autocomplete: "name",
+    maxlength: 100,
+  },
+  {
+    name: "nursery",
+    icon: "school",
+    type: "text",
+    autocomplete: "organization",
+    maxlength: 150,
+  },
+  {
+    name: "email",
+    icon: "sms",
+    type: "email",
+    autocomplete: "email",
+    maxlength: 254,
+  },
+];
+const pickerFields = [
+  { name: "date", icon: "calendar", type: "date" },
+  { name: "time", icon: "clock", type: "time" },
+] as const;
+
+// Strings the script needs at runtime (validation, status and error copy).
+const messages = {
+  fields: {
+    name: t.fields.name,
+    nursery: t.fields.nursery,
+    email: t.fields.email,
+    date: t.fields.date,
+    time: t.fields.time,
+  },
+  summary: t.summary,
+  submit: t.submit,
+  submitting: t.submitting,
+  error: t.error,
+};
+
+const labelClass = "text-body-sm font-medium text-ink";
+const inputClass =
+  "demo-input h-12 w-full min-w-0 rounded-input border border-field-border bg-transparent text-body-sm text-ink " +
+  "placeholder:text-caption placeholder:text-ink-muted aria-[invalid=true]:border-accent-text " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
+const iconClass =
+  "pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-muted";
+const errorClass = "text-caption text-accent-text [&:not(:empty)]:mt-2";
+const titleClass = `font-bold text-ink ${locale === "ar" ? "text-h3" : "text-title"}`;
+const panelClass = "px-5 py-8 sm:px-6";
+---
+
+<dialog
+  id="demo"
+  aria-labelledby="demo-title"
+  aria-describedby="demo-lead"
+  data-messages={JSON.stringify(messages)}
+  class="rounded-modal bg-surface text-ink m-auto w-[min(47.9375rem,calc(100vw-2rem))] max-w-none overflow-hidden p-0 backdrop:bg-overlay focus-visible:outline-none"
+>
+  <button
+    type="button"
+    data-demo-close
+    aria-label={t.closeLabel}
+    class="bg-surface-tabs text-ink hover:bg-primary-bg focus-visible:outline-focus absolute end-4 top-4 z-10 inline-flex size-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors motion-safe:duration-150"
+  >
+    <Icon name="plus" size={24} class="rotate-45" />
+  </button>
+
+  <div class="demo-scroll max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+    <!-- idle / submitting -->
+    <div data-panel="form" class={panelClass}>
+      <div class="flex flex-col gap-2 pe-12">
+        <h2 id="demo-title" class={titleClass}>
+          {t.title}
+        </h2>
+        <p id="demo-lead" class="text-body-sm text-ink-muted [line-height:1.5]">{t.lead}</p>
+      </div>
+
+      <form
+        data-demo-form
+        method="post"
+        novalidate
+        class="mt-8 flex flex-col gap-6"
+      >
+        <p class="text-caption text-ink-muted -mb-2">
+          <span aria-hidden="true" class="text-accent-text">*</span>
+          {dict.a11y.requiredFields}
+        </p>
+        <div class="flex flex-col gap-4">
+          {textFields.map((f) => (
+            <div>
+              <div class="flex flex-col gap-3">
+                <label for={`demo-${f.name}`} class={labelClass}>
+                  {t.fields[f.name].label}
+                  <span aria-hidden="true" class="text-accent-text"> *</span>
+                </label>
+                <div class="relative">
+                  <span class={`${iconClass} start-3`}>
+                    <Icon name={f.icon} />
+                  </span>
+                  <input
+                    id={`demo-${f.name}`}
+                    name={f.name}
+                    type={f.type}
+                    class={inputClass}
+                    placeholder={t.fields[f.name].placeholder}
+                    autocomplete={f.autocomplete}
+                    maxlength={f.maxlength}
+                    required
+                    aria-describedby={`demo-${f.name}-error`}
+                    autofocus={f.name === "name" ? true : undefined}
+                    inputmode={f.type === "email" ? "email" : undefined}
+                    autocapitalize={f.type === "email" ? "none" : undefined}
+                    spellcheck={f.type === "email" ? "false" : undefined}
+                  />
+                </div>
+              </div>
+              <p
+                id={`demo-${f.name}-error`}
+                class={errorClass}
+              />
+            </div>
+          ))}
+
+          <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+            {pickerFields.map((f) => (
+              <div>
+                <div class="flex flex-col gap-3">
+                  <label for={`demo-${f.name}`} class={labelClass}>
+                    {t.fields[f.name].label}
+                    <span aria-hidden="true" class="text-accent-text"> *</span>
+                  </label>
+                  <div class="relative">
+                    <span class={`${iconClass} start-3`}>
+                      <Icon name={f.icon} />
+                    </span>
+                    <input
+                      id={`demo-${f.name}`}
+                      name={f.name}
+                      type={f.type}
+                      class={`${inputClass} demo-input--picker`}
+                      autocomplete="off"
+                      required
+                      aria-describedby={`demo-${f.name}-error`}
+                    />
+                    <span class={`${iconClass} end-3`}>
+                      <Icon name={f.icon} />
+                    </span>
+                  </div>
+                </div>
+                <p
+                  id={`demo-${f.name}-error`}
+                  class={errorClass}
+                />
+              </div>
+            ))}
+          </div>
+
+          <!-- Honeypot: invisible to people and assistive tech (aria-hidden + inert: no focus, no autofill), tempting to bots. -->
+          <div
+            aria-hidden="true"
+            inert
+            class="pointer-events-none absolute -z-10 size-px overflow-hidden opacity-0"
+          >
+            <label for="demo-company-website">{t.honeypotLabel}</label>
+            <input
+              id="demo-company-website"
+              name="company_website"
+              type="text"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div>
+          <!-- Persistent live region (never display:none, so announcements are reliable). It carries the one
+               summary announcement ("Please fix..." / "Sending..."); the per-field errors are read through
+               aria-describedby when focus lands on the field. Empty = zero height. -->
+          <p
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-demo-status
+            class="text-caption text-accent-text [&:not(:empty)]:mb-3"
+          ></p>
+          <Button
+            type="submit"
+            variant="primary"
+            icon={null}
+            block
+            data-demo-submit
+          >
+            {t.submit}
+          </Button>
+        </div>
+      </form>
+    </div>
+
+    <!-- success -->
+    <div
+      data-panel="success"
+      hidden
+      class={`${panelClass} flex flex-col items-center gap-6 text-center`}
+    >
+      <span class="bg-primary-bg text-primary-text inline-flex size-16 items-center justify-center rounded-full">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M5 12.5l4.5 4.5L19 7.5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+        </svg>
+      </span>
+      <div class="flex flex-col gap-2">
+        <h2
+          id="demo-success-title"
+          tabindex="-1"
+          class={`${titleClass} focus-visible:outline-none`}
+        >
+          {t.success.title}
+        </h2>
+        <p id="demo-success-body" class="text-body-sm text-ink-muted [line-height:1.5]">
+          {t.success.body}
+        </p>
+      </div>
+      <Button variant="primary" icon={null} block data-demo-close>
+        {t.success.close}
+      </Button>
+    </div>
+
+    <!-- error -->
+    <div
+      data-panel="error"
+      hidden
+      class={`${panelClass} flex flex-col items-center gap-6 text-center`}
+    >
+      <div class="flex flex-col gap-2">
+        <h2
+          id="demo-error-title"
+          tabindex="-1"
+          class={`${titleClass} focus-visible:outline-none`}
+        >
+          {t.error.title}
+        </h2>
+        <p
+          data-demo-error-body
+          role="alert"
+          class="text-body-sm text-ink-muted [line-height:1.5]"
+        >
+          {t.error.body}
+        </p>
+        {
+          contactLinks.length > 0 && (
+            <div hidden data-demo-contact class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
+              {contactLinks.map((c) => (
+                <Button variant="outline-deep" icon={c.icon} href={c.href.href} external={!c.href.href.startsWith("mailto:")} class="sm:w-auto" block>
+                  {c.label}
+                </Button>
+              ))}
+            </div>
+          )
+        }
+      </div>
+      <Button variant="primary" icon={null} block data-demo-retry>
+        {t.error.retry}
+      </Button>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  /* Lock page scroll while the modal is open; keep the scrollbar gutter so the page does not jump. */
+  html:has(#demo[open]) {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+  }
+  #demo .demo-input {
+    padding-block: 0;
+    padding-inline: 3rem 0.75rem; /* 12 + 24 icon + 12 gap, as in Figma */
+  }
+  #demo .demo-input--picker {
+    position: relative;
+    padding-inline-end: 3rem; /* room for the trailing icon, which sits over the native picker button */
+  }
+  /* The trailing icon is decorative; the invisible native picker button sits on top of it. */
+  #demo .demo-input--picker::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 3rem;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  /* A Latin value (the email) is set LTR inside an RTL page: swap the padding so the icon still clears the text. */
+  html[dir="rtl"] #demo .demo-input[dir="ltr"] {
+    padding-inline: 0.75rem 3rem;
+  }
+</style>
+
+<script>
+  /* eslint-disable no-console */
+  type FieldMsgs = {
+    required: string;
+    invalid?: string;
+    min?: string;
+    past?: string;
+  };
+  type Messages = {
+    fields: Record<"name" | "nursery" | "email" | "date" | "time", FieldMsgs>;
+    summary: string;
+    submit: string;
+    submitting: string;
+    error: { body: string; notConnected: string; tooFast: string };
+  };
+  type State = "idle" | "submitting" | "success" | "error";
+
+  // A submit with no trusted keyboard/pointer interaction, or sooner than this after the FIRST such interaction
+  // (not after page load or dialog open), is treated as a bot. Browser/password-manager autofill skips the timing.
+  const MIN_FILL_MS = 2000;
+  const TIMEOUT_MS = 10000;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function initDemo(dialog: HTMLDialogElement): void {
+    const messages = JSON.parse(dialog.dataset.messages ?? "{}") as Messages;
+    const form = dialog.querySelector<HTMLFormElement>("[data-demo-form]")!;
+    const panels = {
+      form: dialog.querySelector<HTMLElement>('[data-panel="form"]')!,
+      success: dialog.querySelector<HTMLElement>('[data-panel="success"]')!,
+      error: dialog.querySelector<HTMLElement>('[data-panel="error"]')!,
+    };
+    const status = dialog.querySelector<HTMLElement>("[data-demo-status]")!;
+    const errorBody = dialog.querySelector<HTMLElement>(
+      "[data-demo-error-body]",
+    )!;
+    const contactBox = dialog.querySelector<HTMLElement>("[data-demo-contact]");
+    const submitButton =
+      dialog.querySelector<HTMLButtonElement>("[data-demo-submit]")!;
+    const submitLabel = submitButton.querySelector("span")!;
+    const honeypot = form.elements.namedItem(
+      "company_website",
+    ) as HTMLInputElement;
+    const fieldNames = ["name", "nursery", "email", "date", "time"] as const;
+    const inputs = fieldNames.map(
+      (n) => form.elements.namedItem(n) as HTMLInputElement,
+    );
+    const [nameInput, , emailInput, dateInput, timeInput] = inputs as [
+      HTMLInputElement,
+      HTMLInputElement,
+      HTMLInputElement,
+      HTMLInputElement,
+      HTMLInputElement,
+    ];
+
+    let state: State = "idle";
+    let opener: HTMLElement | null = null;
+    let firstInteractionAt = -1; // performance.now() of the first trusted key/pointer event since open
+    let openedFromHash = false;
+
+    const emit = (name: string, detail: Record<string, unknown>) =>
+      document.dispatchEvent(new CustomEvent(name, { detail }));
+
+    for (const type of ["keydown", "pointerdown", "touchstart"]) {
+      dialog.addEventListener(
+        type,
+        (event) => {
+          if (event.isTrusted && firstInteractionAt < 0)
+            firstInteractionAt = performance.now();
+        },
+        true,
+      );
+    }
+    const isAutofilled = () =>
+      inputs.some((input) => {
+        try {
+          return input.matches(":autofill");
+        } catch {
+          try {
+            return input.matches(":-webkit-autofill");
+          } catch {
+            return false;
+          }
+        }
+      });
+
+    /* ---------- dates ---------- */
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const today = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    };
+    const nowTime = () => {
+      const d = new Date();
+      return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    };
+
+    /* ---------- validation ---------- */
+    const errorEl = (input: HTMLInputElement) =>
+      document.getElementById(`${input.id}-error`)!;
+
+    function messageFor(input: HTMLInputElement): string {
+      const key = input.name as (typeof fieldNames)[number];
+      const msgs = messages.fields[key];
+      const value = input.value.trim();
+      const v = input.validity;
+      if (value === "" || v.valueMissing) return msgs.required;
+      if (key === "email" && (v.typeMismatch || !EMAIL_RE.test(value)))
+        return msgs.invalid ?? msgs.required;
+      if ((key === "date" || key === "time") && v.badInput)
+        return msgs.invalid ?? msgs.required;
+      if (key === "date" && (v.rangeUnderflow || value < today()))
+        return msgs.min ?? msgs.required;
+      if (key === "time" && dateInput.value === today() && value < nowTime())
+        return msgs.past ?? msgs.required;
+      return "";
+    }
+
+    function validate(input: HTMLInputElement): boolean {
+      const message = messageFor(input);
+      errorEl(input).textContent = message;
+      input.setAttribute("aria-invalid", message ? "true" : "false");
+      return message === "";
+    }
+
+    function clearErrors() {
+      for (const input of inputs) {
+        errorEl(input).textContent = "";
+        input.removeAttribute("aria-invalid");
+      }
+      status.textContent = "";
+    }
+
+    for (const input of inputs) {
+      input.addEventListener("blur", () => {
+        if (input.value !== "" || input.hasAttribute("aria-invalid"))
+          validate(input);
+      });
+      input.addEventListener("input", () => {
+        if (input.getAttribute("aria-invalid") === "true") validate(input);
+        if (input === dateInput && timeInput.hasAttribute("aria-invalid"))
+          validate(timeInput);
+      });
+    }
+    // The email is Latin even on an Arabic page: set it LTR as soon as there is a value.
+    emailInput.addEventListener("input", () => {
+      if (emailInput.value) emailInput.setAttribute("dir", "ltr");
+      else emailInput.removeAttribute("dir");
+    });
+
+    /* ---------- state ---------- */
+    function setState(next: State) {
+      state = next;
+      const busy = next === "submitting";
+      panels.form.hidden = next === "success" || next === "error";
+      panels.success.hidden = next !== "success";
+      panels.error.hidden = next !== "error";
+      submitButton.disabled = busy;
+      submitButton.setAttribute("aria-busy", String(busy));
+      submitLabel.textContent = busy ? messages.submitting : messages.submit;
+      status.textContent = busy ? messages.submitting : "";
+      const heading =
+        next === "success"
+          ? "demo-success-title"
+          : next === "error"
+            ? "demo-error-title"
+            : "demo-title";
+      dialog.setAttribute("aria-labelledby", heading);
+      // The error panel's body is a role="alert" and is announced by itself, so it is not repeated as a description.
+      const describedBy = next === "success" ? "demo-success-body" : next === "error" ? "" : "demo-lead";
+      if (describedBy) dialog.setAttribute("aria-describedby", describedBy);
+      else dialog.removeAttribute("aria-describedby");
+      if (next === "success" || next === "error") {
+        document.getElementById(heading)!.focus();
+      }
+    }
+
+    function showError(message: string, withContact = false) {
+      errorBody.textContent = message;
+      if (contactBox) contactBox.hidden = !withContact;
+      setState("error");
+    }
+
+    function succeed() {
+      form.reset();
+      emailInput.removeAttribute("dir");
+      clearErrors();
+      setState("success");
+    }
+
+    dialog.querySelector("[data-demo-retry]")!.addEventListener("click", () => {
+      setState("idle");
+      nameInput.focus();
+    });
+
+    /* ---------- submit ---------- */
+    function endpoint(): URL | null {
+      const raw = import.meta.env.PUBLIC_DEMO_FORM_ENDPOINT;
+      if (typeof raw !== "string" || raw.trim() === "") return null;
+      try {
+        const url = new URL(raw.trim());
+        // https only; plain http is allowed for a local test endpoint in dev builds.
+        return url.protocol === "https:" ||
+          (import.meta.env.DEV && url.protocol === "http:")
+          ? url
+          : null;
+      } catch {
+        return null;
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (state !== "idle") return;
+
+      const invalid = inputs.filter((input) => !validate(input));
+      if (invalid.length > 0) {
+        status.textContent = messages.summary;
+        invalid[0]!.focus();
+        return;
+      }
+      status.textContent = "";
+
+      // Honeypot filled: a bot. Pretend it worked, send nothing.
+      if (honeypot.value !== "") {
+        emit("yawmy:demo-submit", { status: "blocked", reason: "honeypot" });
+        succeed();
+        return;
+      }
+      if (
+        firstInteractionAt < 0 ||
+        (!isAutofilled() && performance.now() - firstInteractionAt < MIN_FILL_MS)
+      ) {
+        emit("yawmy:demo-submit", { status: "blocked", reason: "too-fast" });
+        showError(messages.error.tooFast);
+        return;
+      }
+
+      const payload = {
+        name: nameInput.value.trim(),
+        nursery: inputs[1]!.value.trim(),
+        email: emailInput.value.trim(),
+        date: dateInput.value,
+        time: timeInput.value,
+        locale: document.documentElement.lang,
+        page: location.origin + location.pathname,
+        source: opener?.dataset.demoOpen || (openedFromHash ? "hash" : "link"),
+        submittedAt: new Date().toISOString(),
+      };
+
+      const url = endpoint();
+      if (!url) {
+        if (import.meta.env.DEV) {
+          console.warn(
+            "[demo form] PUBLIC_DEMO_FORM_ENDPOINT is not set (or is not https). Dev build: simulating success, nothing was sent.",
+          );
+          setState("submitting");
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          emit("yawmy:demo-submit", {
+            status: "success",
+            simulated: true,
+            locale: payload.locale,
+          });
+          succeed();
+        } else {
+          emit("yawmy:demo-submit", {
+            status: "error",
+            reason: "not-configured",
+            locale: payload.locale,
+          });
+          showError(messages.error.notConnected, true);
+        }
+        return;
+      }
+
+      setState("submitting");
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+          credentials: "omit",
+          cache: "no-store",
+          referrerPolicy: "no-referrer",
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        emit("yawmy:demo-submit", {
+          status: "success",
+          locale: payload.locale,
+        });
+        succeed();
+      } catch {
+        emit("yawmy:demo-submit", {
+          status: "error",
+          reason: controller.signal.aborted ? "timeout" : "network",
+          locale: payload.locale,
+        });
+        showError(messages.error.body);
+      } finally {
+        clearTimeout(timer);
+      }
+    });
+
+    /* ---------- open / close ---------- */
+    function open(from: HTMLElement | null, viaHash = false) {
+      if (dialog.open) return;
+      opener = from;
+      openedFromHash = viaHash;
+      firstInteractionAt = -1;
+      // Min date is "today" in the visitor's timezone, refreshed on every open.
+      dateInput.min = today();
+      if (state === "success" || state === "error") setState("idle");
+      dialog.showModal();
+      emit("yawmy:demo-open", {
+        source: from?.dataset.demoOpen || (viaHash ? "hash" : "link"),
+      });
+    }
+
+    dialog.addEventListener("close", () => {
+      if (location.hash === "#demo")
+        history.replaceState(null, "", location.pathname + location.search);
+      if (state === "success" || state === "error") setState("idle");
+      // Browsers restore focus to the opener themselves. When the opener is no longer rendered (the mobile
+      // menu panel closes when its link is clicked, so its Book a Demo button is display:none), focus the
+      // menu toggle instead of dropping to <body>.
+      const rendered = (el: HTMLElement | null): el is HTMLElement =>
+        !!el && el.isConnected && el.getClientRects().length > 0;
+      const toggle = document.querySelector<HTMLElement>("[data-nav-toggle]");
+      const target = rendered(opener) ? opener : opener && rendered(toggle) ? toggle : null;
+      if (target && document.activeElement !== target) target.focus();
+    });
+
+    // Delegated, so openers added later (or in other sections) work with no wiring.
+    document.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const trigger = target?.closest<HTMLElement>(
+        '[data-demo-open], a[href="#demo"]',
+      );
+      if (!trigger) return;
+      event.preventDefault();
+      open(trigger);
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-demo-close]")
+      )
+        dialog.close();
+    });
+
+    // Backdrop click closes, but only when the press also started on the backdrop
+    // (so dragging a text selection out of the panel does not dismiss it).
+    let pressedBackdrop = false;
+    dialog.addEventListener("pointerdown", (event) => {
+      pressedBackdrop = event.target === dialog;
+    });
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog && pressedBackdrop) dialog.close();
+      pressedBackdrop = false;
+    });
+
+    const openFromHash = () => {
+      if (location.hash === "#demo") open(null, true);
+    };
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
+  }
+
+  const dialog = document.getElementById("demo");
+  if (dialog instanceof HTMLDialogElement) initDemo(dialog);
+</script>

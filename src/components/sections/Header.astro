@@ -1,0 +1,243 @@
+---
+import Container from "@/components/ui/Container.astro";
+import WaveDivider from "@/components/ui/WaveDivider.astro";
+import Button from "@/components/ui/Button.astro";
+import Logo from "@/components/ui/Logo.astro";
+import { getDictionary, localeMeta, otherLocale, type Locale } from "@/i18n";
+import { navLinks } from "@/config/nav";
+import { resolveLink, isExternal, socials as socialUrls, socialOrder } from "@/config/site";
+
+/**
+ * Section 01: top bar + header/nav (Figma 1457:3899 top bar, 1599:43647 nav; AR 1434:3719, 1434:3741).
+ * Static (not sticky): Figma shows no fixed header. The 1360 breakpoint (85rem, also in the script below) is
+ * where the 9 links fit with the stand-in fonts (licensed Recoleta is narrower); AR links are 15px (gap 12) instead
+ * of the 5-link frame's 20px. At 1280 the row overflows (EN by ~30px, AR links run together), so it stays a menu.
+ *
+ *  top bar   primary-bg strip with the tagline + 4 social buttons, scalloped bottom edge, no shadow
+ *  nav row   logo, 9 in-page anchors, language switch, Book a Demo (1280 wide container, the one exception)
+ *  < 1360    the links collapse into a menu button (9 links never fit); Book a Demo + language stay in
+ *            the row from 768 up, and move into the menu panel below 768.
+ *
+ * Progressive enhancement: without JS the menu panel is simply visible (stacked links), with JS it
+ * toggles (aria-expanded / aria-controls), closes on Esc (focus returns to the button), on outside
+ * click, on link click and when the viewport grows past the menu breakpoint. A small
+ * IntersectionObserver marks the link of the section in view with aria-current="location".
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const h = t.sections.header;
+
+const other = otherLocale(locale);
+// Same page in the other locale: swap the leading /en or /ar path segment.
+const switchHref = Astro.url.pathname.replace(new RegExp(`^/${locale}(?=/|$)`), `/${other}`);
+
+// Social URLs come from env (src/config/site.ts, docs/ENV.md). Unset ones are not rendered in production;
+// in dev they render with a dashed marker.
+const socials = socialOrder
+  .map((name) => ({ name, ...resolveLink(socialUrls[name]) }))
+  .filter((s) => s.render);
+
+// Single nav source (src/config/nav.ts): ids + header labels, shared with the footer.
+const navItems = navLinks(h.nav.items);
+
+// The active link is underlined with text-decoration (not a border) so the same class works for the
+// 25px desktop links and the 44px menu-panel links.
+const linkClass =
+  "text-ink hover:text-primary-cta-strong aria-[current=location]:decoration-primary-cta aria-[current=location]:text-primary-cta-strong " +
+  "rounded-sm font-medium whitespace-nowrap underline decoration-transparent decoration-[1.5px] underline-offset-[6px] " +
+  "focus-visible:outline-focus focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors";
+---
+
+<script is:inline>
+  document.documentElement.classList.add("js");
+</script>
+
+<header class="site-header bg-surface-sec" data-site-header>
+  <!-- Top bar -->
+  <div class="relative [--wave-h:68px] md:[--wave-h:76px]">
+    <WaveDivider direction="down" class="bg-primary-bg" />
+    <div class="absolute inset-x-0 top-2 md:top-3">
+      <Container class:list={["flex items-center justify-center gap-4", socials.length > 0 && "sm:justify-between"]}>
+        <p class:list={["text-body-sm text-ink text-center font-medium", socials.length > 0 && "hidden sm:block"]}>{t.brand.tagline}</p>
+        {
+          socials.length > 0 && (
+            <ul class="flex items-center gap-3" aria-label={h.topbar.socialLabel}>
+              {socials.map((s) => (
+                <li>
+                  <Button
+                    variant="social-bar"
+                    icon={s.name}
+                    label={t.social[s.name]}
+                    href={s.href}
+                    external={isExternal(s.href)}
+                    unconfigured={s.unconfigured}
+                  />
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </Container>
+    </div>
+  </div>
+
+  <!-- Nav row -->
+  <div class="mt-4 md:mt-6">
+    <Container size="wide" class="flex items-center justify-between gap-6 py-2">
+      <div class="flex items-center gap-8 rtl:gap-6">
+        <Logo
+          size="nav"
+          locale={locale}
+          href="#home"
+          class="focus-visible:outline-focus block shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
+        />
+        <nav class="hidden min-[85rem]:block" aria-label={h.nav.label}>
+          <ul class="flex items-center gap-2 rtl:gap-3">
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class={`${linkClass} text-nav inline-block py-1 rtl:text-[0.9375rem]`}
+                    data-nav-link={item.id}
+                    aria-current={item.id === "home" ? "location" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="hidden items-center gap-3 md:flex">
+          <Button variant="icon" href={switchHref} label={t.a11y.switchLanguage} hreflang={other} data-lang-switch />
+          <Button variant="primary" href="#demo" data-demo-open>{t.cta.bookDemo}</Button>
+        </div>
+        <button
+          type="button"
+          class="menu-toggle bg-surface-tabs text-ink hover:bg-primary-bg focus-visible:outline-focus inline-flex size-14 shrink-0 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 motion-safe:transition-colors min-[85rem]:hidden"
+          aria-expanded="false"
+          aria-controls="nav-panel"
+          aria-label={h.nav.menu}
+          data-nav-toggle
+        >
+          <svg class="icon-open" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+          <svg class="icon-close" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+    </Container>
+  </div>
+
+  <!-- Menu panel (below 1360) -->
+  <div id="nav-panel" class="nav-panel border-stroke-green border-y min-[85rem]:hidden" data-state="closed" data-nav-panel>
+    <Container class="py-4">
+      <nav aria-label={h.nav.label}>
+        <ul class="flex flex-col md:grid md:grid-flow-col md:grid-cols-3 md:grid-rows-3 md:gap-x-8">
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class={`${linkClass} text-lead inline-flex min-h-11 items-center`}
+                  data-nav-link={item.id}
+                  aria-current={item.id === "home" ? "location" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="mt-4 flex flex-col gap-3 md:hidden">
+        <Button variant="primary" href="#demo" data-demo-open block>{t.cta.bookDemo}</Button>
+        <Button variant="outline" icon="language" href={switchHref} hreflang={other} lang={other} block data-lang-switch>
+          {localeMeta[other].label}
+        </Button>
+      </div>
+    </Container>
+  </div>
+</header>
+
+<style>
+  .menu-toggle[aria-expanded="true"] .icon-open,
+  .menu-toggle[aria-expanded="false"] .icon-close {
+    display: none;
+  }
+  /* Without JS the panel stays open (the links would otherwise be unreachable below 1360). */
+  :global(.js) .nav-panel[data-state="closed"] {
+    display: none;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  if (header) {
+    const toggle = header.querySelector<HTMLButtonElement>("[data-nav-toggle]")!;
+    const panel = header.querySelector<HTMLElement>("[data-nav-panel]")!;
+    const desktop = window.matchMedia("(min-width: 85rem)");
+
+    const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      panel.dataset.state = open ? "open" : "closed";
+    };
+
+    toggle.addEventListener("click", () => setOpen(!isOpen()));
+    panel.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOpen()) {
+        const active = document.activeElement;
+        const focusInMenu = active === toggle || panel.contains(active);
+        setOpen(false);
+        // Only pull focus back when it was in the menu (otherwise the page would jump to the header).
+        if (focusInMenu) toggle.focus();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (isOpen() && !header.contains(e.target as Node)) setOpen(false);
+    });
+    desktop.addEventListener("change", () => setOpen(false));
+
+    // Keep the current section's hash when switching language.
+    header.querySelectorAll<HTMLAnchorElement>("[data-lang-switch]").forEach((a) => {
+      a.addEventListener("click", () => {
+        a.hash = window.location.hash;
+      });
+    });
+
+    // Scroll spy: mark the link whose section crosses a band near the upper third of the viewport.
+    const links = [...header.querySelectorAll<HTMLAnchorElement>("[data-nav-link]")];
+    const ids = [...new Set(links.map((a) => a.dataset.navLink!))];
+    const targets = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    if ("IntersectionObserver" in window && targets.length) {
+      const mark = (id: string) =>
+        links.forEach((a) => {
+          if (a.dataset.navLink === id) a.setAttribute("aria-current", "location");
+          else a.removeAttribute("aria-current");
+        });
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) mark(en.target.id);
+          });
+        },
+        { rootMargin: "-35% 0px -60% 0px" },
+      );
+      targets.forEach((el) => io.observe(el));
+    }
+  }
+</script>

@@ -1,0 +1,52 @@
+---
+import { Image } from "astro:assets";
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import SecurityColumn from "./security/SecurityColumn.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import secureIcon from "@/assets/security/secure.png";
+import cloudIcon from "@/assets/security/cloud.png";
+import serverIcon from "@/assets/security/server.png";
+import copywritingIcon from "@/assets/security/copywriting.png";
+import centerImage from "@/assets/security/center.png";
+
+/**
+ * Section 07: four security promises on BlobCard shape="security" around a centre image whose
+ * organic mask is baked into the exported PNG (alpha). Layout is logical: the grid is
+ * [first column | image | second column], so in RTL the first column lands on the right, like the AR
+ * Figma frame, without duplicating markup. Below 1024 the image goes on top and the two columns sit
+ * side by side (768) or stack (375). At >= 1024 both columns stretch to the same height (cards spread top to
+ * bottom, as in Figma) so their edges align even when the wider stand-in font wraps one column more.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.security;
+
+// Icons follow the order of `items` in the i18n files (Figma: secure, cloud, server, copywriting).
+const icons = [secureIcon, cloudIcon, serverIcon, copywritingIcon];
+const items = t.items.map((item, i) => ({ ...item, icon: icons[i]! }));
+---
+
+<Section id="security" headingId="security-title" wave="up" shadow>
+  <SectionHeader slot="header" id="security-title" title={t.title} lead={t.lead} />
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,282px)_minmax(0,1fr)_minmax(0,282px)]">
+    <SecurityColumn items={items.slice(0, 2)} />
+    <div class="order-first sm:col-span-2 lg:order-none lg:col-span-1 lg:self-center">
+      <Image
+        src={centerImage}
+        alt={t.imageAlt}
+        width={588}
+        height={740}
+        densities={[1, 2]}
+        format="webp"
+        quality={85}
+        loading="lazy"
+        class="mx-auto h-auto w-full max-w-[440px] lg:max-w-[588px]"
+      />
+    </div>
+    <SecurityColumn items={items.slice(2)} />
+  </div>
+</Section>

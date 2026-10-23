@@ -1,0 +1,145 @@
+---
+import { Image } from "astro:assets";
+import Rings from "./Rings.astro";
+import { CARD_H, CARD_W, PANEL_H, type CardDef } from "./cards";
+
+/**
+ * One card of the "day" grid: dashed rounded card, centred time + title + text, and a stack of phone
+ * screenshots positioned in Figma's 588 x 695 design space.
+ *
+ * The picture area ("stage") scales with the card width through `--u` (one design pixel, taken from the
+ * card's container width) while the text keeps its normal type size, so one composition works at 588,
+ * 468, 340 and 343px wide cards. Pictures are anchored to the stage's start/top and clipped by the card,
+ * like the cut-off phones in the design. `inset-inline-start` mirrors the composition in RTL without
+ * flipping any image.
+ *
+ * DOM order is always text first, then pictures; "bottom" cards only reorder visually.
+ */
+interface Props {
+  def: CardDef;
+  /** "li" for timeline slots, "div" for the closing summary card. */
+  as?: "li" | "div";
+  title: string;
+  body: string;
+  alt: string;
+  /** Time slots only: display string and machine-readable value for <time>. */
+  time?: string;
+  datetime?: string;
+}
+
+const { def, as: Tag = "li", title, body, alt, time, datetime } = Astro.props;
+
+const green = def.tone === "green";
+const textTop = def.text === "top";
+const stageHeight = textTop ? CARD_H - def.stageTop : CARD_H - PANEL_H;
+const stageOrigin = textTop ? def.stageTop : 0;
+
+const tone = {
+  card: green ? "bg-surface-tabs" : "bg-accent-bg-light",
+  panel: green ? "" : "day-panel bg-accent-bg-light",
+  border: green ? "border-stroke-green/80" : "border-accent-stroke",
+  title: green ? "text-primary-text" : "text-accent-text",
+};
+
+const layers = def.layers.map((l) => {
+  const natural = l.src.width;
+  const widths = [
+    ...new Set([Math.round(l.w * 0.6), Math.round(l.w), natural]),
+  ].filter((w) => w <= natural);
+  return {
+    ...l,
+    widths,
+    sizes: `(min-width: 1280px) ${Math.round(l.w)}px, (min-width: 768px) ${Math.round((l.w / CARD_W) * 50)}vw, ${Math.round((l.w / CARD_W) * 100)}vw`,
+    style: [
+      `inset-inline-start:${((l.x / CARD_W) * 100).toFixed(3)}%`,
+      `top:calc(${l.y - stageOrigin} * var(--u))`,
+      `width:${((l.w / CARD_W) * 100).toFixed(3)}%`,
+      l.opacity !== undefined ? `opacity:${l.opacity}` : "",
+      l.radius ? `border-radius:calc(${l.radius} * var(--u))` : "",
+    ]
+      .filter(Boolean)
+      .join(";"),
+  };
+});
+---
+
+<Tag class="day-card mx-auto flex w-full max-w-[36.75rem] md:max-w-none">
+  <div
+    class:list={[
+      "relative isolate flex flex-1 flex-col overflow-hidden rounded-card [--k:1] md:rounded-modal xl:[--k:0.7]",
+      tone.card,
+    ]}
+    style="--u:calc(100cqw / 588);min-height:calc(695 * var(--u))"
+  >
+    {def.rings && <Rings />}
+
+    <div
+      class:list={[
+        "relative z-10 text-center",
+        textTop
+          ? "px-5 pt-8 md:px-6 md:pt-10"
+          : ["order-2 px-5 py-6 md:px-6", tone.panel],
+      ]}
+    >
+      <h3 class:list={["text-h3 text-balance font-bold", tone.title]}>
+        {time && (
+          <>
+            <time datetime={datetime}>
+              <bdi>{time}</bdi>
+            </time>
+            {" - "}
+          </>
+        )}
+        {title}
+      </h3>
+      <p class="text-lead text-ink-muted mt-3">{body}</p>
+    </div>
+
+    <div
+      class="relative z-10 flex-1"
+      style={`min-height:calc(${stageHeight} * var(--u) * var(--k));${textTop ? `margin-top:calc(${def.gap} * var(--u))` : ""}`}
+    >
+      {layers.map((l) => (
+        <Image
+          src={l.src}
+          alt={l.primary ? alt : ""}
+          width={l.src.width}
+          height={l.src.height}
+          widths={l.widths}
+          sizes={l.sizes}
+          format="webp"
+          quality={82}
+          loading="lazy"
+          decoding="async"
+          class:list={["absolute h-auto max-w-none", l.shadow && "day-shadow"]}
+          style={l.style}
+        />
+      ))}
+    </div>
+
+    <span
+      aria-hidden="true"
+      class:list={[
+        "pointer-events-none absolute inset-0 z-20 rounded-[inherit] border-4 border-dashed",
+        tone.border,
+      ]}
+    ></span>
+  </div>
+</Tag>
+
+<style>
+  .day-card {
+    container-type: inline-size;
+  }
+  /* Figma: 0 0 20px at 20% black. drop-shadow follows the PNG's rounded alpha edge. */
+  :global(.day-shadow) {
+    filter: drop-shadow(
+      0 0 20px color-mix(in srgb, var(--color-ink) 20%, transparent)
+    );
+  }
+  /* Text panel over the lower part of the picture: faint inset fade (Figma 0 20px 12px at 12%). */
+  .day-panel {
+    box-shadow: inset 0 20px 12px
+      color-mix(in srgb, var(--color-accent-stroke) 12%, transparent);
+  }
+</style>

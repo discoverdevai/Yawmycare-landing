@@ -1,0 +1,150 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon, { type IconName } from "./Icon.astro";
+import { getDictionary, isLocale } from "@/i18n";
+
+/**
+ * Buttons from the Figma audit: min-height 56, padding 8/16, pill radius, 24px icon, 12px gap, Bold 18.
+ * Figma defines no hover / active / focus / disabled states; these are ours (docs/DECISIONS.md #12, #13).
+ *
+ *  primary           green fill, white text, calendar icon      (Book a Demo)
+ *  outline           green border + text, video icon            (Watch Demo)
+ *  outline-deep      darker green border + text, no icon        (outline on a tinted card: 4.2:1 -> 5.6:1)
+ *  outline-accent    coral border + text, no icon               (Be The First Partner)
+ *  on-green          light fill, dark-green text                (primary on a green band)
+ *  on-green-outline  white border + text                        (secondary on a green band)
+ *  icon              56px round, tab-colour fill, language icon (language switch)
+ *  social-bar        40px round, cream fill                     (top bar)
+ *  social-footer     40px round, coral fill                     (footer)
+ *
+ * The icon sits first in the inline direction. Figma's AR frame (1434:3765) has it on the right, which
+ * is the inline start in RTL, so the same markup is correct in both locales.
+ */
+type Variant =
+  | "primary"
+  | "outline"
+  | "outline-deep"
+  | "outline-accent"
+  | "on-green"
+  | "on-green-outline"
+  | "icon"
+  | "social-bar"
+  | "social-footer";
+
+interface Props extends Omit<HTMLAttributes<"a">, "type"> {
+  variant?: Variant;
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  /** Overrides the variant's default icon; `null` removes it. Icon-only variants must have one. */
+  icon?: IconName | null;
+  iconPosition?: "start" | "end";
+  /** Required for icon-only variants (icon / social-bar / social-footer): the accessible name. */
+  label?: string;
+  /** Full width (stacked buttons on mobile). */
+  block?: boolean;
+  /** Opens in a new tab and announces it to screen readers. */
+  external?: boolean;
+  /** Dev only: the URL is not configured yet (src/config/site.ts); adds a dashed marker + data-unconfigured. */
+  unconfigured?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  variant = "primary",
+  href,
+  type = "button",
+  icon,
+  iconPosition = "start",
+  label,
+  block = false,
+  external = false,
+  unconfigured = false,
+  disabled = false,
+  class: className = "",
+  ...attrs
+} = Astro.props;
+
+const iconOnly = variant === "icon" || variant === "social-bar" || variant === "social-footer";
+const defaultIcons: Record<Variant, IconName | null> = {
+  primary: "calendar",
+  outline: "video-circle",
+  "outline-deep": null,
+  "outline-accent": null,
+  "on-green": "calendar",
+  "on-green-outline": "video-circle",
+  icon: "language",
+  "social-bar": null,
+  "social-footer": null,
+};
+const iconName = icon === undefined ? defaultIcons[variant] : icon;
+
+if (iconOnly && (!iconName || !label)) {
+  throw new Error(`Button variant "${variant}" needs both \`icon\` and \`label\`.`);
+}
+
+const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : "en";
+const newTabHint = getDictionary(locale).a11y.opensInNewTab;
+
+const base =
+  "relative inline-flex shrink-0 items-center justify-center rounded-pill text-center text-button font-bold " +
+  "motion-safe:transition-colors motion-safe:duration-150 motion-safe:ease-out " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-surface-tabs aria-disabled:text-ink-muted " +
+  "disabled:cursor-not-allowed disabled:border-transparent disabled:bg-surface-tabs disabled:text-ink-muted";
+
+const labelled = "min-h-14 gap-3 px-4 py-2";
+const ringDark = "focus-visible:outline-focus";
+const ringLight = "focus-visible:outline-primary-bg-light";
+// 40px visual, 44px hit area (docs/DECISIONS.md #12). Neighbour pitch is 52px, so hit areas never overlap.
+const hitArea = "after:absolute after:-inset-0.5 after:content-['']";
+
+const variants: Record<Variant, string> = {
+  primary: `${labelled} ${ringDark} bg-primary-cta-strong text-on-cta hover:bg-primary-cta-hover active:bg-primary-cta-hover disabled:hover:bg-surface-tabs`,
+  // Hover/active darken the label as well as tint the fill: 18px bold is not "large" text, so >= 4.5:1 is needed
+  // (text-primary-cta-strong on a 10% tint was 4.26:1; hover text is 5.3:1, active text-primary-text is 8+:1).
+  outline: `${labelled} ${ringDark} border border-primary-cta-strong text-primary-cta-strong hover:bg-primary-cta-strong/10 hover:text-primary-cta-hover active:bg-primary-cta-strong/10 active:text-primary-text`,
+  "outline-deep": `${labelled} ${ringDark} border border-primary-cta-hover text-primary-cta-hover hover:bg-primary-cta-hover/10 active:bg-primary-cta-hover/20`,
+  // Tint capped at 5% (4.5:1+ for accent-text on accent-bg-light / cream); pressed is shown by the darker border.
+  "outline-accent": `${labelled} ${ringDark} border-2 border-accent text-accent-text hover:bg-accent/5 active:bg-accent/5 active:border-accent-text`,
+  "on-green": `${labelled} ${ringLight} bg-primary-bg-light text-primary-text hover:bg-primary-bg active:bg-primary-bg disabled:hover:bg-surface-tabs`,
+  "on-green-outline": `${labelled} ${ringLight} border border-ink-inverse text-ink-inverse hover:bg-primary-cta-hover active:bg-primary-cta-hover`,
+  icon: `size-14 ${ringDark} bg-surface-tabs text-ink hover:bg-primary-bg active:bg-primary-bg`,
+  "social-bar": `size-[min(2.5rem,calc((100vw-2rem-2.25rem)/4))] ${ringDark} ${hitArea} bg-surface text-ink hover:bg-primary-bg active:bg-primary-bg`,
+  // Footer is the light green (primary-bg): the ring must be dark (8.2:1 there, 3.3:1 against the coral button).
+  "social-footer": `size-10 ${ringDark} ${hitArea} bg-accent text-ink-inverse hover:bg-accent-text active:bg-accent-text`,
+};
+
+// Dev-only marker for a link/button whose URL is still unset (never rendered in production at all).
+const unconfiguredMark = "outline-2 outline-dashed outline-offset-2 outline-accent-text";
+const classes = [base, variants[variant], block && "w-full", unconfigured && unconfiguredMark, className];
+const accessibleName = iconOnly ? label : undefined;
+const iconSize = variant === "icon" ? 32 : 24;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={classes}
+      aria-label={accessibleName}
+      aria-disabled={disabled ? "true" : undefined}
+      tabindex={disabled ? -1 : undefined}
+      data-unconfigured={unconfigured ? "" : undefined}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      {...attrs}
+    >
+      {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
+      {!iconOnly && <span><slot /></span>}
+      {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
+      {external && <span class="sr-only">{newTabHint}</span>}
+    </a>
+  ) : (
+    <button type={type} disabled={disabled} class:list={classes} aria-label={accessibleName} {...attrs}>
+      {iconName && iconPosition === "start" && <Icon name={iconName} size={iconSize} />}
+      {!iconOnly && <span><slot /></span>}
+      {iconName && iconPosition === "end" && <Icon name={iconName} size={iconSize} />}
+    </button>
+  )
+}

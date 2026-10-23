@@ -1,0 +1,88 @@
+---
+import { getDictionary, localeMeta, locales, type Locale } from "@/i18n";
+
+/**
+ * Organization, WebSite, WebPage and SoftwareApplication as one @graph (the FAQPage block comes from Faq.astro).
+ * All text is built from the existing dictionary (`brand`, `meta`); no new i18n keys.
+ * No `offers`: the price is not public and must not be invented. `sameAs` comes from `src/config/site.ts`
+ * when that file exists and exports social URLs; otherwise it is omitted.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const inLanguage = localeMeta[locale].htmlLang;
+const origin = new URL(Astro.site!).origin;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const logo = new URL("/icon-512.png", Astro.site).href;
+
+// Optional config: tolerate any of `site` / `siteConfig` / default export with a `socials` or `social` map of URLs.
+const configModules = import.meta.glob<Record<string, any>>("/src/config/site.ts", { eager: true });
+const config = Object.values(configModules)[0];
+const cfg = config?.site ?? config?.siteConfig ?? config?.default ?? config;
+const socials = cfg?.socials ?? cfg?.social ?? {};
+const sameAs: string[] = (Array.isArray(socials) ? socials : Object.values(socials))
+  .map((entry: any) => (typeof entry === "string" ? entry : entry?.url))
+  .filter((url: unknown): url is string => typeof url === "string" && /^https:\/\//.test(url));
+
+// Names in both languages so a search for either spelling resolves to the same entity.
+const otherName = getDictionary(locales.find((l) => l !== locale)!).brand.name;
+const names = { name: t.brand.name, alternateName: otherName };
+
+const orgId = `${origin}/#organization`;
+const siteId = `${origin}/#website`;
+const pageId = `${pageUrl}#webpage`;
+
+const graph = [
+  {
+    "@type": "Organization",
+    "@id": orgId,
+    ...names,
+    url: `${origin}/`,
+    logo: { "@type": "ImageObject", url: logo, width: 512, height: 512 },
+    ...(sameAs.length ? { sameAs } : {}),
+  },
+  {
+    "@type": "WebSite",
+    "@id": siteId,
+    ...names,
+    url: `${origin}/`,
+    inLanguage,
+    publisher: { "@id": orgId },
+  },
+  {
+    "@type": "WebPage",
+    "@id": pageId,
+    url: pageUrl,
+    name: t.meta.title,
+    description: t.meta.description,
+    inLanguage,
+    isPartOf: { "@id": siteId },
+    about: { "@id": `${origin}/#software` },
+    publisher: { "@id": orgId },
+  },
+  {
+    "@type": "SoftwareApplication",
+    "@id": `${origin}/#software`,
+    name: t.brand.name,
+    alternateName: otherName,
+    description: t.meta.description,
+    url: pageUrl,
+    inLanguage,
+    applicationCategory: "BusinessApplication",
+    // The page presents web dashboard + parent and teacher mobile apps.
+    operatingSystem: "Web, iOS, Android",
+    publisher: { "@id": orgId },
+  },
+];
+
+// Escape "<" and U+2028/2029 so no string can close the script element (doubled backslash on purpose).
+const html = JSON.stringify({ "@context": "https://schema.org", "@graph": graph })
+  .replace(/</g, "\\u003c")
+  .replace(/\u2028/g, "\\u2028")
+  .replace(/\u2029/g, "\\u2029");
+---
+
+<script type="application/ld+json" set:html={html} />

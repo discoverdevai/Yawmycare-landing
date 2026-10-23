@@ -1,0 +1,26 @@
+{
+  "title": "Five things we will not do to you",
+  "lead": "Five promises we make to every nursery that joins Yawmy Care.",
+  "cards": {
+    "charge": {
+      "title": "We never charge parents",
+      "body": "We will never charge your parents. One flat fee, paid by the nursery. No commission on tuition."
+    },
+    "dataYours": {
+      "title": "Your data is yours",
+      "body": "Your data is yours. Export your records whenever you want, without asking us."
+    },
+    "arabic": {
+      "title": "Arabic is not a translation",
+      "body": "Arabic is not a translation layer. Full RTL, Arabic notifications, Arabic support."
+    },
+    "human": {
+      "title": "You can talk to a human",
+      "body": "A human answers, in Arabic, within one working day."
+    },
+    "dataStays": {
+      "title": "Your data stays with you",
+      "body": "If you leave, you leave with everything. 90 days to export, then permanent deletion."
+    }
+  }
+}

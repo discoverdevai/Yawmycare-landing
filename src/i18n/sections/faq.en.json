@@ -1,0 +1,57 @@
+{
+  "title": "You might be wondering",
+  "items": [
+    {
+      "question": "How much does it cost?",
+      "answer": "Yawmy Care is one flat monthly fee, paid by the nursery. Book a demo and we will go through the details with you."
+    },
+    {
+      "question": "Do parents pay anything?",
+      "answer": "No. Parents never pay anything. The nursery pays the flat monthly fee, and parents use the app for free."
+    },
+    {
+      "question": "How long does setup take?",
+      "answer": "Most nurseries are set up in under 20 minutes. You add your classes, children and teachers, invite parents, and you can start using it the same day."
+    },
+    {
+      "question": "Do my teachers need training?",
+      "answer": "No formal training is needed. The screens are simple and fully in Arabic, and we walk your team through the basics when you set up."
+    },
+    {
+      "question": "Is the app fully in Arabic?",
+      "answer": "Yes. Yawmy Care was built in Arabic from day one, not translated afterwards. Staff and parents can use it in Arabic or English, with full right-to-left support."
+    },
+    {
+      "question": "How does check-in work?",
+      "answer": "Teachers mark each child in when they arrive and out when they leave, right from the app. The attendance record is kept automatically, so there is nothing to copy into a spreadsheet later."
+    },
+    {
+      "question": "Who can see our data?",
+      "answer": "Access is by role. A teacher sees only her own rooms, and an admin cannot read private teacher and parent conversations. Your data is encrypted in transit and at rest, and backed up daily."
+    },
+    {
+      "question": "What if we cancel?",
+      "answer": "Your data belongs to your nursery. If you decide to stop, we will help you take your records with you. We share the cancellation terms with you up front, before you commit to anything."
+    },
+    {
+      "question": "Can we move off WhatsApp and Excel?",
+      "answer": "Yes, and that is where most nurseries start. Attendance, daily updates and parent messages all live in one place, and we help you bring your existing lists across during setup."
+    },
+    {
+      "question": "Does it work on older Android?",
+      "answer": "Yawmy Care is built to run on everyday phones, including older Android models. If you are unsure about a specific device, tell us in the demo and we will check it with you."
+    },
+    {
+      "question": "We are a school nursery section. Does this fit?",
+      "answer": "Yes. Yawmy Care is built for private nurseries and international schools, including a nursery or early-years section inside a school. Talk to us and we will show you how it fits your setup."
+    },
+    {
+      "question": "Who is behind Yawmy Care?",
+      "answer": "Yawmy Care is built by Dr. Rana Mustafa and Mr. Mohammed, together with the nurseries they talked to along the way. Their story is in the Founders section above."
+    },
+    {
+      "question": "Do you work outside Egypt?",
+      "answer": "Yes. The app works anywhere in the region, in Arabic and English. We are onboarding nurseries in Egypt first, and more countries will follow."
+    }
+  ]
+}

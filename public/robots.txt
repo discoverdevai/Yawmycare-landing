@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yawmycare.com/sitemap-index.xml

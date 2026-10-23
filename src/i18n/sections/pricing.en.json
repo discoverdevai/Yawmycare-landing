@@ -1,0 +1,34 @@
+{
+  "title": "Simple pricing. We never charge parents.",
+  "plan": {
+    "title": "One flat monthly fee, paid by the nursery",
+    "itemsLabel": "What the monthly fee covers",
+    "items": [
+      "Not per child, not per parent.",
+      "No setup fee.",
+      "No tuition commission.",
+      "All features included.",
+      "Unlimited parents and teachers."
+    ]
+  },
+  "school": {
+    "title": [
+      { "text": "Running the ", "em": false },
+      { "text": "nursery", "em": true },
+      { "text": " section of an ", "em": false },
+      { "text": "international school?", "em": true }
+    ],
+    "body": "Talk to us. We price around your rooms.",
+    "cta": "Talk to us"
+  },
+  "partner": {
+    "title": [
+      { "text": "Be among the ", "em": false },
+      { "text": "first 10", "em": true },
+      { "text": ". Shape what ", "em": false },
+      { "text": "comes next.", "em": true }
+    ],
+    "body": "The first 10 nurseries keep whatever launch price we set, permanently, and decide what we build next. We are new. That is exactly why this is worth it.",
+    "cta": "Be The First Partner"
+  }
+}

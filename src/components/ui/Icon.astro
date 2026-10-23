@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+const icons = import.meta.glob<{ default: (props: HTMLAttributes<"svg">) => unknown }>(
+  "@/assets/icons/*.svg",
+  { eager: true },
+);
+
+export type IconName =
+  | "calendar"
+  | "clock"
+  | "facebook"
+  | "instagram"
+  | "language"
+  | "linkedin"
+  | "minus"
+  | "plus"
+  | "profile"
+  | "quote"
+  | "school"
+  | "sms"
+  | "video-circle"
+  | "whatsapp";
+
+interface Props extends Omit<HTMLAttributes<"svg">, "name"> {
+  name: IconName;
+  /** Rendered size in px (square). Figma uses 24 for inline icons, 32 for the language switch. */
+  size?: number;
+  /** Provide only when the icon carries meaning by itself; otherwise it is hidden from assistive tech. */
+  label?: string;
+}
+
+const { name, size = 24, label, ...attrs } = Astro.props;
+const Svg = icons[`/src/assets/icons/${name}.svg`]?.default;
+if (!Svg) throw new Error(`Icon "${name}" not found in src/assets/icons`);
+---
+
+<Svg
+  width={size}
+  height={size}
+  aria-hidden={label ? undefined : "true"}
+  aria-label={label}
+  role={label ? "img" : undefined}
+  focusable="false"
+  {...attrs}
+/>

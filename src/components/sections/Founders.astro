@@ -1,0 +1,83 @@
+---
+import { Image } from "astro:assets";
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import BlobCard from "@/components/ui/BlobCard.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import rana from "@/assets/founders/rana-mustafa.png";
+import mohammed from "@/assets/founders/mohammed.png";
+
+/**
+ * Section 10 · Founders. Two stories, each a masked portrait (the green organic frame is part of the
+ * exported image) overlapping a text blob; the second story swaps sides. Layout follows `dir`, so in
+ * Arabic the photos swap sides again. The blob outline is mirrored so its scalloped edge always sits
+ * opposite the photo. Below 768 the photo stacks above the card; from 768 up the side-by-side layout is used (the card is a rounded fallback until it is 886px wide).
+ * The 3 paragraphs are the founders' own words: do not edit or reorder them.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.founders;
+const photos = [rana, mohammed];
+const rtl = locale === "ar";
+---
+
+<Section id="founders" headingId="founders-title" wave="down" shadow gap="loose">
+  <SectionHeader slot="header" id="founders-title" title={t.title} />
+
+  <ul role="list" class="flex flex-col gap-10">
+    {
+      t.founders.map((founder, i) => {
+        const photoAtEnd = i % 2 === 1;
+        // Layout order mirrors in RTL, so the outline flips when exactly one of (second story, RTL) holds.
+        const flip = photoAtEnd !== rtl;
+        const contentClass = [
+          "flex min-h-full flex-col justify-center px-6 pt-10 pb-6 md:py-10",
+          photoAtEnd ? "md:ps-[5%] md:pe-[39%]" : "md:ps-[39%] md:pe-[5%]",
+        ].join(" ");
+        return (
+          <li>
+            <div class="grid grid-cols-1">
+              <Image
+                src={photos[i]!}
+                alt={founder.photoAlt}
+                width={439}
+                height={491}
+                densities={[1, 2]}
+                format="webp"
+                loading="lazy"
+                decoding="async"
+                class:list={[
+                  "relative z-10 col-start-1 row-start-1 h-auto w-[min(72%,17.5rem)] md:w-[36.58%] md:self-center",
+                  photoAtEnd ? "justify-self-end" : "justify-self-start",
+                  "sm:max-md:justify-self-center",
+                ]}
+              />
+              <BlobCard
+                shape="founder-text"
+                flip={flip}
+                class:list={["col-start-1 row-start-2 -mt-6 md:row-start-1 md:mt-0 md:self-center", photoAtEnd ? "md:me-[2.08%]" : "md:ms-[1.58%]"]}
+                contentClass={contentClass}
+              >
+                <blockquote class="flex max-w-[60ch] flex-col gap-4">
+                  <div class="text-body xl:text-title flex flex-col gap-2 font-medium">
+                    {founder.paragraphs.map((p) => <p>{p}</p>)}
+                  </div>
+                  <footer class="flex items-center gap-2">
+                    <span class="bg-primary-cta text-ink-inverse inline-flex size-8 shrink-0 items-center justify-center rounded-full">
+                      <Icon name="profile" size={24} />
+                    </span>
+                    <cite class="text-primary-text text-caption font-bold not-italic">{founder.name}</cite>
+                  </footer>
+                </blockquote>
+              </BlobCard>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Section>

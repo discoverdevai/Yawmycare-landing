@@ -1,0 +1,35 @@
+---
+import { Image } from "astro:assets";
+import logo from "@/assets/logo.png";
+import { getDictionary, type Locale } from "@/i18n";
+
+/**
+ * Brand logo (raster for now: 285x258; swap the import for an SVG once supplied, props stay the same).
+ *  nav     71x64 in EN, 84x74 in AR (Figma sizes)
+ *  footer  158 wide, height from the aspect ratio (Figma shows 139; the 3% stretch is not copied)
+ * With `href` it is a link named by `brand.logoAlt`; without, it is decorative (alt="").
+ */
+interface Props {
+  size: "nav" | "footer";
+  locale: Locale;
+  href?: string;
+  class?: string;
+}
+
+const { size, locale, href, class: className = "" } = Astro.props;
+const t = getDictionary(locale);
+
+const ratio = logo.width / logo.height;
+const width = size === "footer" ? 158 : locale === "ar" ? 84 : 71;
+const height = Math.round(width / ratio);
+---
+
+{
+  href ? (
+    <a href={href} aria-label={t.brand.logoAlt} class={className}>
+      <Image src={logo} alt="" width={width} height={height} densities={[1, 2]} format="webp" loading={size === "nav" ? "eager" : "lazy"} />
+    </a>
+  ) : (
+    <Image src={logo} alt="" width={width} height={height} densities={[1, 2]} format="webp" loading={size === "nav" ? "eager" : "lazy"} class={className} />
+  )
+}

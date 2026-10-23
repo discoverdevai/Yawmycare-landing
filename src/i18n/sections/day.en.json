@@ -1,0 +1,54 @@
+{
+  "title": "A day at your nursery, from open to close",
+  "lead": "Your nursery already has a system. It is a WhatsApp group. Here is the same day, without it.",
+  "timelineLabel": "A day at your nursery, hour by hour",
+  "items": [
+    {
+      "time": "7:30\u00a0AM",
+      "title": "Drop-off",
+      "body": "Drop-off. A parent taps check-in from the gate. The button only works inside 100 metres. No book, no queue, no tablet.",
+      "alt": "Parent app showing today's attendance with a Check In button"
+    },
+    {
+      "time": "8:15\u00a0AM",
+      "title": "Room overview",
+      "body": "The room, at a glance. The teacher sees who is in, who is late, who is out. Manual mark in one tap.",
+      "alt": "Teacher view of the class attendance list with a Mark as Checked-in button"
+    },
+    {
+      "time": "10:00\u00a0AM",
+      "title": "Photos",
+      "body": "Photos, in the right album. Each photo goes to that child's own gallery, not a group where twelve families scroll to find their own.",
+      "alt": "Media gallery screen showing the day's photos of a child"
+    },
+    {
+      "time": "12:30\u00a0PM",
+      "title": "Daily activities",
+      "body": "Logged as it happens. Meals, nap, mood, nappies, medication. Recorded in the moment, not from memory at half past four.",
+      "alt": "Child Daily Logs screen with mood options"
+    },
+    {
+      "time": "2:00\u00a0PM",
+      "title": "Parent check-in",
+      "body": "A parent checks in. From her desk, without messaging anyone, she sees what her child ate, how long she slept, and this morning's photos.",
+      "alt": "Parent app home screen beside the day details with meals, nap and photos"
+    },
+    {
+      "time": "4:30\u00a0PM",
+      "title": "Daily report",
+      "body": "One tap, and the day is sent. Every parent gets a notification in their own language. Filed for good, searchable next year.",
+      "alt": "Draft daily log screen beside a Published Successfully confirmation"
+    },
+    {
+      "time": "8:00\u00a0PM",
+      "title": "Stay connected",
+      "body": "The conversation stays in one place. Parents message the nursery directly, follow up on their child\u2019s day, and keep every update in the same chat.",
+      "alt": "A parent holding a phone that shows a chat with the nursery"
+    }
+  ],
+  "summary": {
+    "title": "The day, all in one place",
+    "body": "Nothing lost in a group chat. Nothing written twice. Nothing arriving at midnight.",
+    "alt": "Notices, a class update and an attendance overview above the Yawmy Care app"
+  }
+}

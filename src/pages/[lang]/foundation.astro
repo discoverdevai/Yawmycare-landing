@@ -1,0 +1,187 @@
+---
+// Review-only showcase for Section 00 (Foundation). Dev-only: getStaticPaths returns [] in production builds.
+// Dev chrome (headings below) is exempt from the no-hard-coded-strings rule; all sample copy that
+// demonstrates a component comes from the dictionary.
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
+import WaveDivider from "@/components/ui/WaveDivider.astro";
+import Button from "@/components/ui/Button.astro";
+import Container from "@/components/ui/Container.astro";
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import BlobCard, { type BlobShape } from "@/components/ui/BlobCard.astro";
+import Logo from "@/components/ui/Logo.astro";
+import { getDictionary, locales, type Locale } from "@/i18n";
+
+// Dev-only: no route is generated in a production build.
+export function getStaticPaths() {
+  return import.meta.env.PROD ? [] : locales.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = getDictionary(locale);
+
+const icons: IconName[] = [
+  "calendar", "clock", "facebook", "instagram", "language", "linkedin", "minus",
+  "plus", "profile", "quote", "school", "sms", "video-circle", "whatsapp",
+];
+
+const swatches = [
+  ["primary-bg", "bg-primary-bg"], ["primary-bg-light", "bg-primary-bg-light"], ["primary-cta", "bg-primary-cta"],
+  ["primary-cta-strong", "bg-primary-cta-strong"], ["primary-cta-hover", "bg-primary-cta-hover"], ["primary-text", "bg-primary-text"],
+  ["surface", "bg-surface"], ["surface-sec", "bg-surface-sec"], ["surface-tabs", "bg-surface-tabs"], ["stroke-sec", "bg-stroke-sec"],
+  ["ink", "bg-ink"], ["ink-muted", "bg-ink-muted"], ["accent", "bg-accent"], ["accent-text", "bg-accent-text"],
+  ["accent-display", "bg-accent-display"], ["accent-bg-light", "bg-accent-bg-light"], ["accent-bg-soft", "bg-accent-bg-soft"],
+  ["stroke-green", "bg-stroke-green"], ["stroke-accent-strong", "bg-stroke-accent-strong"], ["stroke-gray", "bg-stroke-gray"],
+  ["wordmark", "bg-wordmark"],
+] as const;
+
+const typeScale = [
+  ["text-hero", "text-hero font-semibold"], ["text-h2", "text-h2 font-bold"], ["text-band", "text-band font-bold"],
+  ["text-h3", "text-h3 font-bold"], ["text-title", "text-title font-bold"], ["text-lead", "text-lead"],
+  ["text-body", "text-body"], ["text-body-sm", "text-body-sm"], ["text-button", "text-button font-bold"],
+  ["text-nav", "text-nav font-medium"], ["text-caption", "text-caption font-bold"],
+] as const;
+
+const shapes: BlobShape[] = [
+  "feature", "step", "step-number", "testimonial", "security", "commitment-peach", "commitment-green",
+  "intl-school", "first10", "commitment-wide", "pricing", "founder-text", "cta-band", "final-cta",
+];
+const wide = new Set<BlobShape>(["commitment-wide", "pricing", "founder-text", "cta-band", "final-cta", "first10"]);
+---
+
+<BaseLayout locale={locale} title="Foundation showcase" noindex>
+  <Container class="space-y-16 py-16">
+    <h1 class="text-h2 font-bold">Foundation <span class="text-accent-display">showcase</span> · {locale.toUpperCase()}</h1>
+
+    <section aria-labelledby="type-h">
+      <h2 id="type-h" class="mb-6 text-3xl font-bold">Type scale</h2>
+      <ul class="space-y-3">
+        {
+          typeScale.map(([name, cls]) => (
+            <li class="flex items-baseline gap-4 border-b border-stroke-sec pb-3">
+              <code class="text-ink-muted w-28 shrink-0 text-sm">{name}</code>
+              <span class={cls}>{t.brand.tagline}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="color-h">
+      <h2 id="color-h" class="mb-6 text-3xl font-bold">Colors</h2>
+      <ul class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        {
+          swatches.map(([name, cls]) => (
+            <li class="text-xs">
+              <div class:list={["border-stroke-gray mb-1 h-12 rounded-lg border", cls]}></div>
+              {name}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="btn-h">
+      <h2 id="btn-h" class="mb-6 text-3xl font-bold">Buttons</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <Button href="#">{t.cta.bookDemo}</Button>
+        <Button variant="outline" href="#">{t.cta.watchDemo}</Button>
+        <Button disabled>{t.cta.bookDemo}</Button>
+        <Button variant="icon" label={t.a11y.switchLanguage} href="#" />
+        <Button variant="social-bar" icon="linkedin" label={t.social.linkedin} href="#" />
+        <Button variant="social-bar" icon="instagram" label={t.social.instagram} href="#" />
+      </div>
+      <div class="bg-primary-cta mt-6 flex flex-wrap items-center gap-4 rounded-2xl p-8">
+        <Button variant="on-green" href="#" class="w-96 max-w-full">{t.cta.bookDemo}</Button>
+        <Button variant="on-green-outline" href="#" class="w-96 max-w-full">{t.cta.watchDemo}</Button>
+      </div>
+      <div class="bg-primary-bg mt-6 flex gap-3 rounded-2xl p-8">
+        <Button variant="social-footer" icon="whatsapp" label={t.social.whatsapp} href="#" />
+        <Button variant="social-footer" icon="facebook" label={t.social.facebook} href="#" />
+      </div>
+    </section>
+
+    <section aria-labelledby="hdr-h">
+      <h2 id="hdr-h" class="mb-6 text-3xl font-bold">Section header</h2>
+      <SectionHeader title={t.brand.tagline} lead={t.meta.description} headingLevel={3} />
+      <div class="bg-primary-cta mt-8 rounded-2xl p-8">
+        <SectionHeader title={t.brand.tagline} lead={t.meta.description} headingLevel={3} align="center" tone="on-green" size="band" />
+      </div>
+    </section>
+
+    <section aria-labelledby="logo-h">
+      <h2 id="logo-h" class="mb-6 text-3xl font-bold">Logo</h2>
+      <div class="flex items-end gap-8">
+        <Logo size="nav" locale={locale} href={`/${locale}/`} />
+        <Logo size="footer" locale={locale} />
+      </div>
+    </section>
+
+    <section aria-labelledby="icons-h">
+      <h2 id="icons-h" class="mb-6 text-3xl font-bold">Icons (currentColor)</h2>
+      <ul class="flex flex-wrap gap-6">
+        {
+          icons.map((name) => (
+            <li class="flex w-24 flex-col items-center gap-2 text-sm">
+              <span class="text-primary-text"><Icon name={name} size={32} /></span>
+              <span class="text-ink-muted">{name}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </Container>
+
+  <Section headingId="blob-h" class="bg-surface-sec py-12">
+    <h2 slot="header" id="blob-h" class="text-3xl font-bold">Blob cards: native size, and the narrow fallback</h2>
+    <div class="space-y-8">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(282px,1fr))] items-start gap-8">
+        {
+          shapes.filter((s) => !wide.has(s)).map((shape) => (
+            <div>
+              <code class="text-ink-muted mb-2 block text-sm">{shape}</code>
+              <BlobCard shape={shape} contentClass="p-6">
+                <p class="text-title text-primary-text font-bold">{t.brand.name}</p>
+                <p class="text-body-sm mt-2">{t.cta.bookDemo}</p>
+              </BlobCard>
+            </div>
+          ))
+        }
+      </div>
+      {
+        shapes.filter((s) => wide.has(s)).map((shape) => (
+          <div>
+            <code class="text-ink-muted mb-2 block text-sm">{shape}</code>
+            <BlobCard shape={shape} contentClass="p-8">
+              <p class:list={["text-band font-bold", shape.includes("cta") ? "text-ink-inverse" : "text-ink"]}>{t.brand.tagline}</p>
+            </BlobCard>
+          </div>
+        ))
+      }
+      <div class="w-48">
+        <code class="text-ink-muted mb-2 block text-sm">pricing @ 192px (fallback card)</code>
+        <BlobCard shape="pricing" contentClass="p-4"><p class="text-body-sm">{t.brand.name}</p></BlobCard>
+      </div>
+    </div>
+  </Section>
+
+  <Container class="space-y-16 py-16">
+    <section aria-labelledby="wave-h">
+      <h2 id="wave-h" class="mb-6 text-3xl font-bold">Wave dividers</h2>
+      <p class="text-ink-muted mb-2 text-sm">Cream → green, scallops down (shadow)</p>
+      <div class="bg-surface p-8 text-sm">Cream section</div>
+      <div class="bg-primary-bg"><WaveDivider direction="down" shadow class="bg-surface" /></div>
+      <div class="bg-primary-bg p-8 text-sm">Green section</div>
+
+      <p class="text-ink-muted mt-10 mb-2 text-sm">Green → cream, scallops up (shadow)</p>
+      <div class="bg-primary-bg p-8 text-sm">Green section</div>
+      <div class="bg-primary-bg"><WaveDivider direction="up" shadow class="bg-surface" /></div>
+      <div class="bg-surface p-8 text-sm">Cream section</div>
+
+      <p class="text-ink-muted mt-10 mb-2 text-sm">Footer edge, scallops up, no shadow</p>
+      <div class="bg-surface"><WaveDivider direction="up" class="bg-primary-bg" /></div>
+      <div class="bg-primary-bg p-8 text-sm">Footer</div>
+    </section>
+  </Container>
+</BaseLayout>

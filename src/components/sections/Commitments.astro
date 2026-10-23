@@ -1,0 +1,57 @@
+---
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import CommitmentCard from "./commitments/CommitmentCard.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import chargeIcon from "@/assets/commitments/parents.webp";
+import chargeStill from "@/assets/commitments/parents-still.webp";
+import dataYoursIcon from "@/assets/commitments/data-yours.webp";
+import dataYoursStill from "@/assets/commitments/data-yours-still.webp";
+import arabicIcon from "@/assets/commitments/arabic.webp";
+import arabicStill from "@/assets/commitments/arabic-still.webp";
+import humanIcon from "@/assets/commitments/human.webp";
+import humanStill from "@/assets/commitments/human-still.webp";
+import dataStaysIcon from "@/assets/commitments/data-stays.webp";
+import dataStaysStill from "@/assets/commitments/data-stays-still.webp";
+
+/**
+ * Section 08: five commitments on the commitment blob shapes. Figma order and colours: peach, green /
+ * wide / green, peach. Below 768 everything stacks in one column; at 768+ it is a 2-up grid with the
+ * wide card spanning both columns. The list follows the document direction, so in RTL the columns swap.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.commitments;
+
+const accent = "text-accent-text";
+const green = "text-primary-text";
+const cards = [
+  { key: "charge", shape: "commitment-peach", titleClass: accent, icon: chargeIcon, iconStill: chargeStill },
+  { key: "dataYours", shape: "commitment-green", titleClass: green, icon: dataYoursIcon, iconStill: dataYoursStill },
+  { key: "arabic", shape: "commitment-wide", titleClass: green, icon: arabicIcon, iconStill: arabicStill },
+  { key: "human", shape: "commitment-green", titleClass: green, icon: humanIcon, iconStill: humanStill },
+  { key: "dataStays", shape: "commitment-peach", titleClass: accent, icon: dataStaysIcon, iconStill: dataStaysStill },
+] as const;
+---
+
+<Section id="commitments" headingId="commitments-title" wave="down" shadow>
+  <SectionHeader slot="header" id="commitments-title" title={t.title} lead={t.lead} />
+  <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-10">
+    {
+      cards.map((c) => (
+        <CommitmentCard
+          shape={c.shape}
+          title={t.cards[c.key].title}
+          body={t.cards[c.key].body}
+          icon={c.icon}
+          iconStill={c.iconStill}
+          titleClass={c.titleClass}
+          class={c.shape === "commitment-wide" ? "md:col-span-2" : ""}
+        />
+      ))
+    }
+  </ul>
+</Section>

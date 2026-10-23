@@ -1,0 +1,50 @@
+---
+import Section from "@/components/ui/Section.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import DayCard from "./day/DayCard.astro";
+import { slots, summaryCard } from "./day/cards";
+import { getDictionary, type Locale } from "@/i18n";
+
+/**
+ * Section 04: "A day at your nursery, from open to close".
+ * Figma node 1532:31922: a 2 x 4 grid of dashed cards (green / peach checkerboard), seven time slots and
+ * the closing "The day, all in one place" card. Reading order is DOM order; RTL mirrors the grid columns
+ * (and each card's picture composition) but never the phone screenshots.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale).sections.day;
+---
+
+<Section id="day" headingId="day-heading" wave="down" shadow>
+  <SectionHeader slot="header" id="day-heading" title={t.title} lead={t.lead} />
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-y-12">
+    {/* display: contents keeps the list in the accessibility tree while its items join the grid. */}
+    <ol role="list" aria-label={t.timelineLabel} class="contents">
+      {slots.map((slot, i) => {
+        const item = t.items[i]!;
+        return (
+          <DayCard
+            def={slot.card}
+            time={item.time}
+            datetime={slot.datetime}
+            title={item.title}
+            body={item.body}
+            alt={item.alt}
+          />
+        );
+      })}
+    </ol>
+    <DayCard
+      as="div"
+      def={summaryCard}
+      title={t.summary.title}
+      body={t.summary.body}
+      alt={t.summary.alt}
+    />
+  </div>
+</Section>

@@ -1,0 +1,46 @@
+---
+import Container from "./Container.astro";
+import WaveDivider from "./WaveDivider.astro";
+
+/**
+ * One page section: optional wave edge -> --wave-gap -> header slot -> --header-gap-* -> content.
+ * Last content to the next section's heading is 48 + 76 + 58 = 182px at 1440 (matches Figma).
+ * Wave direction is explicit per section (see spec §8.1), never auto-alternated.
+ */
+interface Props {
+  id?: string;
+  /** id of the section's heading; becomes aria-labelledby. */
+  headingId?: string;
+  wave?: "up" | "down" | "none";
+  shadow?: boolean;
+  /** Background utility for the wave fill; defaults to the cream page colour. */
+  waveClass?: string;
+  gap?: "tight" | "default" | "loose";
+  class?: string;
+}
+
+const {
+  id,
+  headingId,
+  wave = "none",
+  shadow = false,
+  waveClass = "bg-surface",
+  gap = "default",
+  class: className = "",
+} = Astro.props;
+
+const headerGap = {
+  tight: "mb-(--header-gap-tight)",
+  default: "mb-(--header-gap-default)",
+  loose: "mb-(--header-gap-loose)",
+}[gap];
+const hasHeader = Astro.slots.has("header");
+---
+
+<section id={id} aria-labelledby={headingId} class:list={["mb-(--section-gap)", className]}>
+  {wave !== "none" && <WaveDivider direction={wave} shadow={shadow} class={waveClass} />}
+  <Container class={wave !== "none" ? "mt-(--wave-gap)" : undefined}>
+    {hasHeader && <div class={headerGap}><slot name="header" /></div>}
+    <slot />
+  </Container>
+</section>

@@ -1,0 +1,20 @@
+{
+  "topbar": {
+    "socialLabel": "Follow Yawmy Care"
+  },
+  "nav": {
+    "label": "Main",
+    "menu": "Menu",
+    "items": [
+      { "id": "home", "label": "Home" },
+      { "id": "day", "label": "A day at your nursery" },
+      { "id": "why", "label": "Why Yawmy" },
+      { "id": "setup", "label": "Set up in 20 minutes" },
+      { "id": "security", "label": "Security" },
+      { "id": "commitments", "label": "Our commitments" },
+      { "id": "pricing", "label": "Pricing" },
+      { "id": "founders", "label": "Founders" },
+      { "id": "faq", "label": "FAQ" }
+    ]
+  }
+}

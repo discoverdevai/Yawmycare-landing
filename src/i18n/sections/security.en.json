@@ -1,0 +1,23 @@
+{
+  "title": "Your Data Is Safe. Your Focus Stays on Care.",
+  "lead": "Yawmy Care is built with security at its core, ensuring your data remains protected while you focus on delivering exceptional care every day.",
+  "imageAlt": "A computer screen showing a green security shield with a padlock, surrounded by charts and security icons in a bright office.",
+  "items": [
+    {
+      "title": "Encrypted, always.",
+      "body": "Your data is encrypted in transit and at rest, and access is limited by role."
+    },
+    {
+      "title": "Backed up daily.",
+      "body": "Automatic. Nothing to remember, nothing to configure."
+    },
+    {
+      "title": "Access by role",
+      "body": "A teacher sees only her own rooms. An admin cannot read private teacher and parent conversations."
+    },
+    {
+      "title": "Kept only as long as needed",
+      "body": "Incident reports for two years. Chat deleted automatically after six months."
+    }
+  ]
+}

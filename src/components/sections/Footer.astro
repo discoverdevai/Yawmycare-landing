@@ -1,0 +1,98 @@
+---
+import Container from "@/components/ui/Container.astro";
+import WaveDivider from "@/components/ui/WaveDivider.astro";
+import Logo from "@/components/ui/Logo.astro";
+import Button from "@/components/ui/Button.astro";
+import type { IconName } from "@/components/ui/Icon.astro";
+import { getDictionary, type Locale } from "@/i18n";
+import { navLinks } from "@/config/nav";
+import { resolveLink, isExternal, socials as socialUrls, socialOrder } from "@/config/site";
+
+/**
+ * Section 12b: footer (Figma 1457:4213, AR 1434:4033). Renders a <footer> landmark, so it goes in
+ * BaseLayout's `footer` slot, right after <main>.
+ *
+ * Its scalloped top edge ("wave-footer", no shadow) overlaps the bottom of FinalCta by `--wave-h`
+ * (negative margin), which is how Figma stacks the two. The giant wordmark is live text, decorative,
+ * Latin in both locales (docs/DECISIONS.md #5), bottom-clipped by the footer. The text is about 6.5em wide,
+ * so the clamp floor is 40px, not 64px (64px = 417px wide would be cut off at 375).
+ * Nav = the header links as in-page anchors. There is no copyright line because Figma has none.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const s = t.sections.footer;
+
+// One nav source (src/config/nav.ts) and the header's labels: same anchors, same words (WCAG 3.2.4).
+const links = navLinks(getDictionary(locale).sections.header.nav.items);
+
+// Social URLs come from env (docs/ENV.md); unset ones are not rendered in production.
+const social = socialOrder
+  .map((name) => ({ key: name, icon: name satisfies IconName, ...resolveLink(socialUrls[name]) }))
+  .filter((x) => x.render);
+---
+
+<footer class="relative -mt-(--wave-h) overflow-hidden">
+  <div class="-mb-px">
+    <WaveDivider direction="up" class="bg-primary-bg" />
+  </div>
+  <div class="bg-primary-bg">
+    <Container class="flex flex-col items-center gap-6 pt-2 rtl:gap-8">
+      <div class="flex flex-col items-center gap-3 text-center">
+        <Logo
+          size="footer"
+          locale={locale}
+          href="#home"
+          class="focus-visible:outline-focus block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
+        />
+        <p class="text-body-sm text-ink font-medium">{t.brand.tagline}</p>
+      </div>
+      <nav aria-label={s.navLabel}>
+        <ul class="flex flex-wrap justify-center gap-x-4 gap-y-1 xl:gap-x-6">
+          {
+            links.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="text-nav text-ink focus-visible:outline-focus pointer-coarse:lg:min-h-11 inline-flex min-h-11 min-w-11 items-center justify-center rounded font-medium lg:min-h-8 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      {
+        social.length > 0 && (
+          <ul aria-label={s.socialLabel} class="flex items-center gap-3">
+            {social.map(({ key, icon, href, unconfigured }) => (
+              <li>
+                <Button
+                  variant="social-footer"
+                  icon={icon}
+                  label={t.social[key]}
+                  href={href}
+                  external={isExternal(href)}
+                  unconfigured={unconfigured}
+                />
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </Container>
+    <p
+      aria-hidden="true"
+      lang="en"
+      dir="ltr"
+      class="text-wordmark mt-10 -mb-[0.16em] text-center leading-none font-medium whitespace-nowrap uppercase select-none md:mt-13"
+      style="font-size:clamp(40px,11.8vw,170px)"
+    >
+      {s.wordmark}
+    </p>
+  </div>
+</footer>
